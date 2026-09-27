@@ -1,0 +1,11 @@
+{
+  "source": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+  "source_sha256": "264b751436052bdfbe860f289a27694f5e4c6f42d359428734042c33056f4209",
+  "method": "PIL.ImageOps.exif_transpose (applies EXIF Orientation=6 -> 90 deg CW on pixels), saved JPEG q=95 4:4:4, no EXIF",
+  "result": "ocr_eval/experiments/orientation/CamScanner ⁨7-1-25 10.26⁩_11_rot90.JPG",
+  "result_sha256": "aa51cc98887ec6115696c67b16e37b5e40b0db0e8a04508ecea17b85d0675d08",
+  "result_size": [
+    2304,
+    3016
+  ]
+}

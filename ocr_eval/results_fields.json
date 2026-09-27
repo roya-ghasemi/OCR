@@ -1,0 +1,338 @@
+{
+  "note": "field-aware re-scoring of an existing predictions.jsonl; no new inference",
+  "n_images": 36,
+  "usable": {
+    "ok": 30,
+    "empty_200_null": 3,
+    "error_422": 3,
+    "usable_rate": 0.8333
+  },
+  "reading": {
+    "named_field_cer": 0.3668482261151185,
+    "content_matched_cer": 0.09670477471418965,
+    "assignment_loss": 0.2701434514009289,
+    "ci95_over_texts": {
+      "named_cer": {
+        "lo": 0.2145889011161767,
+        "hi": 0.5507630021800062
+      },
+      "content_cer": {
+        "lo": 0.05869310029998696,
+        "hi": 0.13718653614053908
+      }
+    }
+  },
+  "placement_accuracy": {
+    "correct": 68,
+    "total": 87,
+    "rate": 0.7816
+  },
+  "omission": {
+    "schema_segments": 216,
+    "schema_omitted": 10,
+    "schema_omit_rate": 0.0463,
+    "orphan_segments": 39,
+    "orphan_omitted": 8
+  },
+  "hallucination": {
+    "pred_values": 101,
+    "unsupported": 0,
+    "rate": 0.0,
+    "spurious_receiver": 0
+  },
+  "orphan_capture": {
+    "orphan_content_segments": 39,
+    "captured_anyway": 31,
+    "capture_rate": 0.7949,
+    "comment": "content the 5-field schema cannot hold (date/IBAN/codes/amounts)"
+  },
+  "ordering": {
+    "buckets": {
+      "misread": 17,
+      "exact": 40,
+      "reversed": 1,
+      "partial": 2,
+      "permuted": 3
+    },
+    "examples": {
+      "misread": [
+        "1405",
+        "INV",
+        "EMP",
+        "2026",
+        "version",
+        "1405",
+        "INV",
+        "2026"
+      ],
+      "reversed": [
+        "0093"
+      ],
+      "partial": [
+        "0071234567",
+        "0071234567"
+      ],
+      "permuted": [
+        "0093",
+        "0071234567",
+        "0093"
+      ]
+    }
+  },
+  "latency_seconds": {
+    "all": {
+      "p50": 1.9,
+      "p90": 2.56,
+      "p99": 17.77,
+      "mean": 3.15
+    },
+    "ok_only": {
+      "p50": 1.86,
+      "p90": 2.29,
+      "p99": 2.56,
+      "mean": 1.93
+    }
+  },
+  "per_image": [
+    {
+      "filename": "synthetic_fa_001.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.044444444444444446,
+      "content_cer": 0.013574660633484163
+    },
+    {
+      "filename": "synthetic_fa_002.png",
+      "source": "synthetic_fa",
+      "status": "empty"
+    },
+    {
+      "filename": "synthetic_fa_003.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.5960591133004927,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_fa_004.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.05612244897959184,
+      "content_cer": 0.020833333333333332
+    },
+    {
+      "filename": "synthetic_fa_005.png",
+      "source": "synthetic_fa",
+      "status": "empty"
+    },
+    {
+      "filename": "synthetic_fa_006.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.005291005291005291,
+      "content_cer": 0.005405405405405406
+    },
+    {
+      "filename": "synthetic_fa_007.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.04,
+      "content_cer": 0.00904977375565611
+    },
+    {
+      "filename": "synthetic_fa_008.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.04950495049504951,
+      "content_cer": 0.015151515151515152
+    },
+    {
+      "filename": "synthetic_fa_009.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.5960591133004927,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_fa_010.png",
+      "source": "synthetic_fa",
+      "status": "empty"
+    },
+    {
+      "filename": "synthetic_fa_011.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.034482758620689655,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_fa_012.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.037037037037037035,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_fa_013.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.04,
+      "content_cer": 0.00904977375565611
+    },
+    {
+      "filename": "synthetic_fa_014.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.15841584158415842,
+      "content_cer": 0.08080808080808081
+    },
+    {
+      "filename": "synthetic_fa_015.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.5960591133004927,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_fa_016.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.061224489795918366,
+      "content_cer": 0.026041666666666668
+    },
+    {
+      "filename": "synthetic_fa_017.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.034482758620689655,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_fa_018.png",
+      "source": "synthetic_fa",
+      "status": "ok",
+      "named_cer": 0.037037037037037035,
+      "content_cer": 0.0
+    },
+    {
+      "filename": "synthetic_bilingual_019.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.36947791164658633,
+      "content_cer": 0.2
+    },
+    {
+      "filename": "synthetic_bilingual_020.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.44594594594594594,
+      "content_cer": 0.12727272727272726
+    },
+    {
+      "filename": "synthetic_bilingual_021.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.5179856115107914,
+      "content_cer": 0.0970873786407767
+    },
+    {
+      "filename": "synthetic_bilingual_022.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.6733870967741935,
+      "content_cer": 0.1166077738515901
+    },
+    {
+      "filename": "synthetic_bilingual_023.png",
+      "source": "synthetic_bilingual",
+      "status": "error"
+    },
+    {
+      "filename": "synthetic_bilingual_024.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.41365461847389556,
+      "content_cer": 0.20132013201320131
+    },
+    {
+      "filename": "synthetic_bilingual_025.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.39166666666666666,
+      "content_cer": 0.21262458471760798
+    },
+    {
+      "filename": "synthetic_bilingual_026.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.41517857142857145,
+      "content_cer": 0.11552346570397112
+    },
+    {
+      "filename": "synthetic_bilingual_027.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.4564459930313589,
+      "content_cer": 0.16666666666666666
+    },
+    {
+      "filename": "synthetic_bilingual_028.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.5772357723577236,
+      "content_cer": 0.16370106761565836
+    },
+    {
+      "filename": "synthetic_bilingual_029.png",
+      "source": "synthetic_bilingual",
+      "status": "error"
+    },
+    {
+      "filename": "synthetic_bilingual_030.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.2948207171314741,
+      "content_cer": 0.18032786885245902
+    },
+    {
+      "filename": "synthetic_bilingual_031.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.3895582329317269,
+      "content_cer": 0.15806451612903225
+    },
+    {
+      "filename": "synthetic_bilingual_032.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.4369369369369369,
+      "content_cer": 0.15272727272727274
+    },
+    {
+      "filename": "synthetic_bilingual_033.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.5179856115107914,
+      "content_cer": 0.0970873786407767
+    },
+    {
+      "filename": "synthetic_bilingual_034.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 1.7258064516129032,
+      "content_cer": 0.10954063604240283
+    },
+    {
+      "filename": "synthetic_bilingual_035.png",
+      "source": "synthetic_bilingual",
+      "status": "error"
+    },
+    {
+      "filename": "synthetic_bilingual_036.png",
+      "source": "synthetic_bilingual",
+      "status": "ok",
+      "named_cer": 0.40963855421686746,
+      "content_cer": 0.19801980198019803
+    }
+  ]
+}

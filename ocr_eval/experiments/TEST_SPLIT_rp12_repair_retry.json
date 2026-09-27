@@ -1,0 +1,650 @@
+{
+  "summary": {
+    "name": "TEST_SPLIT_rp12_repair_retry",
+    "generated_utc": "2026-09-02T12:52:46+00:00",
+    "hypothesis": "Phase 2 exit test. The winning dev configuration, scored ONCE on the held-out test split. Not used to choose between options.",
+    "overrides": {
+      "REPEAT_PENALTY": "1.2",
+      "JSON_REPAIR": "1",
+      "MAX_RETRIES": "1"
+    },
+    "split": "test",
+    "n": 36,
+    "n_usable": 35,
+    "usable_rate": 0.9722,
+    "failure_taxonomy": {
+      "http_422": 1
+    },
+    "n_degenerate_runs": 0,
+    "pct_degenerate": 0.0,
+    "latency_p50": 4.332,
+    "latency_p95": 9.05,
+    "provenance": {
+      "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
+      "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
+      "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "repeat_penalty": 1.0,
+      "frequency_penalty": 0.0,
+      "max_tokens": 2048,
+      "context_size": "16384",
+      "image_min_tokens": "1024",
+      "n_gpu_layers": "99",
+      "resize_max_edge": 0,
+      "max_retries": 0,
+      "response_format": "off",
+      "json_repair": false
+    }
+  },
+  "records": [
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_12.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.316,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 8,
+      "raw": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "سازمان پایش بهداشتی استان خراسان جنوبی",
+        "subject": "قرارداد انجام تأمین نیروی انسانی امور خدماتی، تولیدی فنی",
+        "body_text": "\n\nبا سلام;\n\nاحتراماً به پیوست صورت وضعیت و گزارش کارکرد شماره دو قرارداد انجام تامین نیروی انسانی امور خدماتی، تولیدی فنی آذر ماه ۱۴۰۳ این شرکت با آن شرکت محترم خدمتن‌تان ارائه می‌گردند. خواهشمند است دستور فرمایید تا نسبت به پرداخت اقدامات لازم مبذول فرمائید.\n\n| مبلغ | موضوع |\n|------|--------|\n| ۱۲۳,۴۵۶.۷۸۹ | بیمه ۲۰٪ |\n| ۱۰۰,۰۰۰ | سود شرکت |\n| ۱۲۳,۴۵۶.۷۸۹ | جمع کل |\n| ارزش افزوده سود شرکت | \n| جمع با ارزش افزوده |",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_13.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.412,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سپز گستر",
+        "receiver": "مدیر عامل محترم شرکت پاس‌توریزه پکاه خراسان",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 09138462575، 09138462576 فaks: 09138462576\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_14.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.332,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "مدیر عامل شرکت پایپوریژه پکاه خراسان",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- بلاک 7\nتلفن: 0513824691، فاکس: 0513824692\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_15.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.148,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 0513846923، 0513846924 فaks: 0513846923\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_19.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.103,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 05138426983- فاکس: 05138426983\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_22.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 3.908,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": "پذیرش در شرکت مشغول به کار می‌باشد، این گواهی به دو خواست نامبرده صرف جهت امور بانکی صادر گردیده است",
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_24.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.206,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "شرکت خدماتی سبز گستر شماره ثبت: ۸۷۹",
+        "receiver": null,
+        "subject": null,
+        "body_text": "[ناخوانا]\n\nآدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 05138246973-18388423 فکس: 7838423976",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_26.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.295,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "شرکت خدمات سبز گستر (سهامی خاص)",
+        "receiver": null,
+        "subject": "قرارداد انجام تأمین نیروی انسانی",
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالي ۲۵– پلاک 7\nتلفن: 0513-824691، فکس: 0513-824691\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_27.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.532,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سپزگستر\nشماره ثبت: ۶/۷۸۲\nتاریخ: ۱۴۰۹/۳/۵\nبیوست:\nشرکت خدماتی سپزگستر شعبه هاشمی مشهد\n\nریاست محترم بانک سامان شعبه هاشمی مشهد\n\nاحتراماً به پیوست لیست پرسنل جهت واریز حقوق به تعداد ۱/۵ نفر و جمعاً به مبلغ ۹۸۷,۴۲۳.۶۰ ریال به حضور معرفی می‌گردند.\n\nبا تشکر\nمحمود فاطمی\nنائب رئيس هیات مدیره\nسپزگستر\nشماره ثبت: ۶/۷۸۲\nتاریخ: ۱۴۰۹/۳/۵\nبیوست:\nشرکت خدماتی سپزگستر شعبه هاشمی مشهد\n\nآدرس: مشهد - بلوار کوتور - کوتر شمالی ۲۶ - پلاک 7\nتلفن: ۸۳-۱۰۹۴۵۷۳-۱۰۹۴۵۷۳ فکس: ۸۳-۱۰۹۴۵۷۲-۶۰\nEmil: Sabzgostar2006@gmail.com",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_28.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.219,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "اداره محترم امور مالیاتی",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵- پلاک 7\nتلفن: 09138426578، فاکس: 09138426578\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_29.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.233,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "بانک سامان هاشمیه مشهد",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 02183469576، فاکس: 02183469576\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_3.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 5.383,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "مدیر عامل شرکت مخترم بانک خاورمیانه",
+        "subject": "پذیرش در شرکت مشغول به کار با احترام و پاسخگویی فرزند اصغر با کد ملی 1976342580. در این شرکت مشغول به کار می‌باشند، این گواهی به دستور نماینده صرف جهت امور بانکی صادر گردیده است.",
+        "body_text": "[ناخوانا] با احترام\nهدی جهان کشتی\nمدیر عامل\nآدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵- پلاک 7 تلفن: 02138469575، فاکس: 02138469575 Email: Sabzgostar2006@gmail.com",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_31.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.306,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "مدیر عامل شرکت آب و فاضلاب",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 0513846921، 0513846923، فاکس: 0513846927\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_34.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 5.718,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 3,
+      "raw": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": null,
+        "subject": "پذیرش درخواست مالی شرکت پدیدار خراسان",
+        "body_text": "با سلام:\n\nاحتراماتم، با عنايت به اینكه وضعیت مناقصه تامين نيرو مشخص شده و ضمانات نامه حسن انجام كار نزدي آن شرکت محتمل تسليم گردیده، لذا خواهشمند است نسبت به استرداد مبلغ ۱,۰۰۰,۰۰۰ ریال به حساب قيد شده كه بابت فرايند مناقصه طبق فيش شماره ۹۸/۳۲۶ واريز شده است.\n\nبا تشکر,\nهدى جهانگيشه\nمدير عام\n\nآدرس: مشهد - بلوار کوثر - کوثر شمالی 25- پلاک 7\nتلفن: 0913846831- فاكس: 0913846831",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_41.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.167,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 4,
+      "raw": {
+        "sender": "شرکت خدمات سبز گستر گوارشک",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک 7\nتلفن: 051389426-184888483-136288883 فکس: 099288883"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_44.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.069,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵– پلاک 7\nتلفن: 0513824698- فاکس: 0513824698\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_45.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 5.877,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "مدیر عامل شرکت مخترم بانک پارسیان شعبه بلوار پیروزی",
+        "subject": "پذیرش درخواست نامه مشغول به کار",
+        "body_text": "با سلام;\n\nاحتراماً بدين وسيله گوهي مي شود آقاي رضا غلی فرزند علی با كد ملي ۸۷۶۴۱۹۳۰/۲۵ از تاريخ 1403/6/25 به قرارداد يکساله در اين شرکت مشغول به کار مي باشند، این گوهي به درخواست نامبرده صرفا جهت امور بانكي صادر گردیده است.\n\nبا حترام,\nهدی جهانگشتی\nمدیر عامل\n\nآدرس: مشهد - بلوار کوتور - کوثر شمالی ۲۵- پلاک 7\nتلفن: 0513842691، فاكس: 0513842691\nEmil: Sabzgostar2006@gmail.com",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_46.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 5.438,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": "موضوع: انجام آزمایشات بدون استفاده\nبا سلام;\nاحتراماً، بدين وسيله اقاي ابوالفضل اسدی زاده به شماره ملي 9243176 جهت انجام آزمایشات بدون استخدام به حضور معرفی ميگردد. خواهشمند است نسبت به انجام آزمایشات و معاینات مساعدت و نتياج را به پيوست فرم معاینات ارسال نمايد.\n\nبا تشکر,\nهدی جهانگشتی\ndier عامل\nآدرس: مشهد - بلوار کوثر - کوثر شمالي 25-پلاک 78388461- فکس: 97-\nتلفن: 0575-28388576",
+        "body_text": "[ناخوانا]",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_47.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 5.371,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 3,
+      "raw": {
+        "sender": "سپز گستر",
+        "receiver": null,
+        "subject": "موضوع: انجام مراحل گواهی عدم سوء پیشینه\nاحتراماً، بدين وسيله آقای ابولفضل اسدی زاده به شماره ملي 17426324 جهت انجام مراحل گواهی عدم سوء پیشینه به حضور معرفى مي‌گردد. خواهشمند است نسبت به انجام آزمایشات و معاینات مساعدت و نتایج را به پيوست فرم معاينات ارسال نمايد.\n\nبا تشکر\nهدی جهانگشتی\ndیر عامل\nآدرس: مشهد - بلوار کوثر - کوثر شمالی 25- بلاک 7 تلفن: 0834169888 فکس: 0834169888\nEmil: Sabzgostar2006@gmail.com",
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_48.JPG",
+      "http_status": 422,
+      "error": null,
+      "seconds": 25.804,
+      "usable": false,
+      "failure_kind": "http_422",
+      "longest_char_run": 2,
+      "raw": null,
+      "failure_body": {
+        "detail": "Model returned unparseable JSON: Expecting property name enclosed in double quotes: line 1 column 117 (char 116). raw_len=798 finish_reason=stop attempts=2 debug_dump=E:\\ghasemi\\ocr\\debug_raw\\CamScanner__7-1-25_10.26__48.JPG.1788353478.json"
+      }
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_49.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.044,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سپزگستر",
+        "receiver": "مدیر عامل شرکت سبز گسترش مشهد",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵- پلاک 7\nتلفن: 0513846923- فاکس: 0513846923"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_5.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.334,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 3,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "اداره محترم آموزش و پرورش ناحیه 5 مشهد",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- بلاک 7\nتلفن: 09123846131، فاکس: 05138884238\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_52.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.833,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبزگستر",
+        "receiver": "جناب آقای پلولان\nنمایندگان محترم اداره كل آموزش و برورش خراسان رضوی\nبا سلام\nاحتراماً به اطلاع می‌رساند، بنا به مذاکرات حضوری و جلسه برگزار شده با مدیران مرکز مهلت تعیین شده جهت انجام آزمایشات ماده ۹۰ بیمه تأمین اجتماعی انتهاي مهرماه مي‌باشد. ضمنا حقوق مهرماني برای افراد ذيل كه آزمایشات مذكور را انجام ندادند، واريز\nنخواهد شد.\n1-حسينعلی گلاب زائي\n2-سعيد عباس زادة\n3-يدالله نورى ني ريز\n4-شهاب الدين نائیني\n5-مهدف پور فرح آبادي\n6-محمد رضا آرام\n7-محمد صفردى\n8-آیدا اردلان\n9-سمانه ملاشاهی\n10-سارة ملي برست\n11-منصوره حسين عليزاده\n12-احمد كريمي دوغشكي\n13-حسين رهنما برگردن\n14-تقى عباسی\nآدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک 7 تلفن: 05128698837 فکس: 05128643276 info@sabzgostar-govareshk.ir",
+        "subject": null,
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_53.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.973,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 3,
+      "raw": {
+        "sender": "جناب آقای بهلوان\nنمایندگی محترم اداره كل آموزش و پرورش خراسان رضوی\nبا سلام\nاحتراماً به اطلاع می‌رساند، بنا به مذاکرات حضوری و جلسه برگزار شده با مدیران مرکز مهلت تعیین شده چنین نخواهد شد.\nماده 90 بیمه تامین اجتماعی انتهاي مهرماه مى‌باشد. ضمنا حقوق مهرماه برای افراد ذيل كه آزمایشات مذكور را انجام ندادند، و\n1-حسينعلي گلاب زائي\n2-سعيد عباس زادة\n3-يدالله نورى ني ريز\n4-شهاب الدين نائینی\n5-مهدى پور فرح آبادى\n6-محمد رضا أرام\n7-محمد صفردى\n8-آیدا اردلان\n9-سمانه ملاشاهي\n10-سارة ملي پرست\n11-منصوره حسين علیزاده\n12-احمد كريمى دوغشکى\n13-حسين رهنما برگرد\n14-تقي عباسى\nبا تشکر\nهادي جهان کنجه\nمدير عام\nآدرس: مشهد - بلوار كوثر شمالي - كوثر شمالي 25 - پلاک 7\nتلفن: 09863814-18488383-13888383 فكس: 09863878\ninfo@sabzgostar-govareshk.com",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_57.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.578,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "آقای پهلوان\nنماهنگ محترم اداره كل آموزش و پرورش خراسان رضوی",
+        "subject": null,
+        "body_text": "\nبا سلام\nاحتراماً عطف قرارداد شماره ۲۹۴۹ مورخ ۱۳۸۷/۰۶/۲۵ و ليست حقوق مهرماه خواهشمند است.\nنسبت به تعیین وضعیت قرارداد پرسنل جدید تصميمات لازم را اتخاذ کرده‌ام. \n\n1- آقای حسین شفیعی\n2- خانم مینا مجرد\n3- خانم نفسه منفرد\n4- خانم مریم محسنی زاده\n5- خانم سعیده موسوی\n6- خانم سمیه محمدی\n7- خانم مهدیه شمس\n8- خانم حسین فرخزاد\n9- آقای علیرضا نوروزی\n10- آقای سعید رضوانی\n\nبا تشکر\nهادی جهرامنشته\nمدیرعامل\n\nآدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک 7\nتلفن: 051382496-1 فاكس: 051382496-1\nEmil: Sabzgostar2006@gmail.com",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_58.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.12,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 0513846923- فاکس: 0513846923\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_6.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.296,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "بانک سامان شعبه هاشمی مشهد",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن. ساختمان لادن، پلاک 117 طبقه همکف\nتلفن: 02345678901, فاكس: 02345678901\nEmail: Sabz_gostar@yahoo.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_66.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.147,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک 117 طبقه همکف\nتلفن: 38205-411-6923 فاکس: 0511-5035 Email : Sabz_gostar@yahoo.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_71.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.673,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 4,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "دکتر سلطانی",
+        "subject": "معاونت محترم پژوهش برنامه‌ریزی و توسعه منابع آموزش و برونش خراسان رضوی\nبا سلام;\nاحتراماً، عطف به قرارداد شماره ۸۲/۶۳/۱۴۰۰ مورخ ۹/۷/۱۳۹۵ خواهشمند است دستور فرمانی‌ها تا نسبت به پیش‌بینی قرارداد فوق الذکر بر اساس بند یک ماده پنج اقدام شایسته صورت پذیرد و به پیوست اصل ضمانت\nنامه پیش‌بینی پرداخت به شماره ۱۰/۹۲/۶۸۵۳ مبلغ ۷۴۰۰۰۰/۰۰۰/۰۰۰ ریال\nارسال می‌گردد.\nبا تشکر,\nهادی جهان کشته\nمدیر عامل\nآدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵- پلاک 7\nتلفن: ۸۳۱۹۶۴۷۰۳- فکس: ۸۳۱۹۶۴۷۰۳\nEmil: Sabzgostar2006@gmail.com",
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_78.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.3,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گسترش",
+        "receiver": "مدیریت محترم دانشگاه نیشابور",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵- پلاک 7\nتلفن: 0513849621، فاکس: 0513849621\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_83.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.253,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "شرکت سبز گستر",
+        "receiver": "مدیریت محترم آموزش و پرورش خراسان رضوی",
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوترا - کوتر شمالی ۲- بلاک 7\nتلفن: 0513842698، فاکس: 0513842698\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_84.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 7.266,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "آقای پهلوان",
+        "subject": "ناوذجات محترم اداره كل آموختش و برورش",
+        "body_text": "\n\nجناب آقای پهلوان \nنماينده محترم اداره كل آموختش و برورش \n\nاحتراماً پیرو قرارداد منعکس خواهد شدند است با توجه به اینكه مهلت ارسال گزارش حادثه براي سازمان تامين اجتماعي حداكثر 24 ساعت از زمان حادثه می باشد، در صورت بروز هرگونه حادثه منجر به مصدوميت و حتماً حادثه به اورژانس ، پليس 110 يا آتش نشاني اطلاع رساني گردند و در كوتاه ترين زمان ممكن (حداكثر 24 ساعت پس از حادثه ) به صورت كتابی موضوع حادثه و مشخصات حادثه ديده و امور انجام شده جهت انجام اقدامات بعدى برای اين شرکت ارسال گردند. بديهي است كه در صورت عدم ارسال به موقع مسئوليت جبران خسارت به عهدن آن اداره كل محترم خواهد بود.\n\nبا تشکر \nهادي جهان کشتی \nمدير عامل \n\nآدرس: مشهد-بلوار لادن، ميدان لادن، ساختمان لادن، پلاک 117، طبقه همکف تلفن: 38245096-1787, فاكس: 511-0511 Email : Sabz_gostar@yahoo.com",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_89.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.146,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوثر شمالی ۲۵- پلاک 7\nتلفن: 0351824691، فاکس: 0351824691\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_92.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 9.05,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "جناب آقای مهندس علم آبادی\nمعاون محترم مالی و پشتیبانی شرکت آب و فاضلاب مشهد",
+        "subject": null,
+        "body_text": "\nبا سلام;\nاحتراماً این شرکت آمادگی دارد تا در راستای سفر گردشگری و تفريحی به جزیره کيش اقدامات و امکانات و زير ساخت هاي لازم را جهت\nبهره مندي هرچه بپردازد. پيشرفت از سفر برای كاركنان و خانواده محترم ايشان ميها نمايد.\nبدين جهت ليست اموری که امکان انجام آنها توسط اين شركت وجود دارد له شرح زير چرخ استحضار ارسال مي‌گردد:\n1- ترانسفر فردي يا گروهي مهمانان از/به مقصد فرودگاه\n2- برگزاری تور کيش گري نيم روزي برای مهمانان در مدت اقامت در جزيه\n3- نظامت كامل هر واحد قبل از تحويل به مهمان بعدى\n4- ارائه منوي غذايي و سرو پک صبحانه، ناهار، ميان و عده و شام برای مهمانان و تهيه ميهو، تنقلات، نوشيدنی (ميني بار) برای اتاق مهمانان\n5- خرید بلیط با تخفيض مراسمات، جشن ها، كنسرت ها و مراکز تفريحی دريايى برای مهمانان\n6- اجاره خودروي روزانه و در اختیار برای مهمانان و در صورت مسافرتن با قطار ترانسفر مهمانان از/به بندعباس\n7- رژو صنفلي (چاپتر) در پرازا هاي روزانه برای مهمانان\n8- ارائه تسهيقات بانكي برای سفر به كيش برای کارکنان به صورت كسر از حقوق\nآدرس: مشهد - بلوار لادن، ميدان نادری، ساختمان لادن. پلاک 117 طبقه همکف تلفن: 053-482691-50 فاكس: 0511-503545 Email : Sabz_gostar@yahoo.com\nبا احترام\nهدیه جهانگشته",
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_93.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 6.899,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 3,
+      "raw": {
+        "sender": "سازمان سیر گستر",
+        "receiver": "جناب آقای کاشانی فر\nمدیرعامل محترم شرکت تعاونی مسکن شهره 4 نیروی انتظامی\nبا سلام;\nاحتراما به پیوست 5 برگ لیست فاکتورهای هزینه‌شده در خصوص پروژه رسالت (95 برگ فاکتور) جمعاً به مبلغ 155/498/61/161 ریال جهت استحضاار به حضور ارسال می‌گردد. خواهشمند است دستور فرمایید تا پس از بررسی نسبت به واردات مبلغ فوق به شماره حساب زیر اقدام لازم صورت بپذیرد.\n\nشماره حساب: 220467722893058002467722001\nIR100560930580002467722001\nبانک سامان شعبه هاشمیه مشهد کد ۹۳۰۵\nبه نام هادی جهانگیری\nبا تشکر,\n[نام و امضای فرد]\n\ncorporate address: مسجد - بلوار کوثر - کوتور شمالي 25- پلاک 7\nTel: 08346912345, 08346912345, Fax: 08346912345\nEmail: Sabzgostar2006@gmail.com",
+        "subject": null,
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_94.JPG",
+      "http_status": 200,
+      "error": null,
+      "seconds": 4.085,
+      "usable": true,
+      "failure_kind": null,
+      "longest_char_run": 2,
+      "raw": {
+        "sender": "سپز گستر",
+        "receiver": null,
+        "subject": null,
+        "body_text": null,
+        "contact_info": "آدرس: مشهد - بلوار کوثر – کوتور شمالی 25- پلاک 7\nتلفن: 0381-4698383، فاکس: 0381-4698383\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "failure_body": null
+    }
+  ]
+}

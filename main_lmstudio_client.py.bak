@@ -1,0 +1,203 @@
+"""
+Persian Business Letter OCR — local LM Studio backend
+"""
+import base64
+import io
+import json
+import logging
+import os
+import re
+from typing import Optional
+
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from PIL import Image, UnidentifiedImageError
+from pydantic import BaseModel, ValidationError
+from openai import AsyncOpenAI
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logger = logging.getLogger(__name__)
+
+# ── Runtime config (override via environment variables) ────────────────────────
+MODEL_NAME = os.getenv("MODEL_NAME", "coreocr-7b-050325-preview")
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:1234/v1")
+API_KEY = os.getenv("API_KEY", "lm-studio")
+
+client = AsyncOpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+
+# ── FastAPI app ────────────────────────────────────────────────────────────────
+app = FastAPI(
+    title="Persian Business Letter OCR",
+    description="Local LM Studio OCR for Iranian official correspondence (نامه اداری).",
+    version="3.0.0",
+)
+
+ALLOWED_TYPES = {
+    "image/jpeg", "image/jpg", "image/png",
+    "image/bmp", "image/tiff", "image/webp",
+}
+
+
+# ── Pydantic output schema ─────────────────────────────────────────────────────
+class LetterExtraction(BaseModel):
+    sender:       Optional[str] = None   # فرستنده
+    receiver:     Optional[str] = None   # گیرنده
+    subject:      Optional[str] = None   # موضوع
+    body_text:    Optional[str] = None   # متن بدنه
+    contact_info: Optional[str] = None   # اطلاعات تماس
+
+
+# ── System prompt ──────────────────────────────────────────────────────────────
+_SYSTEM_PROMPT = """\
+تو یک موتور OCR متخصص برای نامه‌های اداری رسمی ایرانی هستی.
+
+وظیفه تو: یک شیء JSON خالص و valid دقیقاً با ساختار زیر برگردان.
+هیچ markdown fence، هیچ توضیح، هیچ متن اضافه‌ای — فقط raw JSON.
+
+{
+  "sender":       "<نام سازمان یا شخص فرستنده — از سربرگ یا امضا>",
+  "receiver":     "<نام سازمان یا شخص گیرنده>",
+  "subject":      "<موضوع نامه، دقیقاً همان‌طور که نوشته شده>",
+  "body_text":    "<متن کامل بدنه نامه، شامل سلام و امضا، verbatim>",
+  "contact_info": "<تمام اطلاعات تماس: آدرس، تلفن، فکس، کد پستی، ایمیل>"
+}
+
+قوانین:
+1. هر کلمه را دقیقاً همان‌طور که در تصویر است بنویس — ترجمه نکن.
+2. اگر فیلدی در سند وجود ندارد، مقدار null برگردان.
+3. متن ناخوانا را با [ناخوانا] مشخص کن.
+4. هیچ اطلاعاتی را جعل نکن.
+"""
+
+_USER_TURN = "متن این نامه اداری را OCR کن و JSON بده."
+
+# Strips ```json ... ``` or ``` ... ``` wrappers (with optional leading/trailing whitespace)
+_FENCE_RE = re.compile(r"^\s*```(?:json)?\s*([\s\S]*?)\s*```\s*$", re.IGNORECASE)
+
+
+def _clean_json(raw: str) -> str:
+    """Remove markdown code-fences the model may wrap around its JSON output."""
+    stripped = raw.strip()
+    m = _FENCE_RE.match(stripped)
+    if m:
+        return m.group(1).strip()
+    # Fallback: strip individual opening / closing fence lines
+    stripped = re.sub(r"^```(?:json)?\s*", "", stripped, flags=re.IGNORECASE)
+    stripped = re.sub(r"\s*```$",          "", stripped)
+    return stripped.strip()
+
+
+def encode_image(image_bytes: bytes, mime_type: str) -> str:
+    encoded = base64.b64encode(image_bytes).decode('utf-8')
+    return f"data:{mime_type};base64,{encoded}"
+
+
+# ── Endpoints ──────────────────────────────────────────────────────────────────
+@app.get("/")
+async def root():
+    return {
+        "service": "Persian Business Letter OCR",
+        "version": "3.0.0",
+        "model":    MODEL_NAME,
+        "backend":  "LM Studio",
+    }
+
+
+@app.get("/health")
+async def health():
+    try:
+        # Check if LM Studio is reachable
+        await client.models.list()
+        return {"status": "healthy", "model": MODEL_NAME, "backend": "LM Studio reachable"}
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"LM Studio API not reachable: {e}")
+
+
+@app.post("/ocr", response_model=LetterExtraction)
+async def extract_text(
+    file: UploadFile = File(..., description="JPEG, PNG, BMP, TIFF, or WebP image"),
+):
+    # 1. Validate content type ─────────────────────────────────────────────────
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Unsupported type '{file.content_type}'. "
+                f"Accepted: {', '.join(sorted(ALLOWED_TYPES))}"
+            ),
+        )
+
+    image_bytes = await file.read()
+    if not image_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+
+    # 2. Decode image just to validate it's a real image ───────────────────────
+    try:
+        pil_image = Image.open(io.BytesIO(image_bytes))
+        pil_image.verify()
+    except UnidentifiedImageError:
+        raise HTTPException(status_code=400, detail="File is not a valid image.")
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Cannot decode image: {exc}")
+
+    logger.info(
+        "Processing '%s' bytes=%d",
+        file.filename, len(image_bytes),
+    )
+
+    # 3. Call LM Studio API ────────────────────────────────────────────────────
+    mime_type = file.content_type
+    base64_image_url = encode_image(image_bytes, mime_type)
+
+    try:
+        response = await client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[
+                {"role": "system", "content": _SYSTEM_PROMPT},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": _USER_TURN},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": base64_image_url
+                            }
+                        }
+                    ],
+                }
+            ],
+            temperature=0.0,
+            max_tokens=2048,
+        )
+        raw_output = response.choices[0].message.content
+    except Exception as exc:
+        logger.exception("Inference error for '%s'", file.filename)
+        raise HTTPException(status_code=500, detail=f"Inference error from LM Studio: {exc}")
+
+    logger.info("Raw output (first 300 chars): %s", raw_output[:300])
+
+    # 4. Clean and parse JSON ──────────────────────────────────────────────────
+    cleaned = _clean_json(raw_output)
+
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        logger.error(
+            "JSON parse failed for '%s': %s\nCleaned output: %s",
+            file.filename, exc, cleaned[:500],
+        )
+        raise HTTPException(
+            status_code=422,
+            detail=f"Model returned unparseable JSON: {exc}. Raw: {raw_output[:300]}",
+        )
+
+    try:
+        extraction = LetterExtraction.model_validate(data)
+    except ValidationError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Schema validation failed: {exc}",
+        )
+
+    logger.info("OCR complete for '%s'.", file.filename)
+    return extraction

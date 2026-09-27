@@ -1,0 +1,23 @@
+{
+  "generated_utc": "2026-09-01T14:19:10+00:00",
+  "endpoint": "http://127.0.0.1:8000/ocr",
+  "n_images": 90,
+  "n_usable": 15,
+  "wall_seconds": 1763.5,
+  "normalizer_version": "1.0.0",
+  "provenance": {
+    "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
+    "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
+    "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.0,
+    "frequency_penalty": 0.0,
+    "max_tokens": 2048,
+    "context_size": "16384",
+    "image_min_tokens": "1024",
+    "n_gpu_layers": "99",
+    "resize_max_edge": 0,
+    "max_retries": 0
+  }
+}

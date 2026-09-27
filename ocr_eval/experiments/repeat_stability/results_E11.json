@@ -1,0 +1,75 @@
+{
+  "experiment": "E11 repeat stability across processes (D52)",
+  "generated_utc": "2026-09-11T08:27:28+00:00",
+  "documents": [
+    "CamScanner ⁨7-1-25 10.26⁩_1.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_18.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_42.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+    "CamScanner ⁨7-1-25 10.26⁩_81.JPG"
+  ],
+  "processes": [
+    "run1",
+    "run2",
+    "corpus_2026-09-03"
+  ],
+  "mean_similarity_per_field": {
+    "sender": {
+      "run1 vs run2": 1.0,
+      "run1 vs corpus_2026-09-03": 1.0,
+      "run2 vs corpus_2026-09-03": 1.0
+    },
+    "receiver": {
+      "run1 vs run2": 0.94,
+      "run1 vs corpus_2026-09-03": 1.0,
+      "run2 vs corpus_2026-09-03": 0.94
+    },
+    "subject": {
+      "run1 vs run2": 0.933,
+      "run1 vs corpus_2026-09-03": 1.0,
+      "run2 vs corpus_2026-09-03": 0.918
+    },
+    "body_text": {
+      "run1 vs run2": 0.697,
+      "run1 vs corpus_2026-09-03": 0.999,
+      "run2 vs corpus_2026-09-03": 0.668
+    },
+    "contact_info": {
+      "run1 vs run2": 1.0,
+      "run1 vs corpus_2026-09-03": 1.0,
+      "run2 vs corpus_2026-09-03": 1.0
+    }
+  },
+  "unstable_documents_per_field": {
+    "sender": [],
+    "receiver": [
+      "CamScanner ⁨7-1-25 10.26⁩_42.JPG"
+    ],
+    "subject": [
+      "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_81.JPG"
+    ],
+    "body_text": [
+      "CamScanner ⁨7-1-25 10.26⁩_18.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_42.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+      "CamScanner ⁨7-1-25 10.26⁩_81.JPG"
+    ],
+    "contact_info": []
+  },
+  "body_cap_hits_per_process": {
+    "run1": 3,
+    "run2": 3,
+    "corpus_2026-09-03": 3
+  },
+  "similarity_metric": "difflib.SequenceMatcher ratio on raw strings; None==None counts as 1.0, one-sided None as 0.0"
+}

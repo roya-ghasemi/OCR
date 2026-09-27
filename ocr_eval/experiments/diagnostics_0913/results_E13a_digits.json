@@ -1,0 +1,236 @@
+{
+  "generated_utc": "2026-09-13T07:40:36+00:00",
+  "engine": "http://127.0.0.1:18234",
+  "prompt": "Transcribe every character in this image exactly as printed. Output only the transcription, nothing else.",
+  "decoding": "temperature=0, top_k=1, cache_prompt=false",
+  "summary_exact": {
+    "latin": "12/12",
+    "persian": "0/12",
+    "mixed": "0/1",
+    "amount": "1/2"
+  },
+  "results": [
+    {
+      "case": "blank_page",
+      "expected": "",
+      "got": "This image is blank and contains no text to transcribe.",
+      "seconds": 1.08
+    },
+    {
+      "case": "latin_40px",
+      "expected": "321000000",
+      "raw": "321000000",
+      "got_digits": "321000000",
+      "exact": true,
+      "seconds": 0.78
+    },
+    {
+      "case": "persian_40px",
+      "expected": "321000000",
+      "raw": "221......",
+      "got_digits": "221",
+      "exact": false,
+      "seconds": 0.73
+    },
+    {
+      "case": "latin_40px",
+      "expected": "0924424117",
+      "raw": "0924424117",
+      "got_digits": "0924424117",
+      "exact": true,
+      "seconds": 0.78
+    },
+    {
+      "case": "persian_40px",
+      "expected": "0924424117",
+      "raw": "933322117",
+      "got_digits": "933322117",
+      "exact": false,
+      "seconds": 0.8
+    },
+    {
+      "case": "latin_40px",
+      "expected": "6407400315",
+      "raw": "6407400315",
+      "got_digits": "6407400315",
+      "exact": true,
+      "seconds": 0.8
+    },
+    {
+      "case": "persian_40px",
+      "expected": "6407400315",
+      "raw": "01.07.2013",
+      "got_digits": "01072013",
+      "exact": false,
+      "seconds": 0.8
+    },
+    {
+      "case": "latin_40px",
+      "expected": "4152607373",
+      "raw": "4152607373",
+      "got_digits": "4152607373",
+      "exact": true,
+      "seconds": 0.77
+    },
+    {
+      "case": "persian_40px",
+      "expected": "4152607373",
+      "raw": "2023.07.22",
+      "got_digits": "20230722",
+      "exact": false,
+      "seconds": 0.77
+    },
+    {
+      "case": "latin_80px",
+      "expected": "321000000",
+      "raw": "321000000",
+      "got_digits": "321000000",
+      "exact": true,
+      "seconds": 0.79
+    },
+    {
+      "case": "persian_80px",
+      "expected": "321000000",
+      "raw": "221",
+      "got_digits": "221",
+      "exact": false,
+      "seconds": 0.75
+    },
+    {
+      "case": "latin_80px",
+      "expected": "0924424117",
+      "raw": "0924424117",
+      "got_digits": "0924424117",
+      "exact": true,
+      "seconds": 0.79
+    },
+    {
+      "case": "persian_80px",
+      "expected": "0924424117",
+      "raw": "9333333117",
+      "got_digits": "9333333117",
+      "exact": false,
+      "seconds": 0.8
+    },
+    {
+      "case": "latin_80px",
+      "expected": "6407400315",
+      "raw": "6407400315",
+      "got_digits": "6407400315",
+      "exact": true,
+      "seconds": 0.79
+    },
+    {
+      "case": "persian_80px",
+      "expected": "6407400315",
+      "raw": "٢٠٢٣٧٧٣٢٦",
+      "got_digits": "202377326",
+      "exact": false,
+      "seconds": 0.88
+    },
+    {
+      "case": "latin_80px",
+      "expected": "4152607373",
+      "raw": "4152607373",
+      "got_digits": "4152607373",
+      "exact": true,
+      "seconds": 0.8
+    },
+    {
+      "case": "persian_80px",
+      "expected": "4152607373",
+      "raw": "2022.6.1524",
+      "got_digits": "202261524",
+      "exact": false,
+      "seconds": 0.83
+    },
+    {
+      "case": "latin_160px",
+      "expected": "321000000",
+      "raw": "321000000",
+      "got_digits": "321000000",
+      "exact": true,
+      "seconds": 0.8
+    },
+    {
+      "case": "persian_160px",
+      "expected": "321000000",
+      "raw": "221",
+      "got_digits": "221",
+      "exact": false,
+      "seconds": 0.74
+    },
+    {
+      "case": "latin_160px",
+      "expected": "0924424117",
+      "raw": "0924424117",
+      "got_digits": "0924424117",
+      "exact": true,
+      "seconds": 0.81
+    },
+    {
+      "case": "persian_160px",
+      "expected": "0924424117",
+      "raw": "١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١١",
+      "got_digits": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+      "exact": false,
+      "seconds": 2.35
+    },
+    {
+      "case": "latin_160px",
+      "expected": "6407400315",
+      "raw": "6407400315",
+      "got_digits": "6407400315",
+      "exact": true,
+      "seconds": 0.81
+    },
+    {
+      "case": "persian_160px",
+      "expected": "6407400315",
+      "raw": "٢٠٢٣ • ٧ • ٣٦",
+      "got_digits": "2023736",
+      "exact": false,
+      "seconds": 0.87
+    },
+    {
+      "case": "latin_160px",
+      "expected": "4152607373",
+      "raw": "4152607373",
+      "got_digits": "4152607373",
+      "exact": true,
+      "seconds": 0.8
+    },
+    {
+      "case": "persian_160px",
+      "expected": "4152607373",
+      "raw": "2777 • 65214",
+      "got_digits": "277765214",
+      "exact": false,
+      "seconds": 0.83
+    },
+    {
+      "case": "mixed_line",
+      "expected": "14034524",
+      "raw": "۱۴۰۳/۴/۵۲ : هرامش",
+      "got_digits": "1403452",
+      "exact": false,
+      "seconds": 0.89
+    },
+    {
+      "case": "amount_fa",
+      "expected": "321000000",
+      "raw": "لایر ۰۰۰/۰۰۰/۲۲۱: غلبم",
+      "got_digits": "000000221",
+      "exact": false,
+      "seconds": 0.97
+    },
+    {
+      "case": "amount_en",
+      "expected": "321000000",
+      "raw": "Amount: 321,000,000 Rials",
+      "got_digits": "321000000",
+      "exact": true,
+      "seconds": 0.87
+    }
+  ]
+}

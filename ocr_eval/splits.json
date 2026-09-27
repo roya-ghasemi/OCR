@@ -1,0 +1,149 @@
+{
+  "seed": 20260829,
+  "dev_fraction_target": 0.6,
+  "policy": "grouped by distinct ground-truth text to prevent leakage; stratified by source",
+  "counts": {
+    "dev": 24,
+    "test": 12,
+    "dev_by_source": {
+      "synthetic_bilingual": 12,
+      "synthetic_fa": 12
+    },
+    "test_by_source": {
+      "synthetic_bilingual": 6,
+      "synthetic_fa": 6
+    }
+  },
+  "text_groups": {
+    "0a98a9c14a": {
+      "source": "synthetic_bilingual",
+      "split": "dev",
+      "n_renders": 2
+    },
+    "84c3672b68": {
+      "source": "synthetic_bilingual",
+      "split": "dev",
+      "n_renders": 2
+    },
+    "b1b732a7e9": {
+      "source": "synthetic_bilingual",
+      "split": "dev",
+      "n_renders": 2
+    },
+    "d5790bed29": {
+      "source": "synthetic_bilingual",
+      "split": "dev",
+      "n_renders": 2
+    },
+    "d9820976b4": {
+      "source": "synthetic_bilingual",
+      "split": "dev",
+      "n_renders": 2
+    },
+    "f1775df0df": {
+      "source": "synthetic_bilingual",
+      "split": "dev",
+      "n_renders": 2
+    },
+    "00a51eceb6": {
+      "source": "synthetic_bilingual",
+      "split": "test",
+      "n_renders": 1
+    },
+    "08c6e05927": {
+      "source": "synthetic_bilingual",
+      "split": "test",
+      "n_renders": 1
+    },
+    "2a61c8975a": {
+      "source": "synthetic_bilingual",
+      "split": "test",
+      "n_renders": 1
+    },
+    "2b4fdc89b0": {
+      "source": "synthetic_bilingual",
+      "split": "test",
+      "n_renders": 1
+    },
+    "75f4c3b1b2": {
+      "source": "synthetic_bilingual",
+      "split": "test",
+      "n_renders": 1
+    },
+    "fe135cc18e": {
+      "source": "synthetic_bilingual",
+      "split": "test",
+      "n_renders": 1
+    },
+    "1242aa64a4": {
+      "source": "synthetic_fa",
+      "split": "dev",
+      "n_renders": 3
+    },
+    "382c5b8107": {
+      "source": "synthetic_fa",
+      "split": "dev",
+      "n_renders": 3
+    },
+    "43fdb8568d": {
+      "source": "synthetic_fa",
+      "split": "dev",
+      "n_renders": 3
+    },
+    "5292434758": {
+      "source": "synthetic_fa",
+      "split": "dev",
+      "n_renders": 3
+    },
+    "6ed6183b27": {
+      "source": "synthetic_fa",
+      "split": "test",
+      "n_renders": 3
+    },
+    "6fbdaef0bf": {
+      "source": "synthetic_fa",
+      "split": "test",
+      "n_renders": 3
+    }
+  },
+  "dev": [
+    "synthetic_bilingual_019.png",
+    "synthetic_bilingual_020.png",
+    "synthetic_bilingual_021.png",
+    "synthetic_bilingual_022.png",
+    "synthetic_bilingual_023.png",
+    "synthetic_bilingual_024.png",
+    "synthetic_bilingual_031.png",
+    "synthetic_bilingual_032.png",
+    "synthetic_bilingual_033.png",
+    "synthetic_bilingual_034.png",
+    "synthetic_bilingual_035.png",
+    "synthetic_bilingual_036.png",
+    "synthetic_fa_002.png",
+    "synthetic_fa_003.png",
+    "synthetic_fa_005.png",
+    "synthetic_fa_006.png",
+    "synthetic_fa_008.png",
+    "synthetic_fa_009.png",
+    "synthetic_fa_011.png",
+    "synthetic_fa_012.png",
+    "synthetic_fa_014.png",
+    "synthetic_fa_015.png",
+    "synthetic_fa_017.png",
+    "synthetic_fa_018.png"
+  ],
+  "test": [
+    "synthetic_bilingual_025.png",
+    "synthetic_bilingual_026.png",
+    "synthetic_bilingual_027.png",
+    "synthetic_bilingual_028.png",
+    "synthetic_bilingual_029.png",
+    "synthetic_bilingual_030.png",
+    "synthetic_fa_001.png",
+    "synthetic_fa_004.png",
+    "synthetic_fa_007.png",
+    "synthetic_fa_010.png",
+    "synthetic_fa_013.png",
+    "synthetic_fa_016.png"
+  ]
+}

@@ -1,0 +1,1833 @@
+{
+  "label": "qwen25_dev10_native",
+  "generated_utc": "2026-09-17T10:05:11+00:00",
+  "split": "dev",
+  "n_docs": 10,
+  "n_errors": 0,
+  "usable_rate": 1.0,
+  "cer_body_text": 0.275,
+  "cer_all_fields": 0.3322,
+  "cer_per_field": {
+    "sender": 0.045,
+    "receiver": 0.3537,
+    "subject": 1.4883,
+    "body_text": 0.275,
+    "contact_info": 0.2631
+  },
+  "numeric": {
+    "gt_numbers": 59,
+    "emitted_before": 63,
+    "recall_before": 0.322,
+    "recall_after": 0.2712,
+    "recall_oracle": 0.322,
+    "precision_before": 0.3016,
+    "conflict_rate": 0.9048,
+    "unverified_rate": 0.0,
+    "high_rate": 0.0952
+  },
+  "latency_s": {
+    "p50_total": 122.02,
+    "p95_total": 135.84,
+    "mean_primary": 116.84,
+    "mean_numeric_validation": 3.278,
+    "mean_preprocess": 0.251
+  },
+  "needs_review_rate": 1.0,
+  "cross_check": null,
+  "tesseract_available": true,
+  "provenance": {
+    "service_version": "0.1.0",
+    "backend": "llamacpp",
+    "primary": {
+      "name": "Qwen2.5-VL-7B-Instruct-Q4_K_M",
+      "gguf": "D:\\models\\models\\lmstudio-community\\Qwen2.5-VL-7B-Instruct-GGUF\\Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "mmproj": "D:\\models\\models\\lmstudio-community\\Qwen2.5-VL-7B-Instruct-GGUF\\mmproj-model-f16.gguf",
+      "grammar": true
+    },
+    "secondary": {
+      "name": "coreOCR-7B-050325-preview-Q4_K_S",
+      "enabled": false,
+      "gguf": "D:\\models\\models\\mradermacher\\coreOCR-7B-050325-preview-GGUF\\coreOCR-7B-050325-preview.Q4_K_S.gguf"
+    },
+    "temperature": 0.0,
+    "cache_prompt": false,
+    "max_tokens": 2048,
+    "engine": {
+      "context": 16384,
+      "n_gpu_layers": 99,
+      "image_min_tokens": 1024,
+      "image_max_tokens": 16384
+    },
+    "tesseract": {
+      "langs": "fas+eng",
+      "cmd": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+      "tessdata_dir": "E:\\ghasemi\\ocr\\tessdata"
+    },
+    "preprocess": {
+      "enabled": true,
+      "max_bytes": 300000,
+      "format": "JPEG",
+      "max_edge": 3200
+    },
+    "python": "3.12.10"
+  },
+  "per_doc": [
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_1.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_1.JPG",
+      "numeric_fields": [
+        {
+          "field": "subject",
+          "kind": "other",
+          "value": "۲۹۰۶۳",
+          "value_ascii": "29063",
+          "confidence": "low",
+          "tesseract_value": "5629063554",
+          "candidates": [
+            "۲۹۰۶۳",
+            "5629063554"
+          ],
+          "bbox": [
+            1066,
+            1176,
+            1302,
+            1220
+          ],
+          "similarity": 0.667,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲۹۰۶۳"
+        },
+        {
+          "field": "subject",
+          "kind": "date",
+          "value": "۱۴۰۲/۱۲/۲۷",
+          "value_ascii": "1402/12/27",
+          "confidence": "high",
+          "tesseract_value": "1402/12/27",
+          "candidates": [
+            "۱۴۰۲/۱۲/۲۷"
+          ],
+          "bbox": [
+            842,
+            1175,
+            1039,
+            1210
+          ],
+          "similarity": 1.0,
+          "note": null,
+          "resolved": "۱۴۰۲/۱۲/۲۷"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۲۹۰۶۳",
+          "value_ascii": "29063",
+          "confidence": "low",
+          "tesseract_value": "5629063554",
+          "candidates": [
+            "۲۹۰۶۳",
+            "5629063554"
+          ],
+          "bbox": [
+            1066,
+            1176,
+            1302,
+            1220
+          ],
+          "similarity": 0.667,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲۹۰۶۳"
+        },
+        {
+          "field": "body_text",
+          "kind": "date",
+          "value": "۱۴۰۲/۱۲/۲۷",
+          "value_ascii": "1402/12/27",
+          "confidence": "high",
+          "tesseract_value": "1402/12/27",
+          "candidates": [
+            "۱۴۰۲/۱۲/۲۷"
+          ],
+          "bbox": [
+            842,
+            1175,
+            1039,
+            1210
+          ],
+          "similarity": 1.0,
+          "note": null,
+          "resolved": "۱۴۰۲/۱۲/۲۷"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۲۶۱",
+          "value_ascii": "38388261",
+          "confidence": "low",
+          "tesseract_value": "3188384802907",
+          "candidates": [
+            "۳۸۳۸۸۲۶۱",
+            "3188384802907"
+          ],
+          "bbox": [
+            666,
+            2831,
+            819,
+            2935
+          ],
+          "similarity": 0.571,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۲۶۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۴۸۱",
+          "value_ascii": "38388481",
+          "confidence": "low",
+          "tesseract_value": "3188384802907",
+          "candidates": [
+            "۳۸۳۸۸۴۸۱",
+            "3188384802907"
+          ],
+          "bbox": [
+            666,
+            2831,
+            819,
+            2935
+          ],
+          "similarity": 0.571,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۵۷۵",
+          "value_ascii": "3838575",
+          "confidence": "low",
+          "tesseract_value": "35655",
+          "candidates": [
+            "۳۸۳۸۵۷۵",
+            "35655"
+          ],
+          "bbox": [
+            1870,
+            1422,
+            2029,
+            1464
+          ],
+          "similarity": 0.5,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۵۷۵"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۲۹۷",
+          "value_ascii": "3838297",
+          "confidence": "low",
+          "tesseract_value": "3188384802907",
+          "candidates": [
+            "۳۸۳۸۲۹۷",
+            "3188384802907"
+          ],
+          "bbox": [
+            666,
+            2831,
+            819,
+            2935
+          ],
+          "similarity": 0.7,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۲۹۷"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "سرپرست محترم اداره کل آموزش و پروش خراسان رضوی",
+        "subject": "درخواست استحضار مورد اشاره به شماره ۲۹۰۶۳ مورخ ۱۴۰۲/۱۲/۲۷ در خصوص تحصیل اسناد آن اداره کل",
+        "body_text": "با سلام؛\n\nاحتراما، پیرو به قرار داد منعقده به شماره ۲۹۰۶۳ مورخ ۱۴۰۲/۱۲/۲۷ در خصوص تحصیل اسناد آن اداره کلی محترم به استحضار می رساند امور مربوط به دریافت اجاره خط آستان قدس ۲۰ واحد مسکنی واقع در آپارتمان های مرتفع انجام پذیرفته و در مرحله تایید واحد نقشه برداری اداره املاک آستان قدس می باشد، با توجه به اینکه می بایست از واحد های فوق جهت تکمیل گزارش توسط نقشه بردار بازدید صورت پذیرد لذا خواهشمند است به قید فوریت نسبت به معروفی نماینده آن اداره کلی جهت باز کردن درب آپارتمانها در هنگام بازدید نقشه بردار محترم اقدام لازم را مبذول فرمایید.",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۵۷۵\nفاکس: ۳۸۳۸۲۹۷\nایمیل: info@sabzgostar-govareshk.ir"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "جناب آقای دکتر میکائیل باقری\nسرپرست محترم اداره کل آموزش و پرورش خراسان رضوی",
+        "subject": " دریافت اجاره خط آستان قدس ۲۰ واحد مسکونی ",
+        "body_text": "با سلام؛\nاحتراما ، پیرو به قرار داد منعقده به شماره ۲۹۰۶۳ مورخ ۱۴۰۲/۱۲/۲۷ در خصوص تحصیل اسناد آن اداره کل محترم به استحضار می رساند امور مربوط به دریافت اجاره خط آستان قدس ۲۰ واحد مسکونی واقع در آپارتمان های مرتفع انجام پذیرفته و در مرحله تایید واحد نقشه برداری اداره املاک آستان قدس می باشد ، با توجه به اینکه می بایست از واحد های فوق جهت تکمیل گزارش توسط نقشه بردار بازدید صورت پذیرد لذا خواهشمند است به قید فوریت نسبت به معرفی نماینده آن اداره کل جهت باز کردن درب آپارتمان ها در هنگام بازدید نقشه بردار محترم اقدام لازم را مبذول فرمایید.\nبا تشکر\nهادی جهان گشته\nمدیر عامل\nرونوشت:\nجناب آقای دکتر سطانی معاون محترم پژوهش ، برنامه ریزی و توسعه منابع",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\ninfo@sabzgostar-govareshk.ir"
+      },
+      "n_gt_numbers": 6,
+      "before_hits": 4,
+      "after_hits": 4,
+      "oracle_hits": 4,
+      "before_emitted": 8,
+      "after_emitted": 8,
+      "numeric_summary": {
+        "n_numeric": 8,
+        "high": 2,
+        "low": 6,
+        "unverified": 0,
+        "conflict_rate": 0.75
+      },
+      "timing": {
+        "preprocess_s": 0.255,
+        "primary_s": 90.929,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 4.371,
+        "total_s": 95.558
+      },
+      "wall_s": 95.559,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+      "numeric_fields": [
+        {
+          "field": "body_text",
+          "kind": "reference",
+          "value": "۲/۵۸۸/۸.۰۸/۵۸۸",
+          "value_ascii": "2/588/8.08/588",
+          "confidence": "low",
+          "tesseract_value": "7752/588/808/588",
+          "candidates": [
+            "۲/۵۸۸/۸.۰۸/۵۸۸",
+            "7752/588/808/588"
+          ],
+          "bbox": [
+            1394,
+            1167,
+            1864,
+            1225
+          ],
+          "similarity": 0.87,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲/۵۸۸/۸.۰۸/۵۸۸"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۴۶۱-۳۸۳۸۹۴۸۱-۳۸۴۸۸۵۷۵",
+          "value_ascii": "38388461-38389481-38488575",
+          "confidence": "low",
+          "tesseract_value": "38388261-38388481-38388575:1",
+          "candidates": [
+            "۳۸۳۸۸۴۶۱-۳۸۳۸۹۴۸۱-۳۸۴۸۸۵۷۵",
+            "38388261-38388481-38388575:1"
+          ],
+          "bbox": [
+            824,
+            2651,
+            1718,
+            2710
+          ],
+          "similarity": 0.612,
+          "note": "vlm/classical reader disagree",
+          "resolved": "38388261-38388481-38388575:1"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۹۸۴۰۱-۳۸۲۸۸۴۸۱",
+          "value_ascii": "38398401-38288481",
+          "confidence": "low",
+          "tesseract_value": "38388261-38388481-38388575:1",
+          "candidates": [
+            "۳۸۳۹۸۴۰۱-۳۸۲۸۸۴۸۱",
+            "38388261-38388481-38388575:1"
+          ],
+          "bbox": [
+            824,
+            2651,
+            1718,
+            2710
+          ],
+          "similarity": 0.585,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۹۸۴۰۱-۳۸۲۸۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "other",
+          "value": "2006",
+          "value_ascii": "2006",
+          "confidence": "low",
+          "tesseract_value": "4:4046009,63",
+          "candidates": [
+            "2006",
+            "4:4046009,63"
+          ],
+          "bbox": [
+            789,
+            1608,
+            838,
+            1869
+          ],
+          "similarity": 0.429,
+          "note": "vlm/classical reader disagree",
+          "resolved": "2006"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز کستر",
+        "receiver": "مدیریت محترم شرکت شیر پاستوریژه پکاه خراسان",
+        "subject": "با سلام؛",
+        "body_text": "با سلام؛\n\nاحتراما، ضمن آرزوی توفیق به استحضار می رسند، خواهشمند است نسبت به پرداخت حق بیمه آذر ماه پرسنل به مبلغ ۲/۵۸۸/۸.۰۸/۵۸۸ ریال مطابق لیست پیوست اقدامات لازم را مبذول فرمایید.\n\nپیشاییش از همکاری شما سپاسگزاریم.",
+        "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۶۱-۳۸۳۸۹۴۸۱-۳۸۴۸۸۵۷۵\nفکس: ۳۸۳۹۸۴۰۱-۳۸۲۸۸۴۸۱\nایمیل: Sabzgostar2006@gmail.com"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم شرکت شیر پاستوریزه پگاه خراسان",
+        "subject": " پرداخت حق بیمه آذر ماه پرسنل شرکت پگاه خراسان ",
+        "body_text": "با سلام؛\nاحتراما ، ضمن آرزوی توفیق به استحضار می رساند ، خواهشمند است نسبت به پرداخت حق بیمه آذر ماه پرسنل به مبلغ ۲/۵۸۸/۸۰۸/۵۸۸ ریال مطابق لیست پیوست اقدامات لازم را مبذول فرمایید.\nپیشاپیش از همکاری شما سپاسگزاریم.\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس : مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵-۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "n_gt_numbers": 4,
+      "before_hits": 2,
+      "after_hits": 2,
+      "oracle_hits": 2,
+      "before_emitted": 4,
+      "after_emitted": 4,
+      "numeric_summary": {
+        "n_numeric": 4,
+        "high": 0,
+        "low": 4,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.255,
+        "primary_s": 120.295,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 2.743,
+        "total_s": 123.295
+      },
+      "wall_s": 123.296,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+      "numeric_fields": [
+        {
+          "field": "subject",
+          "kind": "amount",
+          "value": "۳۲۱/۰۰۰/۰۰۰",
+          "value_ascii": "321/000/000",
+          "confidence": "low",
+          "tesseract_value": "175321/000/..0",
+          "candidates": [
+            "۳۲۱/۰۰۰/۰۰۰",
+            "175321/000/..0"
+          ],
+          "bbox": [
+            1112,
+            999,
+            1456,
+            1055
+          ],
+          "similarity": 0.737,
+          "note": "vlm/classical reader disagree",
+          "resolved": "175321/000/..0"
+        },
+        {
+          "field": "body_text",
+          "kind": "amount",
+          "value": "۳۲۱/۰۰۰/۰۰۰",
+          "value_ascii": "321/000/000",
+          "confidence": "low",
+          "tesseract_value": "175321/000/..0",
+          "candidates": [
+            "۳۲۱/۰۰۰/۰۰۰",
+            "175321/000/..0"
+          ],
+          "bbox": [
+            1112,
+            999,
+            1456,
+            1055
+          ],
+          "similarity": 0.737,
+          "note": "vlm/classical reader disagree",
+          "resolved": "175321/000/..0"
+        },
+        {
+          "field": "body_text",
+          "kind": "reference",
+          "value": "۴۱۱۴۱۳۶۷۴۶۴۸",
+          "value_ascii": "411413674648",
+          "confidence": "high",
+          "tesseract_value": "411413674648",
+          "candidates": [
+            "۴۱۱۴۱۳۶۷۴۶۴۸"
+          ],
+          "bbox": [
+            704,
+            1097,
+            1069,
+            1142
+          ],
+          "similarity": 1.0,
+          "note": null,
+          "resolved": "۴۱۱۴۱۳۶۷۴۶۴۸"
+        },
+        {
+          "field": "body_text",
+          "kind": "reference",
+          "value": "IR650140200406012",
+          "value_ascii": "IR650140200406012",
+          "confidence": "low",
+          "tesseract_value": "18650100004060031207656012",
+          "candidates": [
+            "IR650140200406012",
+            "18650100004060031207656012"
+          ],
+          "bbox": [
+            408,
+            1189,
+            1195,
+            1246
+          ],
+          "similarity": 0.634,
+          "note": "vlm/classical reader disagree",
+          "resolved": "IR650140200406012"
+        },
+        {
+          "field": "body_text",
+          "kind": "national_id",
+          "value": "۱۲۰۷۶۵۶۰۱۲",
+          "value_ascii": "1207656012",
+          "confidence": "low",
+          "tesseract_value": "650-1",
+          "candidates": [
+            "۱۲۰۷۶۵۶۰۱۲",
+            "650-1"
+          ],
+          "bbox": [
+            777,
+            997,
+            880,
+            1051
+          ],
+          "similarity": 0.571,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۲۰۷۶۵۶۰۱۲"
+        },
+        {
+          "field": "contact_info",
+          "kind": "other",
+          "value": "۱۱۷",
+          "value_ascii": "117",
+          "confidence": "high",
+          "tesseract_value": "117",
+          "candidates": [
+            "۱۱۷"
+          ],
+          "bbox": [
+            709,
+            2610,
+            796,
+            2638
+          ],
+          "similarity": 1.0,
+          "note": null,
+          "resolved": "۱۱۷"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۰۵۱۱-۵۰۲۵۳۰۵",
+          "value_ascii": "0511-5025305",
+          "confidence": "high",
+          "tesseract_value": "0511-5025305",
+          "candidates": [
+            "۰۵۱۱-۵۰۲۵۳۰۵"
+          ],
+          "bbox": [
+            478,
+            2677,
+            843,
+            2709
+          ],
+          "similarity": 1.0,
+          "note": null,
+          "resolved": "۰۵۱۱-۵۰۲۵۳۰۵"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۰۵۱۶-۵۰۲۷۸۷۱-۵۰۴۷۸۷۳",
+          "value_ascii": "0516-5027871-5047873",
+          "confidence": "low",
+          "tesseract_value": "0511-5027871-5027873",
+          "candidates": [
+            "۰۵۱۶-۵۰۲۷۸۷۱-۵۰۴۷۸۷۳",
+            "0511-5027871-5027873"
+          ],
+          "bbox": [
+            1035,
+            2681,
+            1626,
+            2713
+          ],
+          "similarity": 0.889,
+          "note": "vlm/classical reader disagree",
+          "resolved": "0511-5027871-5027873"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز قاستر",
+        "receiver": "ریاست محترم بانک سامان شعبه هاشمی",
+        "subject": "ضماننامه انجام تعهدات به مبلغ ۳۲۱/۰۰۰/۰۰۰ ریال در وجه آموزش و پروش کلات",
+        "body_text": "با سلام؛ احتراما، خواهشمند است نسبت به ارائه ضماننامه انجام تعهدات به مبلغ ۳۲۱/۰۰۰/۰۰۰ ریال در وجه آموزش وال پروش کلاته پیوست مدارک با کد اقتصادی ۴۱۱۴۱۳۶۷۴۶۴۸ شناسه ملی IR650140200406012 و شماره شبا ۱۲۰۷۶۵۶۰۱۲ با اعتبار حداقل نه ماه از تاریخ صدور اقدام نماید. پیشابیش از همکاری متقابل شما سپاسگزاریم.",
+        "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، بلاک ۱۱۷، طبقه همکف\nتلفن: ۰۵۱۱-۵۰۲۵۳۰۵ فکس: ۰۵۱۶-۵۰۲۷۸۷۱-۵۰۴۷۸۷۳"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "ریاست محترم بانک سامان شعبه هاشمیه",
+        "subject": "درخواست ارائه ضمانتنامه انجام تعهدات",
+        "body_text": "با سلام؛\nاحتراما ، خواهشمند است نسبت به ارائه ضمانتنامه انجام تعهدات به مبلغ ۳۲۱/۰۰۰/۰۰۰ ریال در وجه آموزش و پرورش کلات پیوست مدارک با کد اقتصادی ۴۱۱۴۱۳۶۷۴۶۴۸ شناسه ملی ۱۰۳۸۰۴۳۶۰۱۲ و شماره شبا IR۶۵۰۱۰۰۰۰۴۰۶۰۰۳۱۲۰۷۶۵۶۰۱۲ با اعتبار حداقل نه ماه از تاریخ صدور اقدام نمایید.\nپیشاپیش از همکاری متقابل شما سپاسگزاریم.\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن : ۵۰۲۷۸۷۳-۵۰۲۷۸۷۱-۵۰۲۵۳۰۵-۰۵۱۱ فکس : ۵۰۲۵۳۰۵-۰۵۱۱\nEmail : Sabz_gostar8@yahoo.com"
+      },
+      "n_gt_numbers": 7,
+      "before_hits": 3,
+      "after_hits": 2,
+      "oracle_hits": 3,
+      "before_emitted": 8,
+      "after_emitted": 8,
+      "numeric_summary": {
+        "n_numeric": 8,
+        "high": 3,
+        "low": 5,
+        "unverified": 0,
+        "conflict_rate": 0.625
+      },
+      "timing": {
+        "preprocess_s": 0.252,
+        "primary_s": 115.607,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 2.74,
+        "total_s": 118.601
+      },
+      "wall_s": 118.602,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+      "numeric_fields": [
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۲۹۷",
+          "value_ascii": "38388297",
+          "confidence": "low",
+          "tesseract_value": "3188348802907.0505",
+          "candidates": [
+            "۳۸۳۸۸۲۹۷",
+            "3188348802907.0505"
+          ],
+          "bbox": [
+            522,
+            2864,
+            737,
+            2988
+          ],
+          "similarity": 0.64,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۲۹۷"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۷۸۴۸۱",
+          "value_ascii": "38378481",
+          "confidence": "low",
+          "tesseract_value": "6334-4",
+          "candidates": [
+            "۳۸۳۷۸۴۸۱",
+            "6334-4"
+          ],
+          "bbox": [
+            1768,
+            1496,
+            1947,
+            1546
+          ],
+          "similarity": 0.462,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۷۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۶۸۴۶۱",
+          "value_ascii": "38368461",
+          "confidence": "low",
+          "tesseract_value": "6334-4",
+          "candidates": [
+            "۳۸۳۶۸۴۶۱",
+            "6334-4"
+          ],
+          "bbox": [
+            1768,
+            1496,
+            1947,
+            1546
+          ],
+          "similarity": 0.462,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۶۸۴۶۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۹۸۵۷۵",
+          "value_ascii": "38398575",
+          "confidence": "low",
+          "tesseract_value": "5751",
+          "candidates": [
+            "۳۸۳۹۸۵۷۵",
+            "5751"
+          ],
+          "bbox": [
+            1481,
+            2800,
+            1533,
+            2848
+          ],
+          "similarity": 0.5,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۹۸۵۷۵"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۰۸۴۸۶۱",
+          "value_ascii": "383084861",
+          "confidence": "low",
+          "tesseract_value": "6334-4",
+          "candidates": [
+            "۳۸۳۰۸۴۸۶۱",
+            "6334-4"
+          ],
+          "bbox": [
+            1768,
+            1496,
+            1947,
+            1546
+          ],
+          "similarity": 0.429,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۰۸۴۸۶۱"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبزگستر",
+        "receiver": "مدیریت محترم بیمه سامان",
+        "subject": "رساند تعداد ۱۸ نفر افراد با مشخصات زیر به بیمه نامه مسئولیت",
+        "body_text": "با سلام؛\n\nاحتراما به استحضار می رسند تعداد ۱۸ نفر فراد با مشخصات زیر به نامه مسئولیت.\n\n۱-احسان دربند\n۲-فاطمه قوی مقدم\n۳-مریم محسنی زاده\n۴-هدای براتی\n۵-حسین شفیعی\n۶-نفیسه منفرد\n۷-سعیده موسوی رشتخار\n۸-اکرم صفائی\n۹-محمد مهدی فدایی",
+        "contact_info": "آدرس: مشهد - بلوار کوتر شمالی - کوتر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷، ۳۸۳۷۸۴۸۱، ۳۸۳۶۸۴۶۱، ۳۸۳۹۸۵۷۵\nفکس: ۳۸۳۰۸۴۸۶۱\nایمیل: info@sabzgostar-govareshk.ir"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم بیمه سامان",
+        "subject": "درخواست اضافه شدن 18 نفر به لیست بیمه سامان",
+        "body_text": "با سلام؛\nاحتراما به استحضار می رساند تعداد ۱۸ نفر افراد با مشخصات زیر به لیست بیمه نامه مسئولیت ۱۴۰۳/۹۰۰/۷۰۹۹۹/۲۸۲/۳۰ این شرکت اضافه میگردند، مراتب جهت اطلاع و اقدام لازم ارسال میگردد.\n۱- مهدیه شمس | ۱۰- احسان دربند\n۲- مریم فرزاد | ۱۱- فاطمه قوی مقدم\n۳- سعید حسن زاده | ۱۲- مریم محسنی زاده\n۴- مریم فیاض کارده | ۱۳- هادی براتی\n۵- یگانه قرائی | ۱۴- حسین شفیعی\n۶- زهرا علی محمد پور | ۱۵- نفیسه منفرد\n۷- سمیه محمدی | ۱۶- سعیده موسوی رشتخوار\n۸- مینا مجرد سیوکی | ۱۷- اکرم صفائی\n۹- محمد طلایی | ۱۸- محمد مهدی فدایی\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\ninfo@sabzgostar-govareshk.ir"
+      },
+      "n_gt_numbers": 5,
+      "before_hits": 1,
+      "after_hits": 1,
+      "oracle_hits": 1,
+      "before_emitted": 5,
+      "after_emitted": 5,
+      "numeric_summary": {
+        "n_numeric": 5,
+        "high": 0,
+        "low": 5,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.215,
+        "primary_s": 118.167,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 2.357,
+        "total_s": 120.74
+      },
+      "wall_s": 120.741,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_17.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_17.JPG",
+      "numeric_fields": [
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۲۹۷",
+          "value_ascii": "38388297",
+          "confidence": "low",
+          "tesseract_value": "38388297:4",
+          "candidates": [
+            "۳۸۳۸۸۲۹۷",
+            "38388297:4"
+          ],
+          "bbox": [
+            557,
+            2818,
+            771,
+            2854
+          ],
+          "similarity": 0.941,
+          "note": "vlm/classical reader disagree",
+          "resolved": "38388297:4"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۶۸۴۶۱",
+          "value_ascii": "38368461",
+          "confidence": "low",
+          "tesseract_value": "38388297:4",
+          "candidates": [
+            "۳۸۳۶۸۴۶۱",
+            "38388297:4"
+          ],
+          "bbox": [
+            557,
+            2818,
+            771,
+            2854
+          ],
+          "similarity": 0.588,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۶۸۴۶۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۳۸۴۸۱",
+          "value_ascii": "38338481",
+          "confidence": "low",
+          "tesseract_value": "38388297:4",
+          "candidates": [
+            "۳۸۳۳۸۴۸۱",
+            "38388297:4"
+          ],
+          "bbox": [
+            557,
+            2818,
+            771,
+            2854
+          ],
+          "similarity": 0.588,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۳۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۵۷۵",
+          "value_ascii": "38388575",
+          "confidence": "low",
+          "tesseract_value": "38388297:4",
+          "candidates": [
+            "۳۸۳۸۸۵۷۵",
+            "38388297:4"
+          ],
+          "bbox": [
+            557,
+            2818,
+            771,
+            2854
+          ],
+          "similarity": 0.706,
+          "note": "vlm/classical reader disagree",
+          "resolved": "38388297:4"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم بیمه سامان",
+        "subject": "استحضار می رسند تعداد ۱۲ نفر افراد با مشخصات زیر از بیمه نامه مسئولیت",
+        "body_text": "با سلام؛\n\nاحتراما به استحضار می رسند تعداد ۱۲ نفر افراد با مشخصات ذیر از بیمه نامе مسئولیت\n\nاین شرکت حذف میگردند، مراتب جهت اطلاع و اقدام لازم ارسال میگردد.\n\nبا تشکر\n\nهدای جهان کشته\nمدیر عامل",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷ فکس: ۳۸۳۶۸۴۶۱ - ۳۸۳۳۸۴۸۱ - ۳۸۳۸۸۵۷۵"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم بیمه سامان",
+        "subject": "درخواست حذف شدن 12 نفر به لیست بیمه سامان",
+        "body_text": "با سلام؛\nاحتراما به استحضار می رساند تعداد ۱۲ نفر افراد با مشخصات زیر از لیست بیمه نامه مسئولیت ۱۴۰۳/۹۰۰/۷۰۹۹۹/۲۸۲/۳۰ این شرکت حذف میگردند، مراتب جهت اطلاع و اقدام لازم ارسال میگردد.\n۱- محسن طبسی | ۷- شایسته لادنی رئوف\n۲- حسینعلی گلاب زائی | ۸- عطاالله فخیمی\n۳- مجید اسماعیلی | ۹- احمد کریمی دوغشکی\n۴- مطهره چم | ۱۰- حسین رهنما برگرد\n۵- آرش قربانی | ۱۱- تقی عباسی\n۶- عاطفه شیرکوند | ۱۲- محمد صفدری\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\ninfo@sabzgostar-govareshk.ir"
+      },
+      "n_gt_numbers": 5,
+      "before_hits": 2,
+      "after_hits": 0,
+      "oracle_hits": 2,
+      "before_emitted": 4,
+      "after_emitted": 3,
+      "numeric_summary": {
+        "n_numeric": 4,
+        "high": 0,
+        "low": 4,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.232,
+        "primary_s": 112.216,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 1.819,
+        "total_s": 114.268
+      },
+      "wall_s": 114.269,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_18.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_18.JPG",
+      "numeric_fields": [
+        {
+          "field": "body_text",
+          "kind": "date",
+          "value": "۱۴۰۳/۰۹/۲۰",
+          "value_ascii": "1403/09/20",
+          "confidence": "low",
+          "tesseract_value": "1403/09/20555",
+          "candidates": [
+            "۱۴۰۳/۰۹/۲۰",
+            "1403/09/20555"
+          ],
+          "bbox": [
+            935,
+            900,
+            1196,
+            953
+          ],
+          "similarity": 0.842,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۰۹/۲۰"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۸۲۸/۱",
+          "value_ascii": "828/1",
+          "confidence": "low",
+          "tesseract_value": "01584",
+          "candidates": [
+            "۸۲۸/۱",
+            "01584"
+          ],
+          "bbox": [
+            390,
+            1309,
+            467,
+            1355
+          ],
+          "similarity": 0.222,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۸۲۸/۱"
+        },
+        {
+          "field": "body_text",
+          "kind": "date",
+          "value": "۱۴۰۳/۰۸/۲۳",
+          "value_ascii": "1403/08/23",
+          "confidence": "low",
+          "tesseract_value": "1403/09/20555",
+          "candidates": [
+            "۱۴۰۳/۰۸/۲۳",
+            "1403/09/20555"
+          ],
+          "bbox": [
+            935,
+            900,
+            1196,
+            953
+          ],
+          "similarity": 0.632,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۰۸/۲۳"
+        },
+        {
+          "field": "body_text",
+          "kind": "date",
+          "value": "۱۴۰۲/۱۱/۰۳",
+          "value_ascii": "1402/11/03",
+          "confidence": "low",
+          "tesseract_value": "1403/09/20555",
+          "candidates": [
+            "۱۴۰۲/۱۱/۰۳",
+            "1403/09/20555"
+          ],
+          "bbox": [
+            935,
+            900,
+            1196,
+            953
+          ],
+          "similarity": 0.526,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۲/۱۱/۰۳"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۲۹۷",
+          "value_ascii": "38388297",
+          "confidence": "low",
+          "tesseract_value": "31883488029070.505",
+          "candidates": [
+            "۳۸۳۸۸۲۹۷",
+            "31883488029070.505"
+          ],
+          "bbox": [
+            603,
+            2851,
+            830,
+            2976
+          ],
+          "similarity": 0.64,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۲۹۷"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۶۸۴۸۱",
+          "value_ascii": "38368481",
+          "confidence": "low",
+          "tesseract_value": "01584",
+          "candidates": [
+            "۳۸۳۶۸۴۸۱",
+            "01584"
+          ],
+          "bbox": [
+            390,
+            1309,
+            467,
+            1355
+          ],
+          "similarity": 0.308,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۶۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۵۸۴۸۰",
+          "value_ascii": "38358480",
+          "confidence": "low",
+          "tesseract_value": "31883488029070.505",
+          "candidates": [
+            "۳۸۳۵۸۴۸۰",
+            "31883488029070.505"
+          ],
+          "bbox": [
+            603,
+            2851,
+            830,
+            2976
+          ],
+          "similarity": 0.48,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۵۸۴۸۰"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۳۸۵۷۵",
+          "value_ascii": "38338575",
+          "confidence": "low",
+          "tesseract_value": "259357.4",
+          "candidates": [
+            "۳۸۳۳۸۵۷۵",
+            "259357.4"
+          ],
+          "bbox": [
+            790,
+            1314,
+            940,
+            1371
+          ],
+          "similarity": 0.4,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۳۸۵۷۵"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز کست",
+        "receiver": "جناب آقای دکتر سلطانی",
+        "subject": "موضوع: تعهدات منقضی نگردیده است",
+        "body_text": "با سلام\n\nاحتراما عطف به نامه شماره ۱۴۰۳/۰۹/۲۰ صادره ازسوی آن اداره کل خطاب به بانک سامان شعبه هاشمیه مشهد، مبنی بر ضبط تضمین این شرکت مربوط به قرارداد شماره ۸۲۸/۱ که مستند به نامه شماره اصدار یافته است به استحضار عالی می رساند.\n\nمطابق تصریح یک بند پنج از ماده پنج قرارداد منعقده فی مایین شرکت و آن اداره کل محترم تعهد از در سوی شرکت ظرف سه ماه از تاریخ پرداخت بیش برداخت بودهاست. لازم به ذکر می باشد که پیش برداخت در بنابراین به صراحت مورخه ۱۴۰۳/۰۸/۲۳ صورت گرفته است و تا مورخ ۱۴۰۲/۱۱/۰۳ مدت انجام کار بودهاست.\n\nمت قرارداد گزارش اداره حقوقی که اعلام داشته اند بعد از گذشت دو ماه از پرداخت اقدامی جهت اخذ سند صورت نگرفته است اولا خلاف واقع و ثانیا مغایر قرارداد می باشد، چراکه همانطور که مذکر افتاد مدت ایفای تعهدات منقضی نکردیده است.\n\nلذا به جهت جلوگیری از تضیع حقوق شرکت و عدم وقوفه در انجام امور استدعای صدور دستور عاجل و فوری مبنی بر کانلم یکن شدن نامه صادره خطاب به بانک سامان شعبه هاشمی مشهد را خواستارم.\n\nلازم به ذکر می باشد شرح اقدامات انجام شده و موافع پیش روش طی گزارشی جداغانه تقدیم حضور می گردد.",
+        "contact_info": "بلوار کوتثر شمالی - کوتثر شمالی، مشهد - آدرس: ۳۸۳۸۸۲۹۷ فکس: ۳۸۳۶۸۴۸۱ - ۳۸۳۵۸۴۸۰ - ۳۸۳۳۸۵۷۵ تلفن: info@sabzgostar-govareshk.ir"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش، برنامه ریزی و توسعه منابع آموزش و پرورش خراسان رضوی",
+        "subject": "درخواست لغو ضبط ضمانت‌نامه",
+        "body_text": "سلام علیکم؛\nاحتراماً عطف به نامه شماره ۷۰۹/د/۶۰۱ مورخ ۱۴۰۳/۰۹/۲۰ صادره از سوی آن اداره کل خطاب به بانک سامان شعبه هاشمیه مشهد، مبنی بر ضبط تضمین این شرکت مربوط به قرارداد شماره ۸۲۲۸/ که مستند به نامه شماره ۱۸۳۸۵۳/د/۱۶۰/۱۶۰۰/۱۴۰۳ اصدار یافته است به استحضار عالی می رساند\nمطابق تبصره یک بند پنج از ماده پنج قرارداد منعقده فی مابین شرکت و آن اداره کل محترم مدت ایفای تعهد از سوی شرکت ظرف سه ماه از تاریخ پرداخت پیش پرداخت بوده است. لازم به ذکر می باشد که پیش پرداخت در مورخه ۱۴۰۳/۰۸/۰۳ صورت گرفته است. و تا مورخ ۱۴۰۳/۱۱/۰۳ مدت انجام کار بوده است. بنابراین به صراحت متن قرارداد گزارش اداره حقوقی که اعلام داشته اند بعد از گذشت دو ماه از پرداخت اقدامی جهت اخذ سند صورت نگرفته است اولاً خلاف واقع و ثانیاً مغایر قرارداد می باشد، چرا که همان طور که مذکور افتاد مدت ایفای تعهدات منقضی نگردیده است\nلهذا به جهت جلوگیری از تضییع حقوق شرکت و عدم ورود ضرر به شرکت و عدم وقفه در انجام امور استدعای صدور دستور عاجل و فوری مبنی بر کان لم یکن شدن نامه صادره خطاب به بانک سامان شعبه هاشمیه مشهد را خواستارم\nلازم به ذکر می باشد شرح اقدامات انجام شده و موانع پیش رو طی گزارشی جداگانه تقدیم حضور می گردد",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\ninfo@sabzgostar-govareshk.ir"
+      },
+      "n_gt_numbers": 12,
+      "before_hits": 2,
+      "after_hits": 2,
+      "oracle_hits": 2,
+      "before_emitted": 8,
+      "after_emitted": 8,
+      "numeric_summary": {
+        "n_numeric": 8,
+        "high": 0,
+        "low": 8,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.225,
+        "primary_s": 128.741,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 4.617,
+        "total_s": 133.586
+      },
+      "wall_s": 133.586,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_2.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_2.JPG",
+      "numeric_fields": [
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۱۹۶۳۱",
+          "value_ascii": "19631",
+          "confidence": "low",
+          "tesseract_value": "31,37",
+          "candidates": [
+            "۱۹۶۳۱",
+            "31,37"
+          ],
+          "bbox": [
+            1781,
+            828,
+            1835,
+            866
+          ],
+          "similarity": 0.444,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۹۶۳۱"
+        },
+        {
+          "field": "body_text",
+          "kind": "reference",
+          "value": "۲۱۵،۵۲۹،۳۶۰",
+          "value_ascii": "215،529،360",
+          "confidence": "low",
+          "tesseract_value": "41,550,5",
+          "candidates": [
+            "۲۱۵،۵۲۹،۳۶۰",
+            "41,550,5"
+          ],
+          "bbox": [
+            623,
+            1351,
+            781,
+            1393
+          ],
+          "similarity": 0.533,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲۱۵،۵۲۹،۳۶۰"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۴۹۷",
+          "value_ascii": "38388497",
+          "confidence": "low",
+          "tesseract_value": "3188384802957",
+          "candidates": [
+            "۳۸۳۸۸۴۹۷",
+            "3188384802957"
+          ],
+          "bbox": [
+            622,
+            2795,
+            776,
+            2902
+          ],
+          "similarity": 0.667,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۴۹۷"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۶۸۴۶۱",
+          "value_ascii": "38368461",
+          "confidence": "low",
+          "tesseract_value": "3188384802957",
+          "candidates": [
+            "۳۸۳۶۸۴۶۱",
+            "3188384802957"
+          ],
+          "bbox": [
+            622,
+            2795,
+            776,
+            2902
+          ],
+          "similarity": 0.286,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۶۸۴۶۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۷۸۴۸۱",
+          "value_ascii": "38378481",
+          "confidence": "low",
+          "tesseract_value": "3188384802957",
+          "candidates": [
+            "۳۸۳۷۸۴۸۱",
+            "3188384802957"
+          ],
+          "bbox": [
+            622,
+            2795,
+            776,
+            2902
+          ],
+          "similarity": 0.571,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۷۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۳۸۵۷۵",
+          "value_ascii": "38338575",
+          "confidence": "low",
+          "tesseract_value": "5751",
+          "candidates": [
+            "۳۸۳۳۸۵۷۵",
+            "5751"
+          ],
+          "bbox": [
+            1657,
+            1187,
+            1722,
+            1228
+          ],
+          "similarity": 0.5,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۳۸۵۷۵"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "بانک رفاه خیام",
+        "subject": "گواهی کسر از حقوق خانم/آقای سید مهدی هندسه",
+        "body_text": "با سلام و احترام\n\nبدین وسیله گواهی می شود خانم آقای سید مهدی هندسی فرزند سیدماشاله به شماره ملی ۱۹۶۳۱ کارمند قراردادی این شرکت میباشد و ماهانه مبلغ ۲۱۵،۵۲۹،۳۶۰ ریال به عنوان ناخالص حقوق و مزایا دریافت مینماید. این گواهی بنا بر درخواست نامبرده به منظور ارایه به آن بانک جهت دریافت تسهیلات صادر شده است و تعهد داده میشود چنانچه تسهیلات گیرنده ، اقساط تسهیلات دریافتی را در سررسید مقرر پرداخت ننماید، با اولین اعلام کتبی آن بانک، اقساط معوقه از حقوق نامبرده کسر و در وجه آن بانک پرداخت مگردد.\n\nضمنا به اطلاع می رساند چنانچه با قطع رابطه استخدامی (از قبیل فوت، تعدیل نیرو، اخراج و ...) ارتباط نامبرده با این شرکت قطع گردد، این شرکت هیج گونه تعهدی در خصوص باقیمانده مطالبات آن بانک (اعم از معوقه، جاری و آینده) ندارد. بدیهی است این گواهی بنا به درخواست نامبرده صرفا جهت ارائه به آن بانک صادر شده و فاقد هرگونه ارزش و اعتبار دیگری می باشد و تنها تا زمان اشتغال ایشان در شرکت معتبر است.",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۹۷، ۳۸۳۶۸۴۶۱، ۳۸۳۷۸۴۸۱، ۳۸۳۳۸۵۷۵ فکس: info@sabzgostar-govareshk.ir"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "بانک رفاه خیام",
+        "subject": "گواهی کسر از حقوق آقای سید مهدی هندسه",
+        "body_text": "با سلام و احترام\nبدین وسیله گواهی می شود خانم/ آقای سید مهدی هندسه فرزند سیدماشااله به شماره ملی ۰۹۴۳۰۱۹۶۳۱ کارمند قراردادی این شرکت میباشد و ماهانه مبلغ ۲۱۵,۵۲۹,۳۶۰ ریال به عنوان ناخالص حقوق و مزایا دریافت مینماید. این گواهی بنا بر درخواست نامبرده به منظور ارایه به آن بانک جهت دریافت تسهیلات صادر شده است و تعهد داده میشود چنانچه تسهیلات گیرنده ، اقساط تسهیلات دریافتی را در سررسید مقرر پرداخت ننماید، با اولین اعلام کتبی آن بانک، اقساط معوقه از حقوق نامبرده کسر و در وجه آن بانک پرداخت گردد.\nضمنا به اطلاع می رساند چنانچه با قطع رابطه استخدامی (از قبیل فوت، تعدیل نیرو ، اخراج و ...) ارتباط نامبرده با این شرکت قطع گردد، این شرکت هیچ گونه تعهدی در خصوص باقیمانده مطالبات آن بانک ( اعم از معوقه، جاری و آینده ) ندارد.\nبدیهی است این گواهی بنا به درخواست نامبرده صرفا جهت ارائه به آن بانک صادر شده و فاقد هرگونه ارزش و اعتبار دیگری می باشد و تنها تا زمان اشتغال ایشان در شرکت معتبر است.\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\ninfo@sabzgostar-govareshk.ir"
+      },
+      "n_gt_numbers": 6,
+      "before_hits": 1,
+      "after_hits": 1,
+      "oracle_hits": 1,
+      "before_emitted": 6,
+      "after_emitted": 6,
+      "numeric_summary": {
+        "n_numeric": 6,
+        "high": 0,
+        "low": 6,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.331,
+        "primary_s": 131.328,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 4.183,
+        "total_s": 135.844
+      },
+      "wall_s": 135.845,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+      "numeric_fields": [
+        {
+          "field": "subject",
+          "kind": "reference",
+          "value": "۱۴۰۳/۹۰۲-۷۰۹۹۹/۲۸۲۳۰",
+          "value_ascii": "1403/902-70999/28230",
+          "confidence": "low",
+          "tesseract_value": "511403/90070999/282/30",
+          "candidates": [
+            "۱۴۰۳/۹۰۲-۷۰۹۹۹/۲۸۲۳۰",
+            "511403/90070999/282/30"
+          ],
+          "bbox": [
+            542,
+            1120,
+            1220,
+            1185
+          ],
+          "similarity": 0.889,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۹۰۲-۷۰۹۹۹/۲۸۲۳۰"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۱۴۰۳",
+          "value_ascii": "1403",
+          "confidence": "low",
+          "tesseract_value": "510,415",
+          "candidates": [
+            "۱۴۰۳",
+            "510,415"
+          ],
+          "bbox": [
+            1343,
+            991,
+            1543,
+            1051
+          ],
+          "similarity": 0.4,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۹۰۲",
+          "value_ascii": "902",
+          "confidence": "low",
+          "tesseract_value": "6",
+          "candidates": [
+            "۹۰۲",
+            "6"
+          ],
+          "bbox": [
+            936,
+            1638,
+            1053,
+            1860
+          ],
+          "similarity": 0.0,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۹۰۲"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۷۰۹۹۸",
+          "value_ascii": "70998",
+          "confidence": "low",
+          "tesseract_value": "511403/90070999/282/30",
+          "candidates": [
+            "۷۰۹۹۸",
+            "511403/90070999/282/30"
+          ],
+          "bbox": [
+            542,
+            1120,
+            1220,
+            1185
+          ],
+          "similarity": 0.417,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۷۰۹۹۸"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۲۸۲",
+          "value_ascii": "282",
+          "confidence": "low",
+          "tesseract_value": "382882978:4",
+          "candidates": [
+            "۲۸۲",
+            "382882978:4"
+          ],
+          "bbox": [
+            269,
+            2819,
+            675,
+            2982
+          ],
+          "similarity": 0.462,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲۸۲"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۱-۳۸۳۷۸۴۸۱-۳۸۴۳۸۵۷۵",
+          "value_ascii": "38388297-3838641-38378481-38438575",
+          "confidence": "low",
+          "tesseract_value": "282882978:448848:8025:812-444::4.818-,44803088575:5",
+          "candidates": [
+            "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۱-۳۸۳۷۸۴۸۱-۳۸۴۳۸۵۷۵",
+            "282882978:448848:8025:812-444::4.818-,44803088575:5"
+          ],
+          "bbox": [
+            269,
+            2819,
+            1685,
+            3005
+          ],
+          "similarity": 0.528,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۱-۳۸۳۷۸۴۸۱-۳۸۴۳۸۵۷۵"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۶۸۴۸۰",
+          "value_ascii": "38368480",
+          "confidence": "low",
+          "tesseract_value": "382882978:4",
+          "candidates": [
+            "۳۸۳۶۸۴۸۰",
+            "382882978:4"
+          ],
+          "bbox": [
+            269,
+            2819,
+            675,
+            2982
+          ],
+          "similarity": 0.444,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۶۸۴۸۰"
+        },
+        {
+          "field": "contact_info",
+          "kind": "other",
+          "value": "2006",
+          "value_ascii": "2006",
+          "confidence": "low",
+          "tesseract_value": "510,415",
+          "candidates": [
+            "2006",
+            "510,415"
+          ],
+          "bbox": [
+            1343,
+            991,
+            1543,
+            1051
+          ],
+          "similarity": 0.2,
+          "note": "vlm/classical reader disagree",
+          "resolved": "2006"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکتخدماتیسبزگستر",
+        "receiver": "مدیریت محترم شرکت بیمه سامان",
+        "subject": "پوشش بیمه نامه مسئولیت ۱۴۰۳/۹۰۲-۷۰۹۹۹/۲۸۲۳۰",
+        "body_text": "با سلام؛\n\nاحتراما، به اطلاع می رساند لیست اصلاحی پرسنل تحت پوشش بیمه نامه مسئولیت ۱۴۰۳ / ۹۰۲ - ۷۰۹۹۸ / ۲۸۲ / ۳۰ این شرکت به پیوست تقدیم میگردد.",
+        "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۱-۳۸۳۷۸۴۸۱-۳۸۴۳۸۵۷۵\nفکس: ۳۸۳۶۸۴۸۰\nایمیل: Sabzgostar2006@gmail.com"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم شرکت بیمه سامان",
+        "subject": "ارسال لیست اصلاحی پرسنل تحت پوشش بیمه سامان",
+        "body_text": "با سلام؛\nاحتراما ، به اطلاع می رساند لیست اصلاحی پرسنل تحت پوشش بیمه نامه مسئولیت ۱۴۰۳/۹۰۰/۷۰۹۹۹/۲۸۲/۳۰ این شرکت به پیوست تقدیم میگردد.\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس : مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵-۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\nEmil: Sabzgostar2006@gmail.com"
+      },
+      "n_gt_numbers": 4,
+      "before_hits": 1,
+      "after_hits": 1,
+      "oracle_hits": 1,
+      "before_emitted": 8,
+      "after_emitted": 8,
+      "numeric_summary": {
+        "n_numeric": 8,
+        "high": 0,
+        "low": 8,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.236,
+        "primary_s": 123.211,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 2.152,
+        "total_s": 125.601
+      },
+      "wall_s": 125.602,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+      "numeric_fields": [
+        {
+          "field": "subject",
+          "kind": "reference",
+          "value": "۱۴۰۳/۹۰/۶-۷۰۰۹۹۹/۲۵۲/۳۰",
+          "value_ascii": "1403/90/6-700999/252/30",
+          "confidence": "low",
+          "tesseract_value": "1403/90070999/252/30557",
+          "candidates": [
+            "۱۴۰۳/۹۰/۶-۷۰۰۹۹۹/۲۵۲/۳۰",
+            "1403/90070999/252/30557"
+          ],
+          "bbox": [
+            370,
+            995,
+            1055,
+            1060
+          ],
+          "similarity": 0.842,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۹۰/۶-۷۰۰۹۹۹/۲۵۲/۳۰"
+        },
+        {
+          "field": "body_text",
+          "kind": "date",
+          "value": "۱۴۰۳/۹۰/۰۶",
+          "value_ascii": "1403/90/06",
+          "confidence": "low",
+          "tesseract_value": "0",
+          "candidates": [
+            "۱۴۰۳/۹۰/۰۶",
+            "0"
+          ],
+          "bbox": [
+            350,
+            142,
+            850,
+            479
+          ],
+          "similarity": 0.222,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۹۰/۰۶"
+        },
+        {
+          "field": "contact_info",
+          "kind": "other",
+          "value": "۱۱۷",
+          "value_ascii": "117",
+          "confidence": "high",
+          "tesseract_value": "117",
+          "candidates": [
+            "۱۱۷"
+          ],
+          "bbox": [
+            753,
+            2875,
+            847,
+            2907
+          ],
+          "similarity": 1.0,
+          "note": null,
+          "resolved": "۱۱۷"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۵۰۲۷۸۷۳-۵۰۲۷۶۷۴",
+          "value_ascii": "5027873-5027674",
+          "confidence": "low",
+          "tesseract_value": "175013573151,47",
+          "candidates": [
+            "۵۰۲۷۸۷۳-۵۰۲۷۶۷۴",
+            "175013573151,47"
+          ],
+          "bbox": [
+            1105,
+            1346,
+            1537,
+            1412
+          ],
+          "similarity": 0.429,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۵۰۲۷۸۷۳-۵۰۲۷۶۷۴"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۵۰۲۵۳۰۵",
+          "value_ascii": "5025305",
+          "confidence": "low",
+          "tesseract_value": "0511-5025305",
+          "candidates": [
+            "۵۰۲۵۳۰۵",
+            "0511-5025305"
+          ],
+          "bbox": [
+            510,
+            2947,
+            895,
+            2984
+          ],
+          "similarity": 0.778,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۵۰۲۵۳۰۵"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم شرکت بیمه سامان",
+        "subject": "پیرو بیمه نامه مسئولیت شماره ۱۴۰۳/۹۰/۶-۷۰۰۹۹۹/۲۵۲/۳۰",
+        "body_text": "با سلام؛\n\nاحتراما پیرو بیمه نامه مسؤولیت شماره ۱۴۰۳/۹۰/۰۶ حادثه ای در حین کار برای یکی از نیروهای تحت پوشش به نام آقای مرتضی غلامی پردون رخ داده است، مراتب جهت اطلاع و اقدام لازم ارسال می گردد.",
+        "contact_info": "آدرس: مشهد-بلوارلادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۳-۵۰۲۷۶۷۴ فکس: ۵۰۲۵۳۰۵ E-mail : Sabz_gostar8@yahoo.com"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "مدیریت محترم شرکت بیمه سامان",
+        "subject": "اعلام حادثه ناشی از کار به بیمه",
+        "body_text": "با سلام؛\nاحتراما پیرو بیمه نامه مسئولیت شماره ۱۴۰۳/۹۰۰/۷۰۹۹۹/۲۵۲/۳۰ این شرکت به استحضار می رساند در تاریخ ۱۴۰۳/۰۹/۰۶ حادثه ای در حین کار برای یکی از نیروهای تحت پوشش به نام آقای مرتضی غلامی پردون رخ داده است ، مراتب جهت اطلاع و اقدام لازم ارسال می گردد.\nبا تشکر\nهادی جهان گشته\nمدیر عامل",
+        "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن : ۵۰۲۷۸۷۳-۵۰۲۷۸۷۱-۵۰۲۵۳۰۵-۰۵۱۱ فکس : ۵۰۲۵۳۰۵-۰۵۱۱\nEmail : Sabz_gostar8@yahoo.com"
+      },
+      "n_gt_numbers": 5,
+      "before_hits": 1,
+      "after_hits": 1,
+      "oracle_hits": 1,
+      "before_emitted": 5,
+      "after_emitted": 5,
+      "numeric_summary": {
+        "n_numeric": 5,
+        "high": 1,
+        "low": 4,
+        "unverified": 0,
+        "conflict_rate": 0.8
+      },
+      "timing": {
+        "preprocess_s": 0.266,
+        "primary_s": 133.038,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 2.082,
+        "total_s": 135.387
+      },
+      "wall_s": 135.388,
+      "needs_review": true
+    },
+    {
+      "doc_id": "CamScanner ⁨7-1-25 10.26⁩_23.JPG",
+      "split": "dev",
+      "ok": true,
+      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_23.JPG",
+      "numeric_fields": [
+        {
+          "field": "subject",
+          "kind": "other",
+          "value": "۲۹۴۹",
+          "value_ascii": "2949",
+          "confidence": "low",
+          "tesseract_value": "562949554",
+          "candidates": [
+            "۲۹۴۹",
+            "562949554"
+          ],
+          "bbox": [
+            1122,
+            950,
+            1352,
+            998
+          ],
+          "similarity": 0.615,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲۹۴۹"
+        },
+        {
+          "field": "subject",
+          "kind": "date",
+          "value": "۱۴۰۳/۰۳/۳۱",
+          "value_ascii": "1403/03/31",
+          "confidence": "low",
+          "tesseract_value": "6671403/03/31",
+          "candidates": [
+            "۱۴۰۳/۰۳/۳۱",
+            "6671403/03/31"
+          ],
+          "bbox": [
+            779,
+            953,
+            1086,
+            1000
+          ],
+          "similarity": 0.842,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۰۳/۳۱"
+        },
+        {
+          "field": "body_text",
+          "kind": "other",
+          "value": "۲۹۴۹",
+          "value_ascii": "2949",
+          "confidence": "low",
+          "tesseract_value": "562949554",
+          "candidates": [
+            "۲۹۴۹",
+            "562949554"
+          ],
+          "bbox": [
+            1122,
+            950,
+            1352,
+            998
+          ],
+          "similarity": 0.615,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۲۹۴۹"
+        },
+        {
+          "field": "body_text",
+          "kind": "date",
+          "value": "۱۴۰۳/۰۳/۳۱",
+          "value_ascii": "1403/03/31",
+          "confidence": "low",
+          "tesseract_value": "6671403/03/31",
+          "candidates": [
+            "۱۴۰۳/۰۳/۳۱",
+            "6671403/03/31"
+          ],
+          "bbox": [
+            779,
+            953,
+            1086,
+            1000
+          ],
+          "similarity": 0.842,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۱۴۰۳/۰۳/۳۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۲۶۱",
+          "value_ascii": "38388261",
+          "confidence": "low",
+          "tesseract_value": "3188384802907,0505",
+          "candidates": [
+            "۳۸۳۸۸۲۶۱",
+            "3188384802907,0505"
+          ],
+          "bbox": [
+            548,
+            2887,
+            780,
+            3017
+          ],
+          "similarity": 0.48,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۲۶۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۹۸۴۸۱",
+          "value_ascii": "38398481",
+          "confidence": "low",
+          "tesseract_value": "3188384802907,0505",
+          "candidates": [
+            "۳۸۳۹۸۴۸۱",
+            "3188384802907,0505"
+          ],
+          "bbox": [
+            548,
+            2887,
+            780,
+            3017
+          ],
+          "similarity": 0.48,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۹۸۴۸۱"
+        },
+        {
+          "field": "contact_info",
+          "kind": "reference",
+          "value": "۳۸۳۸۸۵۷۵",
+          "value_ascii": "38388575",
+          "confidence": "low",
+          "tesseract_value": "3188384802907,0505",
+          "candidates": [
+            "۳۸۳۸۸۵۷۵",
+            "3188384802907,0505"
+          ],
+          "bbox": [
+            548,
+            2887,
+            780,
+            3017
+          ],
+          "similarity": 0.56,
+          "note": "vlm/classical reader disagree",
+          "resolved": "۳۸۳۸۸۵۷۵"
+        }
+      ],
+      "fields_pred": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "معاون محترم محتشم بزوهمش، برنامه ریزی و توسعه منابع آموزش و پرورش خراسان رضوی جناب آقای دکتر صفرد سلطانی",
+        "subject": "قرارداد شماره ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ با توجه به اعلام نظر پزشک معتمد در پرونده پزشکی تعدادی از پرسنل محترم (به پیوست) و ذکر بیماری این افراد که لزوما با پست شغلی این افراد در آینده وجود دارد، فلذابدین وسیله این شرکت تقاضای بررسی و به قید فور",
+        "body_text": "با سلام؛ احتراما عطف به قرارداد شماره ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ با توجه به اعلام نظیر پزشک معتمد در برونده پزشکی تعدادی از پرسنل محتمم (به پیوست) و ذکر بیماری این افراد که لزوما با پست شغلی این افراد در آینده وجود دارد، فلذابدین وسیله این شرکت تقاضای بررسی و به قید فوریت تغییر شغل افراد فوق الذکر را از آن اداره محترم",
+        "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی - پلاک ۷ فکس: ۳۸۳۸۸۲۶۱ - ۳۸۳۹۸۴۸۱ - ۳۸۳۸۸۵۷۵ :تلفن info@sabzgostar-govareshk.ir"
+      },
+      "fields_gt": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "جناب آقای دکتر صفدر سلطانی\nمعاون محترم پژوهش، برنامه ریزی و توسعه منابع آموزش و پرورش خراسان رضوی",
+        "subject": "درخواست تغییر شغل پرسنل به دلیل شرایط پزشکی",
+        "body_text": "با سلام؛\nاحتراما عطف به قرارداد شماره ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ با توجه به اعلام نظر پزشک معتمد در پرونده پزشکی تعدادی از پرسنل آن اداره محترم (به پیوست) و ذکر بیماری این افراد که لزوما با پست شغلی این افراد در تعارض بوده و احتمال بروز خطرات و آسیب های جدی در سلامت این افراد در آینده وجود دارد ، فلذا بدین وسیله این شرکت تقاضای بررسی و به قید فوریت تغییر شغل افراد فوق الذکر را از آن اداره محترم خواستار است.\nبدیهی است با توجه به اطلاع رسانی این موضوع ، شرکت هیچ گونه مسئولیتی در مورد بروز خطرات و آسیب های فوق الذکر بر عهده نخواهد داشت.\nبا تشکر\nهادی جهان گشته\nمدیر عامل\nرونوشت به جناب آقای پهلوان نماینده اداره کل آموزش و پرورش.\nاحمد پهلوان ۱۴۰۳/۹/۵",
+        "contact_info": "آدرس : مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵-۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱ فکس: ۳۸۳۸۸۲۹۷\ninfo@sabzgostar-govareshk.ir"
+      },
+      "n_gt_numbers": 5,
+      "before_hits": 2,
+      "after_hits": 2,
+      "oracle_hits": 2,
+      "before_emitted": 7,
+      "after_emitted": 7,
+      "numeric_summary": {
+        "n_numeric": 7,
+        "high": 0,
+        "low": 7,
+        "unverified": 0,
+        "conflict_rate": 1.0
+      },
+      "timing": {
+        "preprocess_s": 0.239,
+        "primary_s": 94.89,
+        "secondary_s": 0.0,
+        "numeric_validation_s": 5.717,
+        "total_s": 100.848
+      },
+      "wall_s": 100.849,
+      "needs_review": true
+    }
+  ]
+}

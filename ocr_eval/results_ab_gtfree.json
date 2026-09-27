@@ -1,0 +1,56 @@
+{
+  "A": {
+    "n": 89,
+    "fill": {
+      "sender": 89,
+      "receiver": 52,
+      "subject": 19,
+      "body_text": 18,
+      "contact_info": 52
+    },
+    "mean": 2.58,
+    "collapse": 18,
+    "arabic": 31,
+    "ident": {
+      "iban": [
+        0,
+        1
+      ],
+      "national_id": [
+        12,
+        65
+      ],
+      "mobile": [
+        20,
+        20
+      ]
+    }
+  },
+  "B": {
+    "n": 88,
+    "fill": {
+      "sender": 77,
+      "receiver": 86,
+      "subject": 87,
+      "body_text": 86,
+      "contact_info": 4
+    },
+    "mean": 3.86,
+    "collapse": 0,
+    "arabic": 0,
+    "ident": {
+      "iban": [
+        0,
+        0
+      ],
+      "national_id": [
+        10,
+        51
+      ],
+      "mobile": [
+        16,
+        16
+      ]
+    }
+  }
+}

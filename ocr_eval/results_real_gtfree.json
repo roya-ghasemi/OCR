@@ -1,0 +1,149 @@
+{
+  "generated_utc": "2026-09-03T12:49:00+00:00",
+  "scope": "90 real administrative letters, GT-free metrics only (D15)",
+  "normalizer_version": "1.0.0",
+  "reliability": {
+    "n": 90,
+    "n_usable": 89,
+    "usable_output_rate_all": {
+      "point": 0.9889,
+      "lo": 0.9667,
+      "hi": 1.0,
+      "n_units": 90,
+      "iters": 2000
+    },
+    "usable_output_rate_dev": {
+      "point": 0.9815,
+      "lo": 0.9444,
+      "hi": 1.0,
+      "n_units": 54,
+      "iters": 2000
+    },
+    "failure_taxonomy": {
+      "http_422": 1
+    },
+    "note": "An all-null 200 counts as a FAILURE here. The service reports it as success and nothing downstream notices -- that is defect D4."
+  },
+  "degeneracy": {
+    "threshold": 20,
+    "n_phrase_level_loops": 46,
+    "n_documents_with_degenerate_run": 2,
+    "pct": 2.22,
+    "repeated_characters": {
+      "U+06F0": 1,
+      "U+002D": 1
+    },
+    "also_in_usable_responses": 1,
+    "examples": [
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_40.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۰",
+        "repeat_len": 504,
+        "codepoint": "U+06F0"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_80.JPG",
+        "usable": true,
+        "failure_kind": null,
+        "repeated_char": "-",
+        "repeat_len": 26,
+        "codepoint": "U+002D"
+      }
+    ],
+    "raw_dumps_available": 77,
+    "note": "A degenerate run inside a USABLE response is worse than a 422: the document passes validation and ships corrupted text."
+  },
+  "latency": {
+    "failures_included": {
+      "n": 90,
+      "mean": 6.46,
+      "p50": 4.67,
+      "p90": 7.84,
+      "p95": 9.9,
+      "p99": 43.32,
+      "max": 43.32
+    },
+    "failures_excluded": {
+      "n": 89,
+      "mean": 6.14,
+      "p50": 4.67,
+      "p90": 7.51,
+      "p95": 9.83,
+      "p99": 43.32,
+      "max": 43.32
+    },
+    "failures_only": {
+      "n": 1,
+      "mean": 34.98,
+      "p50": 34.98,
+      "p90": 34.98,
+      "p95": 34.98,
+      "p99": 34.98,
+      "max": 34.98
+    }
+  },
+  "letterform_conformance": {
+    "n_responses": 230,
+    "n_with_arabic_letterforms": 35,
+    "pct_with_arabic_letterforms": 15.22,
+    "total_arabic_yeh": 358,
+    "total_arabic_kaf": 89,
+    "total_alef_maksura": 35
+  },
+  "digit_census": {
+    "persian_indic": {
+      "count": 654,
+      "pct": 21.85
+    },
+    "arabic_indic": {
+      "count": 8,
+      "pct": 0.27
+    },
+    "ascii": {
+      "count": 2331,
+      "pct": 77.88
+    }
+  },
+  "field_fill": {
+    "sender": {
+      "filled": 89,
+      "pct_of_usable": 100.0
+    },
+    "receiver": {
+      "filled": 52,
+      "pct_of_usable": 58.43
+    },
+    "subject": {
+      "filled": 19,
+      "pct_of_usable": 21.35
+    },
+    "body_text": {
+      "filled": 18,
+      "pct_of_usable": 20.22
+    },
+    "contact_info": {
+      "filled": 52,
+      "pct_of_usable": 58.43
+    }
+  },
+  "failure_correlates": {
+    "width": {
+      "usable_mean": 2289.8,
+      "failed_mean": 2336.0
+    },
+    "height": {
+      "usable_mean": 3204.3,
+      "failed_mean": 3264.0
+    },
+    "bytes": {
+      "usable_mean": 761539.6,
+      "failed_mean": 897444.0
+    },
+    "estimated_dpi_a4": {
+      "usable_mean": 276.0,
+      "failed_mean": 282.5
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "experiment": "E10 orientation — sideways corpus image vs pixel-transposed upright",
+  "generated_utc": "2026-09-11T08:17:54+00:00",
+  "document": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+  "rotated_input": "CamScanner ⁨7-1-25 10.26⁩_11_rot90.JPG",
+  "rotation_provenance": {
+    "source": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+    "source_sha256": "264b751436052bdfbe860f289a27694f5e4c6f42d359428734042c33056f4209",
+    "method": "PIL.ImageOps.exif_transpose (applies EXIF Orientation=6 -> 90 deg CW on pixels), saved JPEG q=95 4:4:4, no EXIF",
+    "result": "ocr_eval/experiments/orientation/CamScanner ⁨7-1-25 10.26⁩_11_rot90.JPG",
+    "result_sha256": "aa51cc98887ec6115696c67b16e37b5e40b0db0e8a04508ecea17b85d0675d08",
+    "result_size": [
+      2304,
+      3016
+    ]
+  },
+  "provenance": {
+    "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
+    "engine_build_pin": "2.28.2",
+    "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
+    "models_dir": "D:\\models\\models",
+    "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.2,
+    "frequency_penalty": 0.0,
+    "max_tokens": 2048,
+    "context_size": "16384",
+    "image_min_tokens": "1024",
+    "n_gpu_layers": "99",
+    "resize_max_edge": 0,
+    "max_retries": 1,
+    "response_format": "off",
+    "json_repair": true
+  },
+  "similarity_metric": "difflib.SequenceMatcher ratio on raw strings, no normalization",
+  "table": [
+    {
+      "field": "sender",
+      "gt_len": 20,
+      "armA_sideways_vs_gt": 0.703,
+      "armA_upright_vs_gt": 0.629,
+      "armB_sideways_vs_gt": 0.703,
+      "armB_upright_vs_gt": 1.0,
+      "armA_sideways_present": true,
+      "armA_upright_present": true,
+      "armB_sideways_present": true,
+      "armB_upright_present": true
+    },
+    {
+      "field": "receiver",
+      "gt_len": 34,
+      "armA_sideways_vs_gt": null,
+      "armA_upright_vs_gt": 0.786,
+      "armB_sideways_vs_gt": 0.351,
+      "armB_upright_vs_gt": 1.0,
+      "armA_sideways_present": false,
+      "armA_upright_present": true,
+      "armB_sideways_present": true,
+      "armB_upright_present": true
+    },
+    {
+      "field": "subject",
+      "gt_len": 36,
+      "armA_sideways_vs_gt": null,
+      "armA_upright_vs_gt": 0.3,
+      "armB_sideways_vs_gt": 0.273,
+      "armB_upright_vs_gt": 0.126,
+      "armA_sideways_present": false,
+      "armA_upright_present": true,
+      "armB_sideways_present": true,
+      "armB_upright_present": true
+    },
+    {
+      "field": "body_text",
+      "gt_len": 344,
+      "armA_sideways_vs_gt": 0.022,
+      "armA_upright_vs_gt": null,
+      "armB_sideways_vs_gt": 0.03,
+      "armB_upright_vs_gt": 0.333,
+      "armA_sideways_present": true,
+      "armA_upright_present": false,
+      "armB_sideways_present": true,
+      "armB_upright_present": true
+    },
+    {
+      "field": "contact_info",
+      "gt_len": 154,
+      "armA_sideways_vs_gt": null,
+      "armA_upright_vs_gt": null,
+      "armB_sideways_vs_gt": null,
+      "armB_upright_vs_gt": null,
+      "armA_sideways_present": false,
+      "armA_upright_present": false,
+      "armB_sideways_present": false,
+      "armB_upright_present": false
+    }
+  ],
+  "predictions": {
+    "armA_upright": {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_11_rot90.JPG",
+      "http_status": 200,
+      "seconds": 41.563,
+      "usable": true,
+      "failure_kind": null,
+      "raw": {
+        "sender": "سازمان سبز گستر",
+        "receiver": "بانک سامان شعبه هاشمیه",
+        "subject": "پذیرش پوست مدارک اقتصادی",
+        "body_text": null,
+        "contact_info": null
+      },
+      "failure_body": null
+    },
+    "armB_upright": {
+      "filename": "CamScanner ⁨7-1-25 10.26⁩_11_rot90.JPG",
+      "ok": true,
+      "seconds": 8.877,
+      "attempts": 1,
+      "finish_reason": "stop",
+      "grammar_used": true,
+      "n_fields": 4,
+      "raw": {
+        "sender": "شرکت خدماتی سبز گستر",
+        "receiver": "ریاست محترم بانک سامان شعبه هاشمیه",
+        "subject": "پیشنهاد مالی به مبلغ ۱۲۳,۴۵۶,۷۸۹/۰۰۰/۰۰۰ ریال در وجه آموزش و پرورش کلاته پیوست مدارک با کد اقتصادی ۱۲۳۴۵۶۷۸۹۰۱۲۳۴ و شماره شبا ۱۲۳۶۵۴۷۸۹۱۲۳۴",
+        "body_text": "با سلام;\n\nاحتراما، خواهشمند است نسبت به ارائه ضمانتنامه انجام تعهدات به مبلغ ۱۲,۳۴۵,۶۷۸/۰۰۰,۰۰۰ ریالی در وجه آموزش و پروشر کلاته پیوست. مدارک با کد اقتصا ۱۲۳۵۶۷۹۰۱۰۲۳۴ و شما شبا ۱۲۴۵۶۸۹۰۲۳۱۲۳۴، با اعتبار حداقل نه ماه از تاریخ صدور اقدام نمایید.\n\nپیشنهاد از همکاری متقابل شما سپاسگزاریم.\n\nبا تشکر,\n\nهادی جهان کشتی\nمدیر عامل\n\nآدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۷ طبقه همکف\nتلفن: ۳۲۰۵۰-۵۰۴۸۷۹۶۱۱-۵۰۵۱۱۱ فکس: ۰۵۳۵-۵۱۱-۰۵۱ Email: Sabz_gostar8@yahoo.com.",
+        "contact_info": null
+      },
+      "error": null,
+      "model": "D:\\models\\models\\mradermacher\\coreOCR-7B-050325-preview-GGUF\\coreOCR-7B-050325-preview.Q4_K_S.gguf"
+    },
+    "armA_sideways_corpus": {
+      "sender": "شرکت خدمات سرمایه",
+      "receiver": null,
+      "subject": null,
+      "body_text": "[ناخوانا] [ناخوانا]",
+      "contact_info": null
+    },
+    "armB_sideways_corpus": {
+      "sender": "شرکت خدمات سرمایه",
+      "receiver": "جناب آقای محسن شاهی‌پور",
+      "subject": "خودروهای تولید شده در سال ۱۳۹۸",
+      "body_text": "با سلام\n\nدر پی دریافت فاکتور شماره ۱۲۳۴۵۶۷۸۹۰۱۲۳ از شرکت خودروسازی مدل‌های جدید، به منظور بررسی و تامین نیازمندی‌ها، لازم است که با شما تماس بگیرم.\n\nلطفا اطلاعات مربوط به تحویل محصولات را اعلام نمایید.\n\nبا تشکر,\n[نام]\n[پست الکترونیک]\n[آدرس]\n[تلفن] ۰۲۱-۵۶۷۸۹۰۱۲\n[فکس] ۰۲۱-۳۴۵۶۷۸۹۰\n[کد پستی] ۱۲۳۴\n\n[امضا] [نام]\n\n[تاریخ] ۱۳۹۷/۰۸/۱۵\n\n[بلوک تماس در پانویس]: Email: Sabz-gostar8@yahoo.com\n\n[ناخوانا] [ناخوانا] [ناخowan] [ناخوانa] [ناخوانna] [ناخوانb] [ناخوانc] [ناخوانd] [ناخوانe] [ناخوانf] [ناخوانg] [ناخوانh] [ناخوانi] [ناخوانj] [ناخوانk] [ناخوانl] [ناخوانm] [ناخوانn] [ناخوانo] [ناخوانp] [ناخوانq] [ناخوانr] [ناخوانs] [ناخوانt] [ناخوانu] [ناخوانv] [ناخوانw] [ناخوانx] [ناخوانy] [ناخوانz] [ناخوانaa] [ناخوانab] [ناخوانac] [ناخوانad] [ناخوانae] [ناخوانaf] [ناخوانag] [ناخوانah] [ناخوانai] [ناخوانaj] [ناخوانak] [ناخوانal] [ناخوانam] [ناخوانan] [ناخوانao] [ناخوانap] [ناخوانaq] [ناخوانar] [ناخوانas] [ناخوانat] [ناخوانau] [ناخوانav] [ناخوانaw] [ناخوانax] [ناخوانay] [ناخوانaz] [ناخوانaa۱] [ناخوانab۱] [ناخowan۲] [ناخوانa۳] [ناخوانa۴] [ناخوانa۵] [ناخوانa۶] [ناخوانa۷] [ناخوانa۸] [ناخوانa۹] [ناخوانaaa] [ناخوانaab] [ناخوانaac] [ناخوانaad] [ناخوانaae] [ناخوانaaf] [ناخوانaag] [ناخوانaah] [ناخوانaaai] [ناخوانaaaj] [ناخوانaaak] [ناخوانaal] [ناخوانaan] [ناخوانaao] [ناخوانapa] [ناخوانapb] [ناخوانapc] [ناخوانapt] [ناخوانapu] [ناخوانapv] [ناخوانapw] [ناخوانapx] [ناخوانapy] [ناخوانapr] [ناخوانaps] [ناخوانapat]",
+      "contact_info": null
+    }
+  },
+  "gt_fields_present": {
+    "sender": true,
+    "receiver": true,
+    "subject": true,
+    "body_text": true,
+    "contact_info": true
+  }
+}

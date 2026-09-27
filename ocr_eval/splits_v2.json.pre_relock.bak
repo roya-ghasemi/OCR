@@ -1,0 +1,923 @@
+{
+  "version": 2,
+  "seed": 20260901,
+  "dev_fraction_target": 0.6,
+  "policy": "Groups (identical pixels OR identical ground-truth text) are the unit of assignment, stratified by source x language_mode x template_id. splits.json (v1) is retained unchanged for the legacy 36-image comparison only.",
+  "manifest_sha256": "30bcbe75be2f7d9bd95fdf31175d0b2311b667c866dd91e4abc0743ad6893f0d",
+  "counts": {
+    "real_dev": 54,
+    "real_test": 36,
+    "synthetic_dev": 22,
+    "synthetic_test": 14
+  },
+  "n_groups": 108,
+  "strata": {
+    "real|bilingual": 90,
+    "synthetic|bilingual": 12,
+    "synthetic|persian_only": 6
+  },
+  "groups": {
+    "gt:00a51eceb6f6": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_027.png"
+      ]
+    },
+    "gt:08c6e0592784": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_026.png"
+      ]
+    },
+    "gt:0a98a9c14abb": {
+      "split": "test",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_024.png",
+        "synthetic_bilingual_036.png"
+      ]
+    },
+    "gt:1242aa64a461": {
+      "split": "dev",
+      "stratum": "synthetic|persian_only",
+      "files": [
+        "synthetic_fa_005.png",
+        "synthetic_fa_011.png",
+        "synthetic_fa_017.png"
+      ]
+    },
+    "gt:2a61c8975a8c": {
+      "split": "test",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_029.png"
+      ]
+    },
+    "gt:2b4fdc89b0d8": {
+      "split": "test",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_030.png"
+      ]
+    },
+    "gt:382c5b810706": {
+      "split": "dev",
+      "stratum": "synthetic|persian_only",
+      "files": [
+        "synthetic_fa_002.png",
+        "synthetic_fa_008.png",
+        "synthetic_fa_014.png"
+      ]
+    },
+    "gt:43fdb8568d71": {
+      "split": "dev",
+      "stratum": "synthetic|persian_only",
+      "files": [
+        "synthetic_fa_006.png",
+        "synthetic_fa_012.png",
+        "synthetic_fa_018.png"
+      ]
+    },
+    "gt:529243475866": {
+      "split": "test",
+      "stratum": "synthetic|persian_only",
+      "files": [
+        "synthetic_fa_003.png",
+        "synthetic_fa_009.png",
+        "synthetic_fa_015.png"
+      ]
+    },
+    "gt:6ed6183b2761": {
+      "split": "test",
+      "stratum": "synthetic|persian_only",
+      "files": [
+        "synthetic_fa_001.png",
+        "synthetic_fa_007.png",
+        "synthetic_fa_013.png"
+      ]
+    },
+    "gt:6fbdaef0bf4d": {
+      "split": "dev",
+      "stratum": "synthetic|persian_only",
+      "files": [
+        "synthetic_fa_004.png",
+        "synthetic_fa_010.png",
+        "synthetic_fa_016.png"
+      ]
+    },
+    "gt:75f4c3b1b220": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_028.png"
+      ]
+    },
+    "gt:84c3672b680e": {
+      "split": "test",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_023.png",
+        "synthetic_bilingual_035.png"
+      ]
+    },
+    "gt:b1b732a7e9ca": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_019.png",
+        "synthetic_bilingual_031.png"
+      ]
+    },
+    "gt:d5790bed292b": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_022.png",
+        "synthetic_bilingual_034.png"
+      ]
+    },
+    "gt:d9820976b4f7": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_020.png",
+        "synthetic_bilingual_032.png"
+      ]
+    },
+    "gt:f1775df0df76": {
+      "split": "test",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_021.png",
+        "synthetic_bilingual_033.png"
+      ]
+    },
+    "gt:fe135cc18e81": {
+      "split": "dev",
+      "stratum": "synthetic|bilingual",
+      "files": [
+        "synthetic_bilingual_025.png"
+      ]
+    },
+    "px:04d26fae723a": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_57.JPG"
+      ]
+    },
+    "px:06ec4f170dd7": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_30.JPG"
+      ]
+    },
+    "px:0b1865ce82ff": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_13.JPG"
+      ]
+    },
+    "px:0c4976c8ce6d": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_70.JPG"
+      ]
+    },
+    "px:0ccd3ea2ddbc": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_84.JPG"
+      ]
+    },
+    "px:0e336459e780": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_77.JPG"
+      ]
+    },
+    "px:0fb093513303": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_2.JPG"
+      ]
+    },
+    "px:0fc3643319af": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_51.JPG"
+      ]
+    },
+    "px:11821fff5aee": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_73.JPG"
+      ]
+    },
+    "px:17bfe6a86da2": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_3.JPG"
+      ]
+    },
+    "px:1a2f67876e45": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_4.JPG"
+      ]
+    },
+    "px:1e070574c9de": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_65.JPG"
+      ]
+    },
+    "px:1fa3625bd404": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_48.JPG"
+      ]
+    },
+    "px:247389a73e7e": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_87.JPG"
+      ]
+    },
+    "px:24b181f47e74": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_79.JPG"
+      ]
+    },
+    "px:2512359d7e3a": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_75.JPG"
+      ]
+    },
+    "px:2d1009d2ee85": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_39.JPG"
+      ]
+    },
+    "px:2eaafa339159": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_42.JPG"
+      ]
+    },
+    "px:2f7d3f7533b9": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_16.JPG"
+      ]
+    },
+    "px:3075f2206b77": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_20.JPG"
+      ]
+    },
+    "px:360cf25f957a": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_80.JPG"
+      ]
+    },
+    "px:3d70c8b90007": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_10.JPG"
+      ]
+    },
+    "px:42ddd3433e43": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_52.JPG"
+      ]
+    },
+    "px:46e2926575f1": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_1.JPG"
+      ]
+    },
+    "px:4b5553e65e41": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_56.JPG"
+      ]
+    },
+    "px:4e1ec3d78c17": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_14.JPG"
+      ]
+    },
+    "px:52b07b729f29": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_38.JPG"
+      ]
+    },
+    "px:5632bd21168b": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_64.JPG"
+      ]
+    },
+    "px:5d7c9f8d71a3": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_49.JPG"
+      ]
+    },
+    "px:5fb07875de1e": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_40.JPG"
+      ]
+    },
+    "px:6394fd7ddc94": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_11.JPG"
+      ]
+    },
+    "px:643992da2e8a": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_74.JPG"
+      ]
+    },
+    "px:696c05dcc2fc": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_34.JPG"
+      ]
+    },
+    "px:6cf12e80a83c": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_17.JPG"
+      ]
+    },
+    "px:71ad9c9031b4": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_59.JPG"
+      ]
+    },
+    "px:73cf20b9bd9b": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_93.JPG"
+      ]
+    },
+    "px:799184c4c3d8": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_55.JPG"
+      ]
+    },
+    "px:7b6a5eb2db7d": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_5.JPG"
+      ]
+    },
+    "px:80039c835b49": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_24.JPG"
+      ]
+    },
+    "px:80a3e7c0ef44": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_31.JPG"
+      ]
+    },
+    "px:815c1c5b1b66": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_41.JPG"
+      ]
+    },
+    "px:8298e0eaa514": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_72.JPG"
+      ]
+    },
+    "px:847762469b4e": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_66.JPG"
+      ]
+    },
+    "px:84fce4fb06f5": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_94.JPG"
+      ]
+    },
+    "px:8b99f950f245": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_26.JPG"
+      ]
+    },
+    "px:8d220be7e161": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_68.JPG"
+      ]
+    },
+    "px:902c1d3d00c4": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_22.JPG"
+      ]
+    },
+    "px:9118ceca3e55": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_71.JPG"
+      ]
+    },
+    "px:9157655de6f4": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_46.JPG"
+      ]
+    },
+    "px:917dbcbc7139": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_67.JPG"
+      ]
+    },
+    "px:947c696c97fb": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_27.JPG"
+      ]
+    },
+    "px:96c4b39bd6f3": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_23.JPG"
+      ]
+    },
+    "px:98ad9105fe33": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_7.JPG"
+      ]
+    },
+    "px:9a91f3bc6653": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_33.JPG"
+      ]
+    },
+    "px:9aad1abbbe0c": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_78.JPG"
+      ]
+    },
+    "px:a77880d5da07": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_45.JPG"
+      ]
+    },
+    "px:a853bd02e1da": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_37.JPG"
+      ]
+    },
+    "px:ac82403dc615": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_36.JPG"
+      ]
+    },
+    "px:af5d606353f3": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_15.JPG"
+      ]
+    },
+    "px:af5e17c1321d": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_35.JPG"
+      ]
+    },
+    "px:b65b8ea1ef1a": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_47.JPG"
+      ]
+    },
+    "px:b6fd34848eb0": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_91.JPG"
+      ]
+    },
+    "px:b7f683d06574": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_21.JPG"
+      ]
+    },
+    "px:baefb5565a65": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_76.JPG"
+      ]
+    },
+    "px:bb45daabd556": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_53.JPG"
+      ]
+    },
+    "px:bc1b4d9279c1": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_82.JPG"
+      ]
+    },
+    "px:bcad2067f597": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_44.JPG"
+      ]
+    },
+    "px:bd3553a1a239": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_83.JPG"
+      ]
+    },
+    "px:c16f84e92f6e": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_6.JPG"
+      ]
+    },
+    "px:c5fe312568c6": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_43.JPG"
+      ]
+    },
+    "px:c60b07ef73cd": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_29.JPG"
+      ]
+    },
+    "px:c6e66fe3addc": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_9.JPG"
+      ]
+    },
+    "px:cbd06ad56180": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_85.JPG"
+      ]
+    },
+    "px:ccc242174081": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_25.JPG"
+      ]
+    },
+    "px:d7418123e876": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_88.JPG"
+      ]
+    },
+    "px:db8f536fa101": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_54.JPG"
+      ]
+    },
+    "px:e0dc6d69cd05": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_92.JPG"
+      ]
+    },
+    "px:e21e7ce1d8f2": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_50.JPG"
+      ]
+    },
+    "px:e94fc4fb52a6": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_86.JPG"
+      ]
+    },
+    "px:f1107cf6f72e": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_28.JPG"
+      ]
+    },
+    "px:f38f11d61994": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_18.JPG"
+      ]
+    },
+    "px:f539a5be3007": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_60.JPG"
+      ]
+    },
+    "px:f7670b5703e6": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_58.JPG"
+      ]
+    },
+    "px:f9f12ff6acbd": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_90.JPG"
+      ]
+    },
+    "px:fac29d544aa8": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_12.JPG"
+      ]
+    },
+    "px:fc4fec583eda": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_81.JPG"
+      ]
+    },
+    "px:fddd3ec9a149": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_19.JPG"
+      ]
+    },
+    "px:fdedc7c39624": {
+      "split": "test",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_89.JPG"
+      ]
+    },
+    "px:fe946aae0652": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_8.JPG"
+      ]
+    },
+    "px:ffc6e5dd1684": {
+      "split": "dev",
+      "stratum": "real|bilingual",
+      "files": [
+        "CamScanner ⁨7-1-25 10.26⁩_69.JPG"
+      ]
+    }
+  },
+  "assignment": {
+    "CamScanner ⁨7-1-25 10.26⁩_1.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_10.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_11.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_12.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_13.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_14.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_15.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_16.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_17.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_18.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_19.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_2.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_20.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_21.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_22.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_23.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_24.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_25.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_26.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_27.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_28.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_29.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_3.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_30.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_31.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_33.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_34.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_35.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_36.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_37.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_38.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_39.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_4.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_40.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_41.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_42.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_43.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_44.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_45.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_46.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_47.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_48.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_49.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_5.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_50.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_51.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_52.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_53.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_54.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_55.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_56.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_57.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_58.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_59.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_6.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_60.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_64.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_65.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_66.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_67.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_68.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_69.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_7.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_70.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_71.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_72.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_73.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_74.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_75.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_76.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_77.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_78.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_79.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_8.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_80.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_81.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_82.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_83.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_84.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_85.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_86.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_87.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_88.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_89.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_9.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_90.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_91.JPG": "dev",
+    "CamScanner ⁨7-1-25 10.26⁩_92.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_93.JPG": "test",
+    "CamScanner ⁨7-1-25 10.26⁩_94.JPG": "test",
+    "synthetic_bilingual_019.png": "dev",
+    "synthetic_bilingual_020.png": "dev",
+    "synthetic_bilingual_021.png": "test",
+    "synthetic_bilingual_022.png": "dev",
+    "synthetic_bilingual_023.png": "test",
+    "synthetic_bilingual_024.png": "test",
+    "synthetic_bilingual_025.png": "dev",
+    "synthetic_bilingual_026.png": "dev",
+    "synthetic_bilingual_027.png": "dev",
+    "synthetic_bilingual_028.png": "dev",
+    "synthetic_bilingual_029.png": "test",
+    "synthetic_bilingual_030.png": "test",
+    "synthetic_bilingual_031.png": "dev",
+    "synthetic_bilingual_032.png": "dev",
+    "synthetic_bilingual_033.png": "test",
+    "synthetic_bilingual_034.png": "dev",
+    "synthetic_bilingual_035.png": "test",
+    "synthetic_bilingual_036.png": "test",
+    "synthetic_fa_001.png": "test",
+    "synthetic_fa_002.png": "dev",
+    "synthetic_fa_003.png": "test",
+    "synthetic_fa_004.png": "dev",
+    "synthetic_fa_005.png": "dev",
+    "synthetic_fa_006.png": "dev",
+    "synthetic_fa_007.png": "test",
+    "synthetic_fa_008.png": "dev",
+    "synthetic_fa_009.png": "test",
+    "synthetic_fa_010.png": "dev",
+    "synthetic_fa_011.png": "dev",
+    "synthetic_fa_012.png": "dev",
+    "synthetic_fa_013.png": "test",
+    "synthetic_fa_014.png": "dev",
+    "synthetic_fa_015.png": "test",
+    "synthetic_fa_016.png": "dev",
+    "synthetic_fa_017.png": "dev",
+    "synthetic_fa_018.png": "dev"
+  }
+}

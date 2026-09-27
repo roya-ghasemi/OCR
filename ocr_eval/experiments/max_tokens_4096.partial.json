@@ -1,0 +1,9 @@
+{
+ "n_attempted": 43,
+ "n_usable": 7,
+ "usable_rate": 0.1628,
+ "n_failures": 36,
+ "raw_len_median": 2480,
+ "raw_len_max": 7278,
+ "note": "partial: the client hung after an overnight machine suspend at image 43 of 54"
+}
