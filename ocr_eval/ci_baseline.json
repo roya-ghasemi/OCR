@@ -1,0 +1,16 @@
+{
+  "recorded_utc": "2026-09-03T13:10:50+00:00",
+  "sample_n": 12,
+  "normalizer_version": null,
+  "note": "GT-free metrics only. These are reliability and shape checks, not accuracy. Re-record deliberately, never to make a red gate green.",
+  "metrics": {
+    "live:usable_output_rate": 1.0,
+    "live:degeneracy_rate": 0.0,
+    "live:all_null_200_rate": 0.0,
+    "live:field_collapse_rate": 0.3333333333333333,
+    "live:arabic_letterform_rate": 0.3333333333333333,
+    "live:mean_fields_filled": 2.4166666666666665,
+    "live:latency_p95_s": 31.524524599983124,
+    "live:transport_errors": 0.0
+  }
+}

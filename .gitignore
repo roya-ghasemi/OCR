@@ -1,0 +1,43 @@
+# Virtual environments
+venv/
+venv312/
+
+# Model files & cache
+hf_cache/
+models/
+tessdata/
+*.whl
+*.gguf
+
+# Graft index (regenerable)
+graft/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+*.pid
+
+# IDE
+.vscode/
+.idea/
+
+# Database files
+*.db
+
+# Debug output
+debug_raw/
+
+# Local-only Claude config
+.claude/settings.local.json
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store

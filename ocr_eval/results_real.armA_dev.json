@@ -1,0 +1,5421 @@
+{
+  "label": "armA_dev",
+  "generated_utc": "2026-09-11T08:44:52+00:00",
+  "manifest_sha256": "6eb8cf4d43aaf0159af657571ee6c0968958b801900a01cc9761928cabb32e61",
+  "splits_v2_sha256": "301728a46f1e3b0c76ea42e2ca5b73762f40b59c40b1a18fb02dca951259d804",
+  "gt_sha256": "75eb16df4633ea253f0fe39c03c644fed3085407489c2d5af2278875a8b6c7bb",
+  "predictions_source": "predictions_real.jsonl",
+  "predictions_meta": {
+    "generated_utc": "2026-09-03T12:38:27+00:00",
+    "endpoint": "http://127.0.0.1:8000/ocr",
+    "n_images": 90,
+    "n_usable": 89,
+    "wall_seconds": 582.0,
+    "normalizer_version": "1.0.0",
+    "provenance": {
+      "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
+      "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
+      "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "repeat_penalty": 1.2,
+      "frequency_penalty": 0.0,
+      "max_tokens": 2048,
+      "context_size": "16384",
+      "image_min_tokens": "1024",
+      "n_gpu_layers": "99",
+      "resize_max_edge": 0,
+      "max_retries": 1,
+      "response_format": "off",
+      "json_repair": true
+    },
+    "splices": [
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+        "spliced_utc": "2026-09-10T12:07:15+00:00",
+        "reason": "image deliberately re-encoded with EXIF Orientation=6 to test orientation handling; re-locked as D51",
+        "arm": "A — shipped inline pipeline",
+        "endpoint": "http://127.0.0.1:8000/ocr",
+        "seconds": 9.389,
+        "usable": true,
+        "previous_usable": true,
+        "provenance": {
+          "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
+          "engine_build_pin": "2.28.2",
+          "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
+          "models_dir": "D:\\models\\models",
+          "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
+          "temperature": 0.0,
+          "top_p": 1.0,
+          "repeat_penalty": 1.2,
+          "frequency_penalty": 0.0,
+          "max_tokens": 2048,
+          "context_size": "16384",
+          "image_min_tokens": "1024",
+          "n_gpu_layers": "99",
+          "resize_max_edge": 0,
+          "max_retries": 1,
+          "response_format": "off",
+          "json_repair": true
+        }
+      }
+    ],
+    "note_on_provenance": "This file is no longer a single uninterrupted run: the rows listed in `splices` were regenerated later, against re-locked image bytes. `wall_seconds` and `generated_utc` describe the original run only."
+  },
+  "n_scored": 51,
+  "split_filter": "dev",
+  "n_gt_rows": 90,
+  "n_untranscribed": 6,
+  "gt_audit": {
+    "n_rows": 90,
+    "n_expected": 90,
+    "transcribed": 84,
+    "untranscribed": 6,
+    "coverage": {
+      "sender": 84,
+      "receiver": 79,
+      "subject": 84,
+      "body_text": 84,
+      "contact_info": 84
+    },
+    "encoding": {
+      "persian_indic_digit": 84,
+      "ascii_digit": 73,
+      "harakat": 15
+    },
+    "distinct_gt_texts": 82,
+    "duplicate_groups": 2,
+    "illegible": {}
+  },
+  "scope_note": "Scored 51 REAL documents. Synthetic results live in results_v2.json and are never pooled with these.",
+  "slices": {
+    "real": {
+      "label": "real",
+      "normalization": {
+        "nfc": true,
+        "strip_bidi": true,
+        "strip_zwj": true,
+        "arabic_to_persian": true,
+        "fold_alef": true,
+        "fold_alef_madda": false,
+        "fold_teh_marbuta": true,
+        "strip_zwnj": true,
+        "strip_harakat": true,
+        "strip_tatweel": true,
+        "digits_to_ascii": true,
+        "fold_punctuation": true,
+        "collapse_whitespace": true,
+        "lowercase_latin": false,
+        "normalizer_version": "1.0.0"
+      },
+      "headline": {
+        "n_documents": 51,
+        "n_templates": 1,
+        "usable_output_rate": {
+          "by_image": {
+            "point": 0.9804,
+            "lo": 0.9412,
+            "hi": 1.0,
+            "n_units": 51,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 0.9803921568627451,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "cer_given_output": {
+          "by_image": {
+            "point": 1.3225,
+            "lo": 0.7647,
+            "hi": 2.0494,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.3225452550740537,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "effective_cer": {
+          "by_image": {
+            "point": 1.0887,
+            "lo": 0.9262,
+            "hi": 1.2487,
+            "n_units": 51,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.0886663851860787,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        }
+      },
+      "error_classes": {
+        "n_field_slots": 255,
+        "n_scoreable_slots": 255,
+        "n_unscoreable_slots": 0,
+        "field_assignment_error": {
+          "count": 2,
+          "rate": {
+            "point": 0.0078,
+            "lo": 0.0,
+            "hi": 0.0196,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "content_in_unscoreable_field": {
+          "count": 0,
+          "note": "Predicted content in a field the ground truth never covers. Not scoreable as right or wrong -- it is the measurement gap D19, and it is where the D5 assignment errors hide."
+        },
+        "omission": {
+          "count": 126,
+          "rate": {
+            "point": 0.4941,
+            "lo": 0.4588,
+            "hi": 0.5333,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "hallucination": {
+          "count": 1,
+          "rate": {
+            "point": 0.0039,
+            "lo": 0.0,
+            "hi": 0.0118,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "duplication": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "character_error_correctly_assigned_only": {
+          "micro_cer": {
+            "point": 1.3225,
+            "lo": 0.774,
+            "hi": 2.1039,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "assignment_vs_reading": {
+          "scope": "usable documents only",
+          "n_usable": 50,
+          "as_assigned_cer": {
+            "point": 1.0938,
+            "lo": 0.9192,
+            "hi": 1.251,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "oracle_assigned_cer": {
+            "point": 0.6861,
+            "lo": 0.6224,
+            "hi": 0.7491,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "assignment_cost_pp": 40.77,
+          "share_of_cer_from_misassignment_pct": 37.28,
+          "note": "oracle = best possible routing of the SAME predicted strings. The gap is character error caused by putting correct text in the wrong field; the remainder is genuine misreading."
+        },
+        "null_agreement": {
+          "count": 2,
+          "rate": {
+            "point": 0.0078,
+            "lo": 0.0,
+            "hi": 0.0196,
+            "n_units": 51,
+            "iters": 2000
+          }
+        }
+      },
+      "per_field": {
+        "sender": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 50,
+          "cer": 4.4828,
+          "wer": 4.303,
+          "exact_match": 0.16,
+          "null_agreement": 0.0,
+          "omissions": 1,
+          "hallucinations": 0,
+          "misassigned": 2
+        },
+        "receiver": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 28,
+          "cer": 0.8554,
+          "wer": 0.9676,
+          "exact_match": 0.0357,
+          "null_agreement": 0.0392,
+          "omissions": 20,
+          "hallucinations": 1,
+          "misassigned": 0
+        },
+        "subject": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 9,
+          "cer": 10.7874,
+          "wer": 10.5345,
+          "exact_match": 0.2222,
+          "null_agreement": 0.0,
+          "omissions": 42,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "body_text": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 8,
+          "cer": 0.7656,
+          "wer": 0.8304,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 43,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "contact_info": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 31,
+          "cer": 0.3459,
+          "wer": 0.5738,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 20,
+          "hallucinations": 0,
+          "misassigned": 0
+        }
+      },
+      "confusion": {
+        "same_script": [
+          {
+            "gt": "ر",
+            "pred": "ا",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0627",
+            "count": 32
+          },
+          {
+            "gt": "ش",
+            "pred": "س",
+            "gt_cp": "U+0634",
+            "pred_cp": "U+0633",
+            "count": 29
+          },
+          {
+            "gt": "ک",
+            "pred": "ز",
+            "gt_cp": "U+06A9",
+            "pred_cp": "U+0632",
+            "count": 29
+          },
+          {
+            "gt": "ت",
+            "pred": "ن",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0646",
+            "count": 29
+          },
+          {
+            "gt": "8",
+            "pred": "4",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0034",
+            "count": 25
+          },
+          {
+            "gt": "8",
+            "pred": "6",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0036",
+            "count": 22
+          },
+          {
+            "gt": "8",
+            "pred": "1",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0031",
+            "count": 22
+          },
+          {
+            "gt": "7",
+            "pred": "1",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0031",
+            "count": 21
+          },
+          {
+            "gt": "3",
+            "pred": "5",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0035",
+            "count": 20
+          },
+          {
+            "gt": "-",
+            "pred": "–",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+2013",
+            "count": 17
+          },
+          {
+            "gt": "3",
+            "pred": "0",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0030",
+            "count": 17
+          },
+          {
+            "gt": "2",
+            "pred": "6",
+            "gt_cp": "U+0032",
+            "pred_cp": "U+0036",
+            "count": 15
+          },
+          {
+            "gt": "3",
+            "pred": "2",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0032",
+            "count": 12
+          },
+          {
+            "gt": "1",
+            "pred": "9",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0039",
+            "count": 10
+          },
+          {
+            "gt": "8",
+            "pred": "9",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0039",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "4",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0034",
+            "count": 7
+          },
+          {
+            "gt": "8",
+            "pred": "5",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0035",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "1",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0031",
+            "count": 7
+          },
+          {
+            "gt": "ا",
+            "pred": "م",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0645",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": "ک",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+06A9",
+            "count": 6
+          },
+          {
+            "gt": "8",
+            "pred": "2",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0032",
+            "count": 6
+          },
+          {
+            "gt": "5",
+            "pred": "3",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0033",
+            "count": 6
+          },
+          {
+            "gt": "0",
+            "pred": "6",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0036",
+            "count": 6
+          },
+          {
+            "gt": "4",
+            "pred": "9",
+            "gt_cp": "U+0034",
+            "pred_cp": "U+0039",
+            "count": 5
+          },
+          {
+            "gt": "ر",
+            "pred": "ل",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0644",
+            "count": 5
+          },
+          {
+            "gt": "\n",
+            "pred": " ",
+            "gt_cp": "U+000A",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "ل",
+            "pred": "ن",
+            "gt_cp": "U+0644",
+            "pred_cp": "U+0646",
+            "count": 5
+          },
+          {
+            "gt": "0",
+            "pred": "1",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0031",
+            "count": 5
+          },
+          {
+            "gt": "7",
+            "pred": "3",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0033",
+            "count": 5
+          },
+          {
+            "gt": "1",
+            "pred": "2",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0032",
+            "count": 5
+          }
+        ],
+        "cross_script_ALIGNMENT_NOISE": [
+          {
+            "gt": " ",
+            "pred": "ا",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0627",
+            "count": 9
+          },
+          {
+            "gt": "8",
+            "pred": "-",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+002D",
+            "count": 8
+          },
+          {
+            "gt": " ",
+            "pred": "د",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+062F",
+            "count": 6
+          },
+          {
+            "gt": "1",
+            "pred": "،",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+060C",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": " ",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "8",
+            "pred": "،",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+060C",
+            "count": 5
+          },
+          {
+            "gt": "-",
+            "pred": "،",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+060C",
+            "count": 4
+          },
+          {
+            "gt": " ",
+            "pred": "ر",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0631",
+            "count": 4
+          },
+          {
+            "gt": "8",
+            "pred": " ",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "1",
+            "pred": " ",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "3",
+            "pred": " ",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "5",
+            "pred": " ",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "-",
+            "pred": "9",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0039",
+            "count": 4
+          },
+          {
+            "gt": "ن",
+            "pred": ".",
+            "gt_cp": "U+0646",
+            "pred_cp": "U+002E",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ن",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0646",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ی",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+06CC",
+            "count": 3
+          },
+          {
+            "gt": "1",
+            "pred": "ا",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "8",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": "8",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "a",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0061",
+            "count": 3
+          },
+          {
+            "gt": "ح",
+            "pred": " ",
+            "gt_cp": "U+062D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": " ",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": " ",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ب",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0628",
+            "count": 3
+          },
+          {
+            "gt": "3",
+            "pred": "ت",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+062A",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "2",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0032",
+            "count": 3
+          },
+          {
+            "gt": "ا",
+            "pred": " ",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "–",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+2013",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ا",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "0",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0030",
+            "count": 3
+          }
+        ],
+        "note": "Cross-script substitutions are an artefact of aligning RTL and LTR runs and are listed separately; they are not evidence of a character confusion."
+      },
+      "reversal": {
+        "total_latin_digit_token_mismatches": 137,
+        "buckets": {
+          "absent": {
+            "count": 85,
+            "pct": 62.04
+          },
+          "genuine_misread": {
+            "count": 52,
+            "pct": 37.96
+          }
+        },
+        "examples": {
+          "genuine_misread": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "2-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "3-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "4-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "5-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "6-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "7-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "8-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "9-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "18-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            }
+          ],
+          "absent": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "321/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "411413674648"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "10380436012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "IR650100004060031207656012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "subject",
+              "gt": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1403/900/70999/282/30"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "10-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "11-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "12-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "13-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "14-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "15-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "16-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "17-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_30.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_38.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_4.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "7/775/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "1403/07/24"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "0937995746"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "1403/04/01"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_67.JPG",
+              "field": "body_text",
+              "gt": "0889803943"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "61023/1403"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "1403/05/02"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "25"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "7"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Emil:"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Sabzgostar2006@gmail.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "117،"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Email"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Sabz_gostar8@yahoo.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "0922476756"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "09917383590"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_8.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_81.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_82.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            }
+          ]
+        }
+      },
+      "latency": {
+        "failures_included": {
+          "n": 51,
+          "mean": 6.903,
+          "p50": 4.706,
+          "p90": 9.389,
+          "p95": 15.124,
+          "p99": 43.32
+        },
+        "failures_excluded": {
+          "n": 50,
+          "mean": 6.341,
+          "p50": 4.706,
+          "p90": 9.389,
+          "p95": 9.831,
+          "p99": 43.32
+        },
+        "note": "Retry count is reported separately once Phase 2 introduces retries."
+      },
+      "failures": {
+        "n_failures": 1,
+        "by_kind": {
+          "http_422": 1
+        }
+      },
+      "letterform_conformance_RAW": {
+        "n_responses": 127,
+        "n_with_arabic_letterforms": 19,
+        "pct_with_arabic_letterforms": 14.96,
+        "total_arabic_yeh": 211,
+        "total_arabic_kaf": 47,
+        "total_alef_maksura": 19
+      }
+    },
+    "real|dev": {
+      "label": "real|dev",
+      "normalization": {
+        "nfc": true,
+        "strip_bidi": true,
+        "strip_zwj": true,
+        "arabic_to_persian": true,
+        "fold_alef": true,
+        "fold_alef_madda": false,
+        "fold_teh_marbuta": true,
+        "strip_zwnj": true,
+        "strip_harakat": true,
+        "strip_tatweel": true,
+        "digits_to_ascii": true,
+        "fold_punctuation": true,
+        "collapse_whitespace": true,
+        "lowercase_latin": false,
+        "normalizer_version": "1.0.0"
+      },
+      "headline": {
+        "n_documents": 51,
+        "n_templates": 1,
+        "usable_output_rate": {
+          "by_image": {
+            "point": 0.9804,
+            "lo": 0.9412,
+            "hi": 1.0,
+            "n_units": 51,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 0.9803921568627451,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "cer_given_output": {
+          "by_image": {
+            "point": 1.3225,
+            "lo": 0.7647,
+            "hi": 2.0494,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.3225452550740537,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "effective_cer": {
+          "by_image": {
+            "point": 1.0887,
+            "lo": 0.9262,
+            "hi": 1.2487,
+            "n_units": 51,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.0886663851860787,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        }
+      },
+      "error_classes": {
+        "n_field_slots": 255,
+        "n_scoreable_slots": 255,
+        "n_unscoreable_slots": 0,
+        "field_assignment_error": {
+          "count": 2,
+          "rate": {
+            "point": 0.0078,
+            "lo": 0.0,
+            "hi": 0.0196,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "content_in_unscoreable_field": {
+          "count": 0,
+          "note": "Predicted content in a field the ground truth never covers. Not scoreable as right or wrong -- it is the measurement gap D19, and it is where the D5 assignment errors hide."
+        },
+        "omission": {
+          "count": 126,
+          "rate": {
+            "point": 0.4941,
+            "lo": 0.4588,
+            "hi": 0.5333,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "hallucination": {
+          "count": 1,
+          "rate": {
+            "point": 0.0039,
+            "lo": 0.0,
+            "hi": 0.0118,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "duplication": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "character_error_correctly_assigned_only": {
+          "micro_cer": {
+            "point": 1.3225,
+            "lo": 0.774,
+            "hi": 2.1039,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "assignment_vs_reading": {
+          "scope": "usable documents only",
+          "n_usable": 50,
+          "as_assigned_cer": {
+            "point": 1.0938,
+            "lo": 0.9192,
+            "hi": 1.251,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "oracle_assigned_cer": {
+            "point": 0.6861,
+            "lo": 0.6224,
+            "hi": 0.7491,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "assignment_cost_pp": 40.77,
+          "share_of_cer_from_misassignment_pct": 37.28,
+          "note": "oracle = best possible routing of the SAME predicted strings. The gap is character error caused by putting correct text in the wrong field; the remainder is genuine misreading."
+        },
+        "null_agreement": {
+          "count": 2,
+          "rate": {
+            "point": 0.0078,
+            "lo": 0.0,
+            "hi": 0.0196,
+            "n_units": 51,
+            "iters": 2000
+          }
+        }
+      },
+      "per_field": {
+        "sender": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 50,
+          "cer": 4.4828,
+          "wer": 4.303,
+          "exact_match": 0.16,
+          "null_agreement": 0.0,
+          "omissions": 1,
+          "hallucinations": 0,
+          "misassigned": 2
+        },
+        "receiver": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 28,
+          "cer": 0.8554,
+          "wer": 0.9676,
+          "exact_match": 0.0357,
+          "null_agreement": 0.0392,
+          "omissions": 20,
+          "hallucinations": 1,
+          "misassigned": 0
+        },
+        "subject": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 9,
+          "cer": 10.7874,
+          "wer": 10.5345,
+          "exact_match": 0.2222,
+          "null_agreement": 0.0,
+          "omissions": 42,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "body_text": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 8,
+          "cer": 0.7656,
+          "wer": 0.8304,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 43,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "contact_info": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 31,
+          "cer": 0.3459,
+          "wer": 0.5738,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 20,
+          "hallucinations": 0,
+          "misassigned": 0
+        }
+      },
+      "confusion": {
+        "same_script": [
+          {
+            "gt": "ر",
+            "pred": "ا",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0627",
+            "count": 32
+          },
+          {
+            "gt": "ش",
+            "pred": "س",
+            "gt_cp": "U+0634",
+            "pred_cp": "U+0633",
+            "count": 29
+          },
+          {
+            "gt": "ک",
+            "pred": "ز",
+            "gt_cp": "U+06A9",
+            "pred_cp": "U+0632",
+            "count": 29
+          },
+          {
+            "gt": "ت",
+            "pred": "ن",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0646",
+            "count": 29
+          },
+          {
+            "gt": "8",
+            "pred": "4",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0034",
+            "count": 25
+          },
+          {
+            "gt": "8",
+            "pred": "6",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0036",
+            "count": 22
+          },
+          {
+            "gt": "8",
+            "pred": "1",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0031",
+            "count": 22
+          },
+          {
+            "gt": "7",
+            "pred": "1",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0031",
+            "count": 21
+          },
+          {
+            "gt": "3",
+            "pred": "5",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0035",
+            "count": 20
+          },
+          {
+            "gt": "-",
+            "pred": "–",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+2013",
+            "count": 17
+          },
+          {
+            "gt": "3",
+            "pred": "0",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0030",
+            "count": 17
+          },
+          {
+            "gt": "2",
+            "pred": "6",
+            "gt_cp": "U+0032",
+            "pred_cp": "U+0036",
+            "count": 15
+          },
+          {
+            "gt": "3",
+            "pred": "2",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0032",
+            "count": 12
+          },
+          {
+            "gt": "1",
+            "pred": "9",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0039",
+            "count": 10
+          },
+          {
+            "gt": "8",
+            "pred": "9",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0039",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "4",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0034",
+            "count": 7
+          },
+          {
+            "gt": "8",
+            "pred": "5",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0035",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "1",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0031",
+            "count": 7
+          },
+          {
+            "gt": "ا",
+            "pred": "م",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0645",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": "ک",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+06A9",
+            "count": 6
+          },
+          {
+            "gt": "8",
+            "pred": "2",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0032",
+            "count": 6
+          },
+          {
+            "gt": "5",
+            "pred": "3",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0033",
+            "count": 6
+          },
+          {
+            "gt": "0",
+            "pred": "6",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0036",
+            "count": 6
+          },
+          {
+            "gt": "4",
+            "pred": "9",
+            "gt_cp": "U+0034",
+            "pred_cp": "U+0039",
+            "count": 5
+          },
+          {
+            "gt": "ر",
+            "pred": "ل",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0644",
+            "count": 5
+          },
+          {
+            "gt": "\n",
+            "pred": " ",
+            "gt_cp": "U+000A",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "ل",
+            "pred": "ن",
+            "gt_cp": "U+0644",
+            "pred_cp": "U+0646",
+            "count": 5
+          },
+          {
+            "gt": "0",
+            "pred": "1",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0031",
+            "count": 5
+          },
+          {
+            "gt": "7",
+            "pred": "3",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0033",
+            "count": 5
+          },
+          {
+            "gt": "1",
+            "pred": "2",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0032",
+            "count": 5
+          }
+        ],
+        "cross_script_ALIGNMENT_NOISE": [
+          {
+            "gt": " ",
+            "pred": "ا",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0627",
+            "count": 9
+          },
+          {
+            "gt": "8",
+            "pred": "-",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+002D",
+            "count": 8
+          },
+          {
+            "gt": " ",
+            "pred": "د",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+062F",
+            "count": 6
+          },
+          {
+            "gt": "1",
+            "pred": "،",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+060C",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": " ",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "8",
+            "pred": "،",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+060C",
+            "count": 5
+          },
+          {
+            "gt": "-",
+            "pred": "،",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+060C",
+            "count": 4
+          },
+          {
+            "gt": " ",
+            "pred": "ر",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0631",
+            "count": 4
+          },
+          {
+            "gt": "8",
+            "pred": " ",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "1",
+            "pred": " ",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "3",
+            "pred": " ",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "5",
+            "pred": " ",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "-",
+            "pred": "9",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0039",
+            "count": 4
+          },
+          {
+            "gt": "ن",
+            "pred": ".",
+            "gt_cp": "U+0646",
+            "pred_cp": "U+002E",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ن",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0646",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ی",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+06CC",
+            "count": 3
+          },
+          {
+            "gt": "1",
+            "pred": "ا",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "8",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": "8",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "a",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0061",
+            "count": 3
+          },
+          {
+            "gt": "ح",
+            "pred": " ",
+            "gt_cp": "U+062D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": " ",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": " ",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ب",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0628",
+            "count": 3
+          },
+          {
+            "gt": "3",
+            "pred": "ت",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+062A",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "2",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0032",
+            "count": 3
+          },
+          {
+            "gt": "ا",
+            "pred": " ",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "–",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+2013",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ا",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "0",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0030",
+            "count": 3
+          }
+        ],
+        "note": "Cross-script substitutions are an artefact of aligning RTL and LTR runs and are listed separately; they are not evidence of a character confusion."
+      },
+      "reversal": {
+        "total_latin_digit_token_mismatches": 137,
+        "buckets": {
+          "absent": {
+            "count": 85,
+            "pct": 62.04
+          },
+          "genuine_misread": {
+            "count": 52,
+            "pct": 37.96
+          }
+        },
+        "examples": {
+          "genuine_misread": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "2-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "3-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "4-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "5-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "6-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "7-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "8-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "9-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "18-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            }
+          ],
+          "absent": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "321/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "411413674648"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "10380436012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "IR650100004060031207656012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "subject",
+              "gt": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1403/900/70999/282/30"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "10-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "11-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "12-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "13-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "14-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "15-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "16-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "17-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_30.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_38.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_4.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "7/775/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "1403/07/24"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "0937995746"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "1403/04/01"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_67.JPG",
+              "field": "body_text",
+              "gt": "0889803943"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "61023/1403"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "1403/05/02"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "25"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "7"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Emil:"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Sabzgostar2006@gmail.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "117،"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Email"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Sabz_gostar8@yahoo.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "0922476756"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "09917383590"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_8.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_81.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_82.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            }
+          ]
+        }
+      },
+      "latency": {
+        "failures_included": {
+          "n": 51,
+          "mean": 6.903,
+          "p50": 4.706,
+          "p90": 9.389,
+          "p95": 15.124,
+          "p99": 43.32
+        },
+        "failures_excluded": {
+          "n": 50,
+          "mean": 6.341,
+          "p50": 4.706,
+          "p90": 9.389,
+          "p95": 9.831,
+          "p99": 43.32
+        },
+        "note": "Retry count is reported separately once Phase 2 introduces retries."
+      },
+      "failures": {
+        "n_failures": 1,
+        "by_kind": {
+          "http_422": 1
+        }
+      },
+      "letterform_conformance_RAW": {
+        "n_responses": 127,
+        "n_with_arabic_letterforms": 19,
+        "pct_with_arabic_letterforms": 14.96,
+        "total_arabic_yeh": 211,
+        "total_arabic_kaf": 47,
+        "total_alef_maksura": 19
+      }
+    },
+    "real|bilingual": {
+      "label": "real|bilingual",
+      "normalization": {
+        "nfc": true,
+        "strip_bidi": true,
+        "strip_zwj": true,
+        "arabic_to_persian": true,
+        "fold_alef": true,
+        "fold_alef_madda": false,
+        "fold_teh_marbuta": true,
+        "strip_zwnj": true,
+        "strip_harakat": true,
+        "strip_tatweel": true,
+        "digits_to_ascii": true,
+        "fold_punctuation": true,
+        "collapse_whitespace": true,
+        "lowercase_latin": false,
+        "normalizer_version": "1.0.0"
+      },
+      "headline": {
+        "n_documents": 51,
+        "n_templates": 1,
+        "usable_output_rate": {
+          "by_image": {
+            "point": 0.9804,
+            "lo": 0.9412,
+            "hi": 1.0,
+            "n_units": 51,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 0.9803921568627451,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "cer_given_output": {
+          "by_image": {
+            "point": 1.3225,
+            "lo": 0.7647,
+            "hi": 2.0494,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.3225452550740537,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "effective_cer": {
+          "by_image": {
+            "point": 1.0887,
+            "lo": 0.9262,
+            "hi": 1.2487,
+            "n_units": 51,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.0886663851860787,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        }
+      },
+      "error_classes": {
+        "n_field_slots": 255,
+        "n_scoreable_slots": 255,
+        "n_unscoreable_slots": 0,
+        "field_assignment_error": {
+          "count": 2,
+          "rate": {
+            "point": 0.0078,
+            "lo": 0.0,
+            "hi": 0.0196,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "content_in_unscoreable_field": {
+          "count": 0,
+          "note": "Predicted content in a field the ground truth never covers. Not scoreable as right or wrong -- it is the measurement gap D19, and it is where the D5 assignment errors hide."
+        },
+        "omission": {
+          "count": 126,
+          "rate": {
+            "point": 0.4941,
+            "lo": 0.4588,
+            "hi": 0.5333,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "hallucination": {
+          "count": 1,
+          "rate": {
+            "point": 0.0039,
+            "lo": 0.0,
+            "hi": 0.0118,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "duplication": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "character_error_correctly_assigned_only": {
+          "micro_cer": {
+            "point": 1.3225,
+            "lo": 0.774,
+            "hi": 2.1039,
+            "n_units": 51,
+            "iters": 2000
+          }
+        },
+        "assignment_vs_reading": {
+          "scope": "usable documents only",
+          "n_usable": 50,
+          "as_assigned_cer": {
+            "point": 1.0938,
+            "lo": 0.9192,
+            "hi": 1.251,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "oracle_assigned_cer": {
+            "point": 0.6861,
+            "lo": 0.6224,
+            "hi": 0.7491,
+            "n_units": 50,
+            "iters": 2000
+          },
+          "assignment_cost_pp": 40.77,
+          "share_of_cer_from_misassignment_pct": 37.28,
+          "note": "oracle = best possible routing of the SAME predicted strings. The gap is character error caused by putting correct text in the wrong field; the remainder is genuine misreading."
+        },
+        "null_agreement": {
+          "count": 2,
+          "rate": {
+            "point": 0.0078,
+            "lo": 0.0,
+            "hi": 0.0196,
+            "n_units": 51,
+            "iters": 2000
+          }
+        }
+      },
+      "per_field": {
+        "sender": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 50,
+          "cer": 4.4828,
+          "wer": 4.303,
+          "exact_match": 0.16,
+          "null_agreement": 0.0,
+          "omissions": 1,
+          "hallucinations": 0,
+          "misassigned": 2
+        },
+        "receiver": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 28,
+          "cer": 0.8554,
+          "wer": 0.9676,
+          "exact_match": 0.0357,
+          "null_agreement": 0.0392,
+          "omissions": 20,
+          "hallucinations": 1,
+          "misassigned": 0
+        },
+        "subject": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 9,
+          "cer": 10.7874,
+          "wer": 10.5345,
+          "exact_match": 0.2222,
+          "null_agreement": 0.0,
+          "omissions": 42,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "body_text": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 8,
+          "cer": 0.7656,
+          "wer": 0.8304,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 43,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "contact_info": {
+          "n_slots": 51,
+          "n_unscoreable": 0,
+          "n_scored": 31,
+          "cer": 0.3459,
+          "wer": 0.5738,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 20,
+          "hallucinations": 0,
+          "misassigned": 0
+        }
+      },
+      "confusion": {
+        "same_script": [
+          {
+            "gt": "ر",
+            "pred": "ا",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0627",
+            "count": 32
+          },
+          {
+            "gt": "ش",
+            "pred": "س",
+            "gt_cp": "U+0634",
+            "pred_cp": "U+0633",
+            "count": 29
+          },
+          {
+            "gt": "ک",
+            "pred": "ز",
+            "gt_cp": "U+06A9",
+            "pred_cp": "U+0632",
+            "count": 29
+          },
+          {
+            "gt": "ت",
+            "pred": "ن",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0646",
+            "count": 29
+          },
+          {
+            "gt": "8",
+            "pred": "4",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0034",
+            "count": 25
+          },
+          {
+            "gt": "8",
+            "pred": "6",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0036",
+            "count": 22
+          },
+          {
+            "gt": "8",
+            "pred": "1",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0031",
+            "count": 22
+          },
+          {
+            "gt": "7",
+            "pred": "1",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0031",
+            "count": 21
+          },
+          {
+            "gt": "3",
+            "pred": "5",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0035",
+            "count": 20
+          },
+          {
+            "gt": "-",
+            "pred": "–",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+2013",
+            "count": 17
+          },
+          {
+            "gt": "3",
+            "pred": "0",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0030",
+            "count": 17
+          },
+          {
+            "gt": "2",
+            "pred": "6",
+            "gt_cp": "U+0032",
+            "pred_cp": "U+0036",
+            "count": 15
+          },
+          {
+            "gt": "3",
+            "pred": "2",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0032",
+            "count": 12
+          },
+          {
+            "gt": "1",
+            "pred": "9",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0039",
+            "count": 10
+          },
+          {
+            "gt": "8",
+            "pred": "9",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0039",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "4",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0034",
+            "count": 7
+          },
+          {
+            "gt": "8",
+            "pred": "5",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0035",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "1",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0031",
+            "count": 7
+          },
+          {
+            "gt": "ا",
+            "pred": "م",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0645",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": "ک",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+06A9",
+            "count": 6
+          },
+          {
+            "gt": "8",
+            "pred": "2",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0032",
+            "count": 6
+          },
+          {
+            "gt": "5",
+            "pred": "3",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0033",
+            "count": 6
+          },
+          {
+            "gt": "0",
+            "pred": "6",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0036",
+            "count": 6
+          },
+          {
+            "gt": "4",
+            "pred": "9",
+            "gt_cp": "U+0034",
+            "pred_cp": "U+0039",
+            "count": 5
+          },
+          {
+            "gt": "ر",
+            "pred": "ل",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0644",
+            "count": 5
+          },
+          {
+            "gt": "\n",
+            "pred": " ",
+            "gt_cp": "U+000A",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "ل",
+            "pred": "ن",
+            "gt_cp": "U+0644",
+            "pred_cp": "U+0646",
+            "count": 5
+          },
+          {
+            "gt": "0",
+            "pred": "1",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0031",
+            "count": 5
+          },
+          {
+            "gt": "7",
+            "pred": "3",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0033",
+            "count": 5
+          },
+          {
+            "gt": "1",
+            "pred": "2",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0032",
+            "count": 5
+          }
+        ],
+        "cross_script_ALIGNMENT_NOISE": [
+          {
+            "gt": " ",
+            "pred": "ا",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0627",
+            "count": 9
+          },
+          {
+            "gt": "8",
+            "pred": "-",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+002D",
+            "count": 8
+          },
+          {
+            "gt": " ",
+            "pred": "د",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+062F",
+            "count": 6
+          },
+          {
+            "gt": "1",
+            "pred": "،",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+060C",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": " ",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "8",
+            "pred": "،",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+060C",
+            "count": 5
+          },
+          {
+            "gt": "-",
+            "pred": "،",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+060C",
+            "count": 4
+          },
+          {
+            "gt": " ",
+            "pred": "ر",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0631",
+            "count": 4
+          },
+          {
+            "gt": "8",
+            "pred": " ",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "1",
+            "pred": " ",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "3",
+            "pred": " ",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "5",
+            "pred": " ",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "-",
+            "pred": "9",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0039",
+            "count": 4
+          },
+          {
+            "gt": "ن",
+            "pred": ".",
+            "gt_cp": "U+0646",
+            "pred_cp": "U+002E",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ن",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0646",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ی",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+06CC",
+            "count": 3
+          },
+          {
+            "gt": "1",
+            "pred": "ا",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "8",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": "8",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "a",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0061",
+            "count": 3
+          },
+          {
+            "gt": "ح",
+            "pred": " ",
+            "gt_cp": "U+062D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": " ",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": " ",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ب",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0628",
+            "count": 3
+          },
+          {
+            "gt": "3",
+            "pred": "ت",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+062A",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "2",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0032",
+            "count": 3
+          },
+          {
+            "gt": "ا",
+            "pred": " ",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "–",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+2013",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ا",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "0",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0030",
+            "count": 3
+          }
+        ],
+        "note": "Cross-script substitutions are an artefact of aligning RTL and LTR runs and are listed separately; they are not evidence of a character confusion."
+      },
+      "reversal": {
+        "total_latin_digit_token_mismatches": 137,
+        "buckets": {
+          "absent": {
+            "count": 85,
+            "pct": 62.04
+          },
+          "genuine_misread": {
+            "count": 52,
+            "pct": 37.96
+          }
+        },
+        "examples": {
+          "genuine_misread": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "2-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "3-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "4-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "5-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "6-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "7-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "8-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "9-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "18-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            }
+          ],
+          "absent": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "321/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "411413674648"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "10380436012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "IR650100004060031207656012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "subject",
+              "gt": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1403/900/70999/282/30"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "10-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "11-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "12-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "13-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "14-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "15-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "16-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "17-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_30.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_38.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_4.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "7/775/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "1403/07/24"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "0937995746"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "1403/04/01"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_67.JPG",
+              "field": "body_text",
+              "gt": "0889803943"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "61023/1403"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "1403/05/02"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "25"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "7"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Emil:"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Sabzgostar2006@gmail.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "117،"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Email"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Sabz_gostar8@yahoo.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "0922476756"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "09917383590"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_8.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_81.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_82.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            }
+          ]
+        }
+      },
+      "latency": {
+        "failures_included": {
+          "n": 51,
+          "mean": 6.903,
+          "p50": 4.706,
+          "p90": 9.389,
+          "p95": 15.124,
+          "p99": 43.32
+        },
+        "failures_excluded": {
+          "n": 50,
+          "mean": 6.341,
+          "p50": 4.706,
+          "p90": 9.389,
+          "p95": 9.831,
+          "p99": 43.32
+        },
+        "note": "Retry count is reported separately once Phase 2 introduces retries."
+      },
+      "failures": {
+        "n_failures": 1,
+        "by_kind": {
+          "http_422": 1
+        }
+      },
+      "letterform_conformance_RAW": {
+        "n_responses": 127,
+        "n_with_arabic_letterforms": 19,
+        "pct_with_arabic_letterforms": 14.96,
+        "total_arabic_yeh": 211,
+        "total_arabic_kaf": 47,
+        "total_alef_maksura": 19
+      }
+    },
+    "real|subject_printed": {
+      "label": "real|subject_printed",
+      "normalization": {
+        "nfc": true,
+        "strip_bidi": true,
+        "strip_zwj": true,
+        "arabic_to_persian": true,
+        "fold_alef": true,
+        "fold_alef_madda": false,
+        "fold_teh_marbuta": true,
+        "strip_zwnj": true,
+        "strip_harakat": true,
+        "strip_tatweel": true,
+        "digits_to_ascii": true,
+        "fold_punctuation": true,
+        "collapse_whitespace": true,
+        "lowercase_latin": false,
+        "normalizer_version": "1.0.0"
+      },
+      "headline": {
+        "n_documents": 6,
+        "n_templates": 1,
+        "usable_output_rate": {
+          "by_image": {
+            "point": 0.8333,
+            "lo": 0.5,
+            "hi": 1.0,
+            "n_units": 6,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 0.8333333333333334,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "cer_given_output": {
+          "by_image": {
+            "point": 1.6059,
+            "lo": 0.4888,
+            "hi": 6.9512,
+            "n_units": 5,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.6058981233243967,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "effective_cer": {
+          "by_image": {
+            "point": 1.1438,
+            "lo": 0.7983,
+            "hi": 1.5587,
+            "n_units": 6,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.1438254607074771,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        }
+      },
+      "error_classes": {
+        "n_field_slots": 30,
+        "n_scoreable_slots": 30,
+        "n_unscoreable_slots": 0,
+        "field_assignment_error": {
+          "count": 1,
+          "rate": {
+            "point": 0.0333,
+            "lo": 0.0,
+            "hi": 0.1,
+            "n_units": 6,
+            "iters": 2000
+          }
+        },
+        "content_in_unscoreable_field": {
+          "count": 0,
+          "note": "Predicted content in a field the ground truth never covers. Not scoreable as right or wrong -- it is the measurement gap D19, and it is where the D5 assignment errors hide."
+        },
+        "omission": {
+          "count": 15,
+          "rate": {
+            "point": 0.5,
+            "lo": 0.2667,
+            "hi": 0.7333,
+            "n_units": 6,
+            "iters": 2000
+          }
+        },
+        "hallucination": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 6,
+            "iters": 2000
+          }
+        },
+        "duplication": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 6,
+            "iters": 2000
+          }
+        },
+        "character_error_correctly_assigned_only": {
+          "micro_cer": {
+            "point": 1.6059,
+            "lo": 0.4808,
+            "hi": 7.2513,
+            "n_units": 6,
+            "iters": 2000
+          }
+        },
+        "assignment_vs_reading": {
+          "scope": "usable documents only",
+          "n_usable": 5,
+          "as_assigned_cer": {
+            "point": 1.2346,
+            "lo": 0.6528,
+            "hi": 1.7555,
+            "n_units": 5,
+            "iters": 2000
+          },
+          "oracle_assigned_cer": {
+            "point": 0.652,
+            "lo": 0.6038,
+            "hi": 0.6913,
+            "n_units": 5,
+            "iters": 2000
+          },
+          "assignment_cost_pp": 58.26,
+          "share_of_cer_from_misassignment_pct": 47.19,
+          "note": "oracle = best possible routing of the SAME predicted strings. The gap is character error caused by putting correct text in the wrong field; the remainder is genuine misreading."
+        },
+        "null_agreement": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 6,
+            "iters": 2000
+          }
+        }
+      },
+      "per_field": {
+        "sender": {
+          "n_slots": 6,
+          "n_unscoreable": 0,
+          "n_scored": 5,
+          "cer": 9.54,
+          "wer": 8.95,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 1,
+          "hallucinations": 0,
+          "misassigned": 1
+        },
+        "receiver": {
+          "n_slots": 6,
+          "n_unscoreable": 0,
+          "n_scored": 3,
+          "cer": 0.1628,
+          "wer": 0.4667,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 3,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "subject": {
+          "n_slots": 6,
+          "n_unscoreable": 0,
+          "n_scored": 4,
+          "cer": 5.2703,
+          "wer": 4.7857,
+          "exact_match": 0.5,
+          "null_agreement": 0.0,
+          "omissions": 2,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "body_text": {
+          "n_slots": 6,
+          "n_unscoreable": 0,
+          "n_scored": 3,
+          "cer": 0.5233,
+          "wer": 0.5665,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 3,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "contact_info": {
+          "n_slots": 6,
+          "n_unscoreable": 0,
+          "n_scored": 0,
+          "cer": null,
+          "wer": null,
+          "exact_match": null,
+          "null_agreement": 0.0,
+          "omissions": 6,
+          "hallucinations": 0,
+          "misassigned": 0
+        }
+      },
+      "confusion": {
+        "same_script": [
+          {
+            "gt": "ش",
+            "pred": "س",
+            "gt_cp": "U+0634",
+            "pred_cp": "U+0633",
+            "count": 2
+          },
+          {
+            "gt": "ر",
+            "pred": "ا",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0627",
+            "count": 2
+          },
+          {
+            "gt": "ک",
+            "pred": "ز",
+            "gt_cp": "U+06A9",
+            "pred_cp": "U+0632",
+            "count": 2
+          },
+          {
+            "gt": "ت",
+            "pred": "ن",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0646",
+            "count": 2
+          },
+          {
+            "gt": "9",
+            "pred": "3",
+            "gt_cp": "U+0039",
+            "pred_cp": "U+0033",
+            "count": 2
+          },
+          {
+            "gt": "3",
+            "pred": "8",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0038",
+            "count": 2
+          },
+          {
+            "gt": "0",
+            "pred": "1",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0031",
+            "count": 2
+          },
+          {
+            "gt": "ج",
+            "pred": "چ",
+            "gt_cp": "U+062C",
+            "pred_cp": "U+0686",
+            "count": 2
+          },
+          {
+            "gt": "ه",
+            "pred": "ی",
+            "gt_cp": "U+0647",
+            "pred_cp": "U+06CC",
+            "count": 2
+          },
+          {
+            "gt": "0",
+            "pred": "6",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0036",
+            "count": 2
+          },
+          {
+            "gt": "ب",
+            "pred": "پ",
+            "gt_cp": "U+0628",
+            "pred_cp": "U+067E",
+            "count": 1
+          },
+          {
+            "gt": "ی",
+            "pred": "ک",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+06A9",
+            "count": 1
+          },
+          {
+            "gt": "ح",
+            "pred": "خ",
+            "gt_cp": "U+062D",
+            "pred_cp": "U+062E",
+            "count": 1
+          },
+          {
+            "gt": "گ",
+            "pred": "پ",
+            "gt_cp": "U+06AF",
+            "pred_cp": "U+067E",
+            "count": 1
+          },
+          {
+            "gt": "و",
+            "pred": "ذ",
+            "gt_cp": "U+0648",
+            "pred_cp": "U+0630",
+            "count": 1
+          },
+          {
+            "gt": "ا",
+            "pred": "ی",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+06CC",
+            "count": 1
+          },
+          {
+            "gt": "ه",
+            "pred": "ر",
+            "gt_cp": "U+0647",
+            "pred_cp": "U+0631",
+            "count": 1
+          },
+          {
+            "gt": "ی",
+            "pred": "ش",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+0634",
+            "count": 1
+          },
+          {
+            "gt": "ا",
+            "pred": "و",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0648",
+            "count": 1
+          },
+          {
+            "gt": "0",
+            "pred": "7",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0037",
+            "count": 1
+          },
+          {
+            "gt": "3",
+            "pred": "5",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0035",
+            "count": 1
+          },
+          {
+            "gt": "4",
+            "pred": "1",
+            "gt_cp": "U+0034",
+            "pred_cp": "U+0031",
+            "count": 1
+          },
+          {
+            "gt": "1",
+            "pred": "2",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0032",
+            "count": 1
+          },
+          {
+            "gt": "1",
+            "pred": "3",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0033",
+            "count": 1
+          },
+          {
+            "gt": "ش",
+            "pred": "م",
+            "gt_cp": "U+0634",
+            "pred_cp": "U+0645",
+            "count": 1
+          },
+          {
+            "gt": "گ",
+            "pred": "ع",
+            "gt_cp": "U+06AF",
+            "pred_cp": "U+0639",
+            "count": 1
+          },
+          {
+            "gt": "س",
+            "pred": "ا",
+            "gt_cp": "U+0633",
+            "pred_cp": "U+0627",
+            "count": 1
+          },
+          {
+            "gt": "ت",
+            "pred": "م",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0645",
+            "count": 1
+          },
+          {
+            "gt": "ر",
+            "pred": "ل",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0644",
+            "count": 1
+          },
+          {
+            "gt": "ر",
+            "pred": "و",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0648",
+            "count": 1
+          }
+        ],
+        "cross_script_ALIGNMENT_NOISE": [
+          {
+            "gt": "4",
+            "pred": "/",
+            "gt_cp": "U+0034",
+            "pred_cp": "U+002F",
+            "count": 2
+          },
+          {
+            "gt": "ا",
+            "pred": " ",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0020",
+            "count": 1
+          },
+          {
+            "gt": " ",
+            "pred": "ک",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+06A9",
+            "count": 1
+          },
+          {
+            "gt": " ",
+            "pred": "ر",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0631",
+            "count": 1
+          },
+          {
+            "gt": "ر",
+            "pred": " ",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0020",
+            "count": 1
+          }
+        ],
+        "note": "Cross-script substitutions are an artefact of aligning RTL and LTR runs and are listed separately; they are not evidence of a character confusion."
+      },
+      "reversal": {
+        "total_latin_digit_token_mismatches": 6,
+        "buckets": {
+          "absent": {
+            "count": 5,
+            "pct": 83.33
+          },
+          "genuine_misread": {
+            "count": 1,
+            "pct": 16.67
+          }
+        },
+        "examples": {
+          "absent": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "0937995746"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+              "field": "body_text",
+              "gt": "1403/04/01"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_67.JPG",
+              "field": "body_text",
+              "gt": "0889803943"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "0922476756"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+              "field": "body_text",
+              "gt": "09917383590"
+            }
+          ],
+          "genuine_misread": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_67.JPG",
+              "field": "body_text",
+              "gt": "1403/04/01",
+              "pred": "1/6/1401"
+            }
+          ]
+        }
+      },
+      "latency": {
+        "failures_included": {
+          "n": 6,
+          "mean": 10.969,
+          "p50": 6.134,
+          "p90": 34.978,
+          "p95": 34.978,
+          "p99": 34.978
+        },
+        "failures_excluded": {
+          "n": 5,
+          "mean": 6.167,
+          "p50": 6.128,
+          "p90": 6.862,
+          "p95": 6.862,
+          "p99": 6.862
+        },
+        "note": "Retry count is reported separately once Phase 2 introduces retries."
+      },
+      "failures": {
+        "n_failures": 1,
+        "by_kind": {
+          "http_422": 1
+        }
+      },
+      "letterform_conformance_RAW": {
+        "n_responses": 15,
+        "n_with_arabic_letterforms": 4,
+        "pct_with_arabic_letterforms": 26.67,
+        "total_arabic_yeh": 40,
+        "total_arabic_kaf": 7,
+        "total_alef_maksura": 1
+      }
+    },
+    "real|subject_annotator": {
+      "label": "real|subject_annotator",
+      "normalization": {
+        "nfc": true,
+        "strip_bidi": true,
+        "strip_zwj": true,
+        "arabic_to_persian": true,
+        "fold_alef": true,
+        "fold_alef_madda": false,
+        "fold_teh_marbuta": true,
+        "strip_zwnj": true,
+        "strip_harakat": true,
+        "strip_tatweel": true,
+        "digits_to_ascii": true,
+        "fold_punctuation": true,
+        "collapse_whitespace": true,
+        "lowercase_latin": false,
+        "normalizer_version": "1.0.0"
+      },
+      "headline": {
+        "n_documents": 45,
+        "n_templates": 1,
+        "usable_output_rate": {
+          "by_image": {
+            "point": 1.0,
+            "lo": 1.0,
+            "hi": 1.0,
+            "n_units": 45,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.0,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "cer_given_output": {
+          "by_image": {
+            "point": 1.2829,
+            "lo": 0.7153,
+            "hi": 2.1749,
+            "n_units": 45,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.2828914457228615,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        },
+        "effective_cer": {
+          "by_image": {
+            "point": 1.0795,
+            "lo": 0.9058,
+            "hi": 1.2569,
+            "n_units": 45,
+            "iters": 2000
+          },
+          "by_template": {
+            "point": 1.079509090269719,
+            "lo": null,
+            "hi": null,
+            "n_units": 1,
+            "note": "too few units to bootstrap"
+          }
+        }
+      },
+      "error_classes": {
+        "n_field_slots": 225,
+        "n_scoreable_slots": 225,
+        "n_unscoreable_slots": 0,
+        "field_assignment_error": {
+          "count": 1,
+          "rate": {
+            "point": 0.0044,
+            "lo": 0.0,
+            "hi": 0.0133,
+            "n_units": 45,
+            "iters": 2000
+          }
+        },
+        "content_in_unscoreable_field": {
+          "count": 0,
+          "note": "Predicted content in a field the ground truth never covers. Not scoreable as right or wrong -- it is the measurement gap D19, and it is where the D5 assignment errors hide."
+        },
+        "omission": {
+          "count": 111,
+          "rate": {
+            "point": 0.4933,
+            "lo": 0.4622,
+            "hi": 0.5289,
+            "n_units": 45,
+            "iters": 2000
+          }
+        },
+        "hallucination": {
+          "count": 1,
+          "rate": {
+            "point": 0.0044,
+            "lo": 0.0,
+            "hi": 0.0133,
+            "n_units": 45,
+            "iters": 2000
+          }
+        },
+        "duplication": {
+          "count": 0,
+          "rate": {
+            "point": 0.0,
+            "lo": 0.0,
+            "hi": 0.0,
+            "n_units": 45,
+            "iters": 2000
+          }
+        },
+        "character_error_correctly_assigned_only": {
+          "micro_cer": {
+            "point": 1.2829,
+            "lo": 0.7153,
+            "hi": 2.1749,
+            "n_units": 45,
+            "iters": 2000
+          }
+        },
+        "assignment_vs_reading": {
+          "scope": "usable documents only",
+          "n_usable": 45,
+          "as_assigned_cer": {
+            "point": 1.0795,
+            "lo": 0.9058,
+            "hi": 1.2569,
+            "n_units": 45,
+            "iters": 2000
+          },
+          "oracle_assigned_cer": {
+            "point": 0.6896,
+            "lo": 0.6176,
+            "hi": 0.7586,
+            "n_units": 45,
+            "iters": 2000
+          },
+          "assignment_cost_pp": 38.99,
+          "share_of_cer_from_misassignment_pct": 36.12,
+          "note": "oracle = best possible routing of the SAME predicted strings. The gap is character error caused by putting correct text in the wrong field; the remainder is genuine misreading."
+        },
+        "null_agreement": {
+          "count": 2,
+          "rate": {
+            "point": 0.0089,
+            "lo": 0.0,
+            "hi": 0.0222,
+            "n_units": 45,
+            "iters": 2000
+          }
+        }
+      },
+      "per_field": {
+        "sender": {
+          "n_slots": 45,
+          "n_unscoreable": 0,
+          "n_scored": 45,
+          "cer": 3.9146,
+          "wer": 3.7809,
+          "exact_match": 0.1778,
+          "null_agreement": 0.0,
+          "omissions": 0,
+          "hallucinations": 0,
+          "misassigned": 1
+        },
+        "receiver": {
+          "n_slots": 45,
+          "n_unscoreable": 0,
+          "n_scored": 25,
+          "cer": 0.9026,
+          "wer": 1.0,
+          "exact_match": 0.04,
+          "null_agreement": 0.0444,
+          "omissions": 17,
+          "hallucinations": 1,
+          "misassigned": 0
+        },
+        "subject": {
+          "n_slots": 45,
+          "n_unscoreable": 0,
+          "n_scored": 5,
+          "cer": 12.5859,
+          "wer": 12.3636,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 40,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "body_text": {
+          "n_slots": 45,
+          "n_unscoreable": 0,
+          "n_scored": 5,
+          "cer": 0.9066,
+          "wer": 0.9895,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 40,
+          "hallucinations": 0,
+          "misassigned": 0
+        },
+        "contact_info": {
+          "n_slots": 45,
+          "n_unscoreable": 0,
+          "n_scored": 31,
+          "cer": 0.3459,
+          "wer": 0.5738,
+          "exact_match": 0.0,
+          "null_agreement": 0.0,
+          "omissions": 14,
+          "hallucinations": 0,
+          "misassigned": 0
+        }
+      },
+      "confusion": {
+        "same_script": [
+          {
+            "gt": "ر",
+            "pred": "ا",
+            "gt_cp": "U+0631",
+            "pred_cp": "U+0627",
+            "count": 30
+          },
+          {
+            "gt": "ش",
+            "pred": "س",
+            "gt_cp": "U+0634",
+            "pred_cp": "U+0633",
+            "count": 27
+          },
+          {
+            "gt": "ک",
+            "pred": "ز",
+            "gt_cp": "U+06A9",
+            "pred_cp": "U+0632",
+            "count": 27
+          },
+          {
+            "gt": "ت",
+            "pred": "ن",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0646",
+            "count": 27
+          },
+          {
+            "gt": "8",
+            "pred": "4",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0034",
+            "count": 24
+          },
+          {
+            "gt": "8",
+            "pred": "6",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0036",
+            "count": 22
+          },
+          {
+            "gt": "8",
+            "pred": "1",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0031",
+            "count": 22
+          },
+          {
+            "gt": "7",
+            "pred": "1",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0031",
+            "count": 21
+          },
+          {
+            "gt": "3",
+            "pred": "5",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0035",
+            "count": 19
+          },
+          {
+            "gt": "-",
+            "pred": "–",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+2013",
+            "count": 17
+          },
+          {
+            "gt": "3",
+            "pred": "0",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0030",
+            "count": 17
+          },
+          {
+            "gt": "2",
+            "pred": "6",
+            "gt_cp": "U+0032",
+            "pred_cp": "U+0036",
+            "count": 15
+          },
+          {
+            "gt": "3",
+            "pred": "2",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0032",
+            "count": 12
+          },
+          {
+            "gt": "1",
+            "pred": "9",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0039",
+            "count": 10
+          },
+          {
+            "gt": "3",
+            "pred": "4",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0034",
+            "count": 7
+          },
+          {
+            "gt": "8",
+            "pred": "5",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0035",
+            "count": 7
+          },
+          {
+            "gt": "3",
+            "pred": "1",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0031",
+            "count": 7
+          },
+          {
+            "gt": "ا",
+            "pred": "م",
+            "gt_cp": "U+0627",
+            "pred_cp": "U+0645",
+            "count": 6
+          },
+          {
+            "gt": "8",
+            "pred": "9",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0039",
+            "count": 6
+          },
+          {
+            "gt": "8",
+            "pred": "2",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0032",
+            "count": 6
+          },
+          {
+            "gt": "5",
+            "pred": "3",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0033",
+            "count": 6
+          },
+          {
+            "gt": "4",
+            "pred": "9",
+            "gt_cp": "U+0034",
+            "pred_cp": "U+0039",
+            "count": 5
+          },
+          {
+            "gt": "ی",
+            "pred": "ک",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+06A9",
+            "count": 5
+          },
+          {
+            "gt": "\n",
+            "pred": " ",
+            "gt_cp": "U+000A",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "ل",
+            "pred": "ن",
+            "gt_cp": "U+0644",
+            "pred_cp": "U+0646",
+            "count": 5
+          },
+          {
+            "gt": "7",
+            "pred": "3",
+            "gt_cp": "U+0037",
+            "pred_cp": "U+0033",
+            "count": 5
+          },
+          {
+            "gt": "3",
+            "pred": "9",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0039",
+            "count": 5
+          },
+          {
+            "gt": "8",
+            "pred": "0",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0030",
+            "count": 5
+          },
+          {
+            "gt": "ت",
+            "pred": "ع",
+            "gt_cp": "U+062A",
+            "pred_cp": "U+0639",
+            "count": 4
+          },
+          {
+            "gt": "پ",
+            "pred": "ب",
+            "gt_cp": "U+067E",
+            "pred_cp": "U+0628",
+            "count": 4
+          }
+        ],
+        "cross_script_ALIGNMENT_NOISE": [
+          {
+            "gt": " ",
+            "pred": "ا",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0627",
+            "count": 9
+          },
+          {
+            "gt": "8",
+            "pred": "-",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+002D",
+            "count": 8
+          },
+          {
+            "gt": " ",
+            "pred": "د",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+062F",
+            "count": 6
+          },
+          {
+            "gt": "1",
+            "pred": "،",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+060C",
+            "count": 6
+          },
+          {
+            "gt": "ی",
+            "pred": " ",
+            "gt_cp": "U+06CC",
+            "pred_cp": "U+0020",
+            "count": 5
+          },
+          {
+            "gt": "8",
+            "pred": "،",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+060C",
+            "count": 5
+          },
+          {
+            "gt": "-",
+            "pred": "،",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+060C",
+            "count": 4
+          },
+          {
+            "gt": "8",
+            "pred": " ",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "1",
+            "pred": " ",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "3",
+            "pred": " ",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "5",
+            "pred": " ",
+            "gt_cp": "U+0035",
+            "pred_cp": "U+0020",
+            "count": 4
+          },
+          {
+            "gt": "-",
+            "pred": "9",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0039",
+            "count": 4
+          },
+          {
+            "gt": " ",
+            "pred": "ر",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0631",
+            "count": 3
+          },
+          {
+            "gt": "ن",
+            "pred": ".",
+            "gt_cp": "U+0646",
+            "pred_cp": "U+002E",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ن",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0646",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "ی",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+06CC",
+            "count": 3
+          },
+          {
+            "gt": "1",
+            "pred": "ا",
+            "gt_cp": "U+0031",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "8",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": "8",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0038",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "a",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+0061",
+            "count": 3
+          },
+          {
+            "gt": "ح",
+            "pred": " ",
+            "gt_cp": "U+062D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "د",
+            "pred": " ",
+            "gt_cp": "U+062F",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": " ",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0020",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ب",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0628",
+            "count": 3
+          },
+          {
+            "gt": "3",
+            "pred": "ت",
+            "gt_cp": "U+0033",
+            "pred_cp": "U+062A",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "2",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0032",
+            "count": 3
+          },
+          {
+            "gt": " ",
+            "pred": "–",
+            "gt_cp": "U+0020",
+            "pred_cp": "U+2013",
+            "count": 3
+          },
+          {
+            "gt": "8",
+            "pred": "ا",
+            "gt_cp": "U+0038",
+            "pred_cp": "U+0627",
+            "count": 3
+          },
+          {
+            "gt": "-",
+            "pred": "0",
+            "gt_cp": "U+002D",
+            "pred_cp": "U+0030",
+            "count": 3
+          },
+          {
+            "gt": "0",
+            "pred": "ا",
+            "gt_cp": "U+0030",
+            "pred_cp": "U+0627",
+            "count": 3
+          }
+        ],
+        "note": "Cross-script substitutions are an artefact of aligning RTL and LTR runs and are listed separately; they are not evidence of a character confusion."
+      },
+      "reversal": {
+        "total_latin_digit_token_mismatches": 131,
+        "buckets": {
+          "absent": {
+            "count": 80,
+            "pct": 61.07
+          },
+          "genuine_misread": {
+            "count": 51,
+            "pct": 38.93
+          }
+        },
+        "examples": {
+          "genuine_misread": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "2-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "3-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "4-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "5-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "6-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "7-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "8-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "9-",
+              "pred": "-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "18-",
+              "pred": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "25",
+              "pred": "25-"
+            }
+          ],
+          "absent": [
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "321/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "411413674648"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "10380436012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+              "field": "body_text",
+              "gt": "IR650100004060031207656012"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "subject",
+              "gt": "18"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "1403/900/70999/282/30"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "10-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "11-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "12-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "13-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "14-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "15-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "16-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+              "field": "body_text",
+              "gt": "17-"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_30.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_38.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_4.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "7/775/000/000"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+              "field": "body_text",
+              "gt": "1403/07/24"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "61023/1403"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+              "field": "body_text",
+              "gt": "1403/05/02"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "25"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "7"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Emil:"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+              "field": "contact_info",
+              "gt": "Sabzgostar2006@gmail.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "117،"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5027873-5027871-5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "5025305-0511"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Email"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+              "field": "contact_info",
+              "gt": "Sabz_gostar8@yahoo.com"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_8.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_81.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_82.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388575-38388481-38388261"
+            },
+            {
+              "file": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+              "field": "contact_info",
+              "gt": "38388297"
+            }
+          ]
+        }
+      },
+      "latency": {
+        "failures_included": {
+          "n": 45,
+          "mean": 6.36,
+          "p50": 4.642,
+          "p90": 9.389,
+          "p95": 9.831,
+          "p99": 43.32
+        },
+        "failures_excluded": {
+          "n": 45,
+          "mean": 6.36,
+          "p50": 4.642,
+          "p90": 9.389,
+          "p95": 9.831,
+          "p99": 43.32
+        },
+        "note": "Retry count is reported separately once Phase 2 introduces retries."
+      },
+      "failures": {
+        "n_failures": 0,
+        "by_kind": {}
+      },
+      "letterform_conformance_RAW": {
+        "n_responses": 112,
+        "n_with_arabic_letterforms": 15,
+        "pct_with_arabic_letterforms": 13.39,
+        "total_arabic_yeh": 171,
+        "total_arabic_kaf": 40,
+        "total_alef_maksura": 18
+      }
+    }
+  },
+  "config_hash": "169fb8d8ac6d3174"
+}

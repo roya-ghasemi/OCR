@@ -1,0 +1,49 @@
+{
+  "generated_utc": "2026-09-11T08:27:28+00:00",
+  "arm": "B — ocr_pipeline.LetterExtractor defaults",
+  "engine": "http://127.0.0.1:18234/v1",
+  "model": "D:\\models\\models\\mradermacher\\coreOCR-7B-050325-preview-GGUF\\coreOCR-7B-050325-preview.Q4_K_S.gguf",
+  "sampling": {
+    "name": "dry+repeat_1.1",
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "repeat_penalty": 1.1,
+    "repeat_last_n": 128,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "dry_multiplier": 0.8,
+    "dry_base": 1.75,
+    "dry_allowed_length": 4,
+    "dry_penalty_last_n": -1,
+    "dry_sequence_breakers": [
+      "\n",
+      ":",
+      "\"",
+      "،",
+      "؛",
+      "*"
+    ]
+  },
+  "n": 10,
+  "wall_seconds": 67.1,
+  "provenance": {
+    "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
+    "engine_build_pin": "2.28.2",
+    "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
+    "models_dir": "D:\\models\\models",
+    "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "repeat_penalty": 1.2,
+    "frequency_penalty": 0.0,
+    "max_tokens": 2048,
+    "context_size": "16384",
+    "image_min_tokens": "1024",
+    "n_gpu_layers": "99",
+    "resize_max_edge": 0,
+    "max_retries": 1,
+    "response_format": "off",
+    "json_repair": true
+  }
+}

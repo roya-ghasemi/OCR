@@ -1,0 +1,182 @@
+{
+  "arms": {
+    "off": {
+      "tokens_changed": 0,
+      "splits": {
+        "all": {
+          "n": 30,
+          "cer": 0.1703939008894536,
+          "wer": 0.22381311228334588,
+          "cer_synthetic_bilingual": 0.2558735583084152,
+          "cer_synthetic_fa": 0.044855708908406525,
+          "cer_bilingual_fa_segment": 0.16172276098117513,
+          "cer_bilingual_en_segment": 0.3285163776493256
+        },
+        "dev": {
+          "n": 20,
+          "cer": 0.17147806004618937,
+          "wer": 0.21201814058956917,
+          "cer_synthetic_bilingual": 0.258974358974359,
+          "cer_synthetic_fa": 0.03998073217726397,
+          "cer_bilingual_fa_segment": 0.16467576791808874,
+          "cer_bilingual_en_segment": 0.29385964912280704
+        },
+        "test": {
+          "n": 10,
+          "cer": 0.1682872101720269,
+          "wer": 0.24719101123595505,
+          "cer_synthetic_bilingual": 0.2496798975672215,
+          "cer_synthetic_fa": 0.0539568345323741,
+          "cer_bilingual_fa_segment": 0.15576592082616178,
+          "cer_bilingual_en_segment": 0.3954802259887006
+        }
+      },
+      "usable_output_rate": 0.8333333333333334,
+      "watchlist_in_output": {
+        "پیشایی": 5,
+        "فرمانیه": 4,
+        "پیشابیش": 2,
+        "اعلان": 3,
+        "پیشایپیش": 3,
+        "پیشایش": 1,
+        "احتمالا": 3
+      }
+    },
+    "v2d": {
+      "tokens_changed": 2,
+      "splits": {
+        "all": {
+          "n": 30,
+          "cer": 0.1701397712833545,
+          "wer": 0.22230595327807084,
+          "cer_synthetic_bilingual": 0.2554463904314396,
+          "cer_synthetic_fa": 0.044855708908406525,
+          "cer_bilingual_fa_segment": 0.16115231032515687,
+          "cer_bilingual_en_segment": 0.3285163776493256
+        },
+        "dev": {
+          "n": 20,
+          "cer": 0.17109314857582755,
+          "wer": 0.20975056689342403,
+          "cer_synthetic_bilingual": 0.25833333333333336,
+          "cer_synthetic_fa": 0.03998073217726397,
+          "cer_bilingual_fa_segment": 0.16382252559726962,
+          "cer_bilingual_en_segment": 0.29385964912280704
+        },
+        "test": {
+          "n": 10,
+          "cer": 0.1682872101720269,
+          "wer": 0.24719101123595505,
+          "cer_synthetic_bilingual": 0.2496798975672215,
+          "cer_synthetic_fa": 0.0539568345323741,
+          "cer_bilingual_fa_segment": 0.15576592082616178,
+          "cer_bilingual_en_segment": 0.3954802259887006
+        }
+      },
+      "usable_output_rate": 0.8333333333333334,
+      "watchlist_in_output": {
+        "پیشایی": 5,
+        "فرمانیه": 4,
+        "پیشابیش": 2,
+        "اعلان": 3,
+        "پیشایپیش": 3,
+        "پیشایش": 1,
+        "احتمالا": 3
+      }
+    },
+    "v2b": {
+      "tokens_changed": 17,
+      "splits": {
+        "all": {
+          "n": 30,
+          "cer": 0.1712833545108005,
+          "wer": 0.22758100979653353,
+          "cer_synthetic_bilingual": 0.2554463904314396,
+          "cer_synthetic_fa": 0.04767879548306148,
+          "cer_bilingual_fa_segment": 0.16172276098117513,
+          "cer_bilingual_en_segment": 0.3285163776493256
+        },
+        "dev": {
+          "n": 20,
+          "cer": 0.1724403387220939,
+          "wer": 0.2165532879818594,
+          "cer_synthetic_bilingual": 0.25833333333333336,
+          "cer_synthetic_fa": 0.04335260115606936,
+          "cer_bilingual_fa_segment": 0.16424914675767918,
+          "cer_bilingual_en_segment": 0.29385964912280704
+        },
+        "test": {
+          "n": 10,
+          "cer": 0.16903515332834704,
+          "wer": 0.24943820224719102,
+          "cer_synthetic_bilingual": 0.2496798975672215,
+          "cer_synthetic_fa": 0.05575539568345324,
+          "cer_bilingual_fa_segment": 0.1566265060240964,
+          "cer_bilingual_en_segment": 0.3954802259887006
+        }
+      },
+      "usable_output_rate": 0.8333333333333334,
+      "watchlist_in_output": {
+        "پیشایی": 4,
+        "فرمانیه": 4,
+        "پیشابیش": 1,
+        "اعلان": 3,
+        "پیشایپیش": 3,
+        "پیشایش": 1,
+        "احتمالا": 3
+      }
+    },
+    "v2a": {
+      "tokens_changed": 30,
+      "splits": {
+        "all": {
+          "n": 30,
+          "cer": 0.17280813214739518,
+          "wer": 0.23662396382818388,
+          "cer_synthetic_bilingual": 0.2567278940623665,
+          "cer_synthetic_fa": 0.04956085319949812,
+          "cer_bilingual_fa_segment": 0.16371933827723903,
+          "cer_bilingual_en_segment": 0.3285163776493256
+        },
+        "dev": {
+          "n": 20,
+          "cer": 0.17436489607390301,
+          "wer": 0.22789115646258504,
+          "cer_synthetic_bilingual": 0.25961538461538464,
+          "cer_synthetic_fa": 0.046242774566473986,
+          "cer_bilingual_fa_segment": 0.16638225255972697,
+          "cer_bilingual_en_segment": 0.29385964912280704
+        },
+        "test": {
+          "n": 10,
+          "cer": 0.16978309648466716,
+          "wer": 0.2539325842696629,
+          "cer_synthetic_bilingual": 0.25096030729833546,
+          "cer_synthetic_fa": 0.05575539568345324,
+          "cer_bilingual_fa_segment": 0.15834767641996558,
+          "cer_bilingual_en_segment": 0.3954802259887006
+        }
+      },
+      "usable_output_rate": 0.8333333333333334,
+      "watchlist_in_output": {
+        "پیشایی": 4,
+        "فرمانیه": 4,
+        "پیشابیش": 1,
+        "اعلان": 3,
+        "پیشایپیش": 3,
+        "پیشایش": 1,
+        "احتمالا": 3
+      }
+    }
+  },
+  "watchlist_definition": {
+    "احتمالا": "احتراماً",
+    "اعلان": "اعلام",
+    "فرمانیه": "فرمایید",
+    "پیشایپیش": "پیشاپیش",
+    "پیشابیش": "پیشاپیش",
+    "پیشایش": "پیشاپیش",
+    "پیشایی": "پیشاپیش"
+  },
+  "watchlist_in_ground_truth": {}
+}

@@ -1,0 +1,23 @@
+# Hybrid Persian OCR service — pinned to the versions verified in venv312 (Python 3.12.10)
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32
+pydantic==2.13.4
+pydantic-settings==2.10.1
+httpx==0.28.1
+openai==3.5.0
+celery==5.5.3
+redis==6.4.0
+pytesseract==0.3.13
+pillow==12.3.0
+opencv-python-headless==5.0.0.93
+numpy==2.5.2
+Levenshtein==0.27.5
+arabic-reshaper==3.0.0
+python-bidi==0.6.11
+scikit-learn==1.7.2        # glyph digit reader (ocr_service/digit_reader.py); OpenCV 5 dropped cv2.ml
+joblib==1.6.0
+pywin32==311; sys_platform == "win32"   # kombu filesystem transport (dev queue fallback)
+# optional production backends
+# vllm>=0.6            (OCRS_BACKEND=vllm; served separately)
+# tritonclient[http]   (OCRS_BACKEND=triton)

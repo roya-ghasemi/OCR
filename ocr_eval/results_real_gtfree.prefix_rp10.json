@@ -1,0 +1,302 @@
+{
+  "generated_utc": "2026-09-02T12:55:05+00:00",
+  "scope": "90 real administrative letters, GT-free metrics only (D15)",
+  "normalizer_version": "1.0.0",
+  "reliability": {
+    "n": 90,
+    "n_usable": 15,
+    "usable_output_rate_all": {
+      "point": 0.1667,
+      "lo": 0.1,
+      "hi": 0.2444,
+      "n_units": 90,
+      "iters": 2000
+    },
+    "usable_output_rate_dev": {
+      "point": 0.1481,
+      "lo": 0.0556,
+      "hi": 0.2407,
+      "n_units": 54,
+      "iters": 2000
+    },
+    "failure_taxonomy": {
+      "http_422": 75
+    },
+    "note": "An all-null 200 counts as a FAILURE here. The service reports it as success and nothing downstream notices -- that is defect D4."
+  },
+  "degeneracy": {
+    "threshold": 20,
+    "n_phrase_level_loops": 45,
+    "n_documents_with_degenerate_run": 29,
+    "pct": 32.22,
+    "repeated_characters": {
+      "U+06F8": 11,
+      "U+06F0": 5,
+      "U+06F5": 2,
+      "U+06F2": 2,
+      "U+002D": 2,
+      "U+06F7": 2,
+      "U+06F3": 1,
+      "U+06F9": 1,
+      "U+002E": 1,
+      "U+06F1": 1,
+      "U+06F6": 1
+    },
+    "also_in_usable_responses": 0,
+    "examples": [
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_1.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 757,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۰",
+        "repeat_len": 967,
+        "codepoint": "U+06F0"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_14.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 949,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_17.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 861,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_2.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۰",
+        "repeat_len": 938,
+        "codepoint": "U+06F0"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_22.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 966,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_23.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 797,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_24.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 1009,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_27.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۵",
+        "repeat_len": 940,
+        "codepoint": "U+06F5"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_28.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 902,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_29.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 862,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_30.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۲",
+        "repeat_len": 1954,
+        "codepoint": "U+06F2"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_34.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۳",
+        "repeat_len": 990,
+        "codepoint": "U+06F3"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_35.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 1929,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۹",
+        "repeat_len": 1999,
+        "codepoint": "U+06F9"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_4.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 1816,
+        "codepoint": "U+06F8"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_41.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۰",
+        "repeat_len": 986,
+        "codepoint": "U+06F0"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_42.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۲",
+        "repeat_len": 1499,
+        "codepoint": "U+06F2"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_48.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": ".",
+        "repeat_len": 58,
+        "codepoint": "U+002E"
+      },
+      {
+        "filename": "CamScanner ⁨7-1-25 10.26⁩_57.JPG",
+        "usable": false,
+        "failure_kind": "http_422",
+        "repeated_char": "۸",
+        "repeat_len": 855,
+        "codepoint": "U+06F8"
+      }
+    ],
+    "raw_dumps_available": 77,
+    "note": "A degenerate run inside a USABLE response is worse than a 422: the document passes validation and ships corrupted text."
+  },
+  "latency": {
+    "failures_included": {
+      "n": 90,
+      "mean": 19.59,
+      "p50": 22.2,
+      "p90": 22.28,
+      "p95": 22.3,
+      "p99": 22.92,
+      "max": 22.92
+    },
+    "failures_excluded": {
+      "n": 15,
+      "mean": 6.62,
+      "p50": 6.35,
+      "p90": 7.91,
+      "p95": 8.3,
+      "p99": 8.3,
+      "max": 8.3
+    },
+    "failures_only": {
+      "n": 75,
+      "mean": 22.19,
+      "p50": 22.2,
+      "p90": 22.28,
+      "p95": 22.3,
+      "p99": 22.92,
+      "max": 22.92
+    }
+  },
+  "letterform_conformance": {
+    "n_responses": 57,
+    "n_with_arabic_letterforms": 8,
+    "pct_with_arabic_letterforms": 14.04,
+    "total_arabic_yeh": 57,
+    "total_arabic_kaf": 5,
+    "total_alef_maksura": 1
+  },
+  "digit_census": {
+    "persian_indic": {
+      "count": 532,
+      "pct": 58.08
+    },
+    "arabic_indic": {
+      "count": 0,
+      "pct": 0.0
+    },
+    "ascii": {
+      "count": 384,
+      "pct": 41.92
+    }
+  },
+  "field_fill": {
+    "sender": {
+      "filled": 15,
+      "pct_of_usable": 100.0
+    },
+    "receiver": {
+      "filled": 15,
+      "pct_of_usable": 100.0
+    },
+    "subject": {
+      "filled": 14,
+      "pct_of_usable": 93.33
+    },
+    "body_text": {
+      "filled": 13,
+      "pct_of_usable": 86.67
+    },
+    "contact_info": {
+      "filled": 0,
+      "pct_of_usable": 0.0
+    }
+  },
+  "failure_correlates": {
+    "width": {
+      "usable_mean": 2253.1,
+      "failed_mean": 2297.8
+    },
+    "height": {
+      "usable_mean": 3101.9,
+      "failed_mean": 3225.5
+    },
+    "bytes": {
+      "usable_mean": 717158.7,
+      "failed_mean": 772227.9
+    },
+    "estimated_dpi_a4": {
+      "usable_mean": 266.8,
+      "failed_mean": 277.9
+    }
+  }
+}

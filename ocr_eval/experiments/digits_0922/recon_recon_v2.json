@@ -1,0 +1,3137 @@
+{
+ "label": "recon_v2",
+ "from": "qwen25_dev_glyph",
+ "split": "dev",
+ "n_docs": 51,
+ "policy": {
+  "align_long": 0.5,
+  "align_short": 0.75,
+  "long_digits": 7,
+  "margin_short": 0.1,
+  "override_conf": 0.45,
+  "override_mean": 0.7,
+  "inject": true,
+  "inject_min_digits": 7,
+  "inject_conf": 0.55,
+  "inject_mean": 0.78,
+  "footer_band": 0.8,
+  "inject_text": true,
+  "align_span": 0.6,
+  "inject_body": true,
+  "body_band": [
+   0.18,
+   0.8
+  ],
+  "inject_body_min_digits": 4
+ },
+ "span_recall_before": 0.2598,
+ "span_recall_after": 0.4448,
+ "atom_recall_before": 0.3364,
+ "atom_recall_after": 0.6728,
+ "atom_precision_before": 0.3822,
+ "atom_precision_after": 0.7192,
+ "record_atom_recall": 0.6982,
+ "record_atom_precision": 0.7197,
+ "per_field": {
+  "receiver": {
+   "records": 0,
+   "records_emitted": 0,
+   "gt": 1,
+   "before": 0,
+   "after": 0,
+   "emitted_before": 0,
+   "emitted_after": 0,
+   "wrong_before": 0,
+   "wrong_after": 0
+  },
+  "subject": {
+   "records": 0,
+   "records_emitted": 19,
+   "gt": 0,
+   "before": 0,
+   "after": 0,
+   "emitted_before": 20,
+   "emitted_after": 20,
+   "wrong_before": 20,
+   "wrong_after": 20
+  },
+  "body_text": {
+   "records": 102,
+   "records_emitted": 147,
+   "gt": 163,
+   "before": 61,
+   "after": 90,
+   "emitted_before": 116,
+   "emitted_after": 123,
+   "wrong_before": 55,
+   "wrong_after": 33
+  },
+  "contact_info": {
+   "records": 201,
+   "records_emitted": 255,
+   "gt": 270,
+   "before": 85,
+   "after": 202,
+   "emitted_before": 246,
+   "emitted_after": 263,
+   "wrong_before": 161,
+   "wrong_after": 61
+  }
+ },
+ "decisions": {
+  "span_gt": 281,
+  "span_before": 73,
+  "span_after": 125,
+  "corrected": 224,
+  "corrected_right": 187,
+  "corrected_was_right": 27,
+  "confirmed": 160,
+  "confirmed_right": 100,
+  "added": 44,
+  "added_right": 30,
+  "conflict": 13,
+  "conflict_vlm_right": 3,
+  "conflict_classical_right": 10,
+  "unverified": 45,
+  "unverified_vlm_right": 17
+ },
+ "seconds": 0.0,
+ "per_doc": [
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_1.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "جناب آقای دکتر میکائیل باقری",
+    "subject": "درخواست بررسی اسناد مربوط به اجاره آپارتمان در آستان قدس",
+    "body_text": "با سلام؛\n\nاحتراما، پیرو به قرارداد منعقده به شماره ۲۹۰۶۳۰ مورخ ۱۴۰۲/۱۲/۲۷ ۱۴۰۲ در خصوص تحقیق اسناد آن اداره کل محترم به استحضار می‌رساند. امور مربوط به دستیابی اجرایی اجاره املاک آستان قدس می باشد، با توجه به اینکه می بایست از واحد انجام پذیرفته و در مرحله تایید واحد نقشه برداری اداره املاک آستان قدس می باشد، با توجه به اینکه اینکه می بایست از واحد های فوق جهت تکمیل گزارش توسعه نقشه بردار بازدید صورت پذیرد لذا خواهشمند است به قید فوریت نسبت به معرفی نماینده آن اداره کل جهت باز کردن درب آپارتمان ها در هنگام بازدید نقشه بردار محترم اقدام لازم را مبذول فرمایید.\n\nبا تشکر",
+    "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱ - ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۲۶۱\nفکس: ۳۸۳۸۸۲۹۷\nرونوشت: جناب آقای دکتر سلطانی معاون محترم بهزیش، برنامه ریزی و توسعه منابع\n۳۸۳۸۸۴۸۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۹۰۶۳",
+     "resolved": "۲۹۰۶۳۰",
+     "confidence": "corrected",
+     "classical": "290630"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۹/۱۲/۲۷",
+     "resolved": "۱۴۰۲/۱۲/۲۷",
+     "confidence": "corrected",
+     "classical": "1402-12-27"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۲",
+     "resolved": "۱۴۰۲",
+     "confidence": "high",
+     "classical": "1402"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "high",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "added",
+     "classical": "38388481"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_10.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "مدیریت محترم شرکت شیر پاستوریزه پکاه خراسان",
+    "subject": "پرداخت حق بیمه آذر ماه پرسنل به مبلغ ۲/۵۸۸/۸۰۸/۵۸۸ ریال مطابق لیست پیوست اقدامات لازم را مبذول فرمایید.",
+    "body_text": "با سلام؛\n\nاحتراهما، ضمن آرزوی توفیق به استحضار می رسند، خواهشمند است نسبت به پرداخت حق بیمه آذر ماه پرسنل به مبلغ ۲/۵۸۸/۸۰۸/۵۸۸ ریال مطابق لист پیوست اقدامات لزوم را مبذول فرماید.\n\nپیشابیش از همکاری شما سپاسگزاریم.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۹۷ فکس: ۳۸۳۸۸۲۶۱\n۳۸۳۸۸۵۷۵"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۲/۵۸۸/۸۰۸/۵۸۸",
+     "resolved": "۲/۵۸۸/۸۰۸/۵۸۸",
+     "confidence": "high",
+     "classical": "2-588-808-588"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲/۵۸۷/۸۰۹/۵۸۶",
+     "resolved": "۲/۵۸۸/۸۰۸/۵۸۸",
+     "confidence": "corrected",
+     "classical": "2-588-808-588"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۷۴۹۷",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388481-38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۴۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "added",
+     "classical": "38388575"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_11.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کستیر",
+    "receiver": "ریاست محترم بانک سامان شعبه هاشمییه",
+    "subject": "ضماننامه انعام تعهدات به مبلغ ۳۲۱/۰۰۰/۰۰۱۳۲۱ریال در وجه آموزش و پروش کلاس",
+    "body_text": "با سلام؛ احتراما، خواهشمند است نسبت به ارائه ضماننامه انجام تعهدات به مبلغ ۳۲۱,۰۰۰,۰۰۱,۳۲۱ریال در وجه آموزش و بروش کلاس پیوست مدارک با کد اقتصادی ۴۱۱۴۱۳۶۷۴۶۴۸ شناسه ملی ۱۴۰۵ و شماره شبا ۶۵۰۱۰۰۰۰۴۰۶۰۰۳۱۲۰۷۶۵۶۰۱۲ IR65.۰۰۰...۶۵۰۱۰۰۰۰۴۰۶۰۰۳۱۲۰۷۶۵۶۰۱۲ با اعتبار حداقل نه ماه از تاریخ صدور اقدام نمایید. پیشایبیش از همکاری متقابل شما سپاسگزاریم.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰۲۵۳۰۵ فکس: ۵۰۲۵۳۰۵-۵۰۲۵۳۰۵ Email : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۳۲۱/۰۰۰/۰۰۱۳۲۱",
+     "resolved": "۳۲۱/۰۰۰/۰۰۱۳۲۱",
+     "confidence": "low",
+     "classical": "321-000-00"
+    },
+    {
+     "field": "body_text",
+     "kind": "amount",
+     "value": "۳۲۱,۰۰۰,۰۰۱,۳۲۱",
+     "resolved": "۳۲۱,۰۰۰,۰۰۱,۳۲۱",
+     "confidence": "unverified",
+     "classical": "321-000-000-321"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۴۱۱۴۱۳۶۷۴۶۴۸",
+     "resolved": "۴۱۱۴۱۳۶۷۴۶۴۸",
+     "confidence": "high",
+     "classical": "411413674648"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۵",
+     "resolved": "۱۴۰۵",
+     "confidence": "unverified",
+     "classical": "403"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۲۰۳۱۲۷۶۵۶۰۴۰۶۰۰۱۰۶۵۰۱",
+     "resolved": "۶۵۰۱۰۰۰۰۴۰۶۰۰۳۱۲۰۷۶۵۶۰۱۲",
+     "confidence": "corrected",
+     "classical": "650100004060031207656012"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "IR65.۰۰۰...۴۰۶۰۳۱۲۰۷۶۵۶۰۴۰۶۰۰۱۰۶۵۰۱",
+     "resolved": "IR65.۰۰۰...۶۵۰۱۰۰۰۰۴۰۶۰۰۳۱۲۰۷۶۵۶۰۱۲",
+     "confidence": "corrected",
+     "classical": "000-650100004060031207656012"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۵۰۲۷۸۷۱-۵۰۲۷۹۷۱-۴۱۱۵۰۵۰",
+     "resolved": "۵۰۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰۲۵۳۰۵",
+     "confidence": "corrected",
+     "classical": "5027871-5027871-5025305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵-۵۰۱۱۵۵۰",
+     "resolved": "۵۰۲۵۳۰۵-۵۰۲۵۳۰۵",
+     "confidence": "corrected",
+     "classical": "5025305-5025305"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۴۰۰۲۰۰۴۱۰۵",
+     "resolved": "۱۴۰۰۲۰۰۴۱۰۵",
+     "confidence": "added",
+     "classical": "14002004105"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_16.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیریت محترم بیمه سامان",
+    "subject": "رساند افراد با مشخصات زیر به بیمه نامه مسئولیت",
+    "body_text": "با سلام؛\n\nاحتراما به استحضار می رسند تعداد ۱۸ نفر افراد با مشخصات زیر به بیمه نامه مسؤولیت.\n\n۱- احسان دربند\n۲- فاطمه قوی مقدم\n۳- مریم محسنی زاده\n۴- هادی براتی\n۵- حسین شفیعی\n۶- نفیسه منفرد\n۷- سعیده موسوی رشتخوار\n۸- کرم صفایی\n۹- محمد مهدی فدایی",
+    "contact_info": "آدرس: مشهد - بلوار کوتر شمالی - کوتر شمالی - پلاک ۷\nتلفن: ۳۸۳۸۸۵۷۵، ۳۸۳۸۸۲۶۱، ۳۸۳۸۸۲۹۷\nفکس: ۳۸۳۸۸۴۸۱\ninfo@sabzgostar-govareshk.ir"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "high",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۴۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۳",
+     "resolved": "۱۴۰۳",
+     "confidence": "added",
+     "classical": "1403"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۷۰۹۹۹",
+     "resolved": "۷۰۹۹۹",
+     "confidence": "added",
+     "classical": "70999"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_17.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیریت محترم بیمه سامان",
+    "subject": "استحضار می رسند تعداد ۱۲ نفر افراد با مشخصات زیر از بیمه نامه مسئولیت",
+    "body_text": "با سلام؛\n\nاحتراما به استحضار می رساند تعداد ۱۲ نفر فرد با مشخصات زیر از پیام نامه مسئولیت\n\n۷-شایسته لادنی رئوف\n۸-عطا الله فخیمی\n۹-احمد کریمی دوغشکی\n۱۰-حسین رهنما برگرد\n۱۱-تقی عباسی\n۱۲-محمد صفری",
+    "contact_info": "آدرس: مشهد - بلوار کوتر شمالی - کوتر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷ info@sabzgostar-govareshk.ir"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "high",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "high",
+     "classical": "38388297"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۳",
+     "resolved": "۱۴۰۳",
+     "confidence": "added",
+     "classical": "1403"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۷۰۹۹۹",
+     "resolved": "۷۰۹۹۹",
+     "confidence": "added",
+     "classical": "70999"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_18.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "معاون محترم پژوهش، برنامهریزی و توسعه منابع آموزش و پرورش خراسان رضوی",
+    "subject": "تحذیر درباره عدم انجام قرارداد",
+    "body_text": "سلام علیکم؛\n\nاحتراما عطف به نامه شماره ۱/۶۰۱۰ مورخ ۱۴۰۳/۰۹/۲۰ صادره از سوی آن اداره کل خطاب به بانک سامان شعبه هاشمی مشهد، مبنی بر ضبط تضمین این شرکت مربوط به قرارداد شماره ۸۲۲۸۰ که مستند به نامه شماره ۱۶۰/۱۶۰۰/۱۴۰۳۰ مورخ ۱۸۳۸۵۳/د/۱۶ اصدار یافته است به استحضار عالی می رساند.\n\nمطابق تبصره یک بند پنج از ماده پنج قرارداد منعقده فی ما بین شرکت و آن اداره کل محترم مدت ایفای تعهد از سوی شرکت طرف ظرف سه ماه از تاریخ پیش برداخت پیش برداخت بوده است. لازم به ذکر می باشد که پیش برداخت در مورخه ۱۴۰۳ صورت گرفته است و تا مورخ ۰۳/۱۱/۱۴ مدت انجام کار بوده است. بنابراین به صراحت صورت قرارداد گزارش اداره حقوقی که اعلام داشته اند بعد از کذشت دو ماه از پیش برداخت اقدامی جهت اخذ سند تعهدات منقضی نگردیده است.\n\nلذا به جهت جلوگیری از تضیع حقوق شرکت و عدم ورود ضرر به شرکت و عدم وقفه در انجام امور استدعای صدور دستور عاجل و فوری مبنی بر کانل میکن شدن نامه صادره خطاب به بانک سامان شعبه هاشمی مشهد را خواستارم لازم به ذکر می باشد شرح اقدامات انجام شده و موافع پیش رو طی گزارشی جداگانه تقدیم حضور می گردد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷ info@sabzgostar-govareshk.ir"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱/۶۰۱",
+     "resolved": "۱/۶۰۱۰",
+     "confidence": "corrected",
+     "classical": "6010"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۷۰/۹/۲۰",
+     "resolved": "۱۴۰۳/۰۹/۲۰",
+     "confidence": "corrected",
+     "classical": "1403-09-20"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۸۲۲۸",
+     "resolved": "۸۲۲۸۰",
+     "confidence": "corrected",
+     "classical": "82280"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۴۰۳/۱۶۰۰/۱۶",
+     "resolved": "۱۶۰/۱۶۰۰/۱۴۰۳۰",
+     "confidence": "corrected",
+     "classical": "160-1600-14030"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۸۳۸۵۳",
+     "resolved": "۱۸۳۸۵۳",
+     "confidence": "high",
+     "classical": "183853"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۳",
+     "resolved": "۱۴۰۳",
+     "confidence": "high",
+     "classical": "1403"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۰/۱۱/۱۴۰۳",
+     "resolved": "۰۳/۱۱/۱۴",
+     "confidence": "corrected",
+     "classical": "03-11-14"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "high",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "high",
+     "classical": "38388297"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_2.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "بانک رفاه خیام",
+    "subject": "گواهی کسر از حقوق خانم/ آقای سید مهدی هندسه",
+    "body_text": "با سلام و احترام\nبدین وسیله گواهی می شود خانم آقای سید مهدی هنده فرزند سید مشاله به شماره ملی ۰۹۴۳۰۱۹۶۳۱ کارمند قراردادی این شرکت می باشد و ماهانه مبلغ ۲۱۵،۵۲۹،۳۶۰ ریال به عنوان ناچالص حقوق و مزایا دریافت می‌نماید. این گواهی بنا بر درخواست نامبرده به منظور ارائه به آن بانک جهت دریافت تسهیلات صادر شده است و تعهد داده می‌شود چنانچه تسهیلات گیرنده، اقساط تسهیلات دریافته را در سرسید مقرر پرداخت ننماید، با اولین اعلام کتبی آن بانک، اقساط معوقه از حقوق نامبرده کسر و در وجه آن بانک پرداخت نمی‌گرددد. ضمنا به اطلاع می رسند چنانچه با قطع رابطه استخدامی (از قبیل فوت، تعدیل نیرو، اخراج و ...) ارتباط نامبرده با این شرکت قطع گردد، این شرکت هیچ نوع تعهدی در خصوص باقیمانده مطالبات آن بانک (اعم از معوقه، جاری و آینده) ندارد. بدیهی است این گواهی بن به درخواست نامبرده صرف جهت ارائه به آن بانک صادر شده و فاقد هرگونه ارزش و اعتبار دیگری می باشد و تنها تا زمان اشتغال ایشان در شرکت معترف است.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۲۹۷ فکس:\n۳۸۳۸۸۲۶۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۹۴۳۰۱۹۶۳۱",
+     "resolved": "۰۹۴۳۰۱۹۶۳۱",
+     "confidence": "corrected",
+     "classical": "0943019631"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۱۵،۵۲۹،۳۶۰",
+     "resolved": "۲۱۵،۵۲۹،۳۶۰",
+     "confidence": "unverified",
+     "classical": "215-38388297-360"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "high",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "added",
+     "classical": "38388261"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_20.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "مدیریت محترم شرکت بیمه سامان",
+    "subject": "پوشش بیمه مسئولیت",
+    "body_text": "با سلام؛\n\nاحتراما، به اطلاع می رساند لیست اصلاحی پرسنل تحت پوشش بیمه مسئولیت ۳۰/۲۸۲/۷۰۹۹۹/۲۷۰۰۰-۱۴۰۳/۹۰۰۷۰۰ این شرکت به پیوست تقدیم میگردد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷، ۳۸۳۸۸۴۸۱، ۳۸۳۸۸۲۶۱\nفکس: ۳۸۳۸۸۵۷۵\nایمیل: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "amount",
+     "value": "۳۰/۲۸۲/۹۹۹/۲۷۰۰۰-۱۴۰۳/۹۰۰۷۰۰",
+     "resolved": "۳۰/۲۸۲/۷۰۹۹۹/۲۷۰۰۰-۱۴۰۳/۹۰۰۷۰۰",
+     "confidence": "corrected",
+     "classical": "282-70999-900-1403-900"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "high",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۴۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "900"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_21.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "مدیریت محترم شرکت بیمه سامان",
+    "subject": "احتراما پیرو بیمه نامه مسئولیت شماره ۷۰۹۹۹/۲۵۲/۳۰",
+    "body_text": "با سلام؛ احتراما پیرو بیمه نامه مسئولیت شمره ۷۰۹۹۹/۲۵۲/۳۰ این شرکت به استحضار می رساند در تاریخ ۱۴۰۳/۰۹/۰ حادثه ای در حین کار برای یکی از نیروها تحت پوشش به نام آقای مرتضی غلامی پردون رخ داده است، مراتب جهت اطلاع و اقدام لازم ارسال می گردد.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف تلفن: ۵۰۲۷۸۷۱ فکس: ۵۰۲۵۳۰۵ Email : Sabz_gostar8@yahoo.com\n۵۰۲۷۸۷۳"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۲۰۹۹۹/۲۵۲/۳۰",
+     "resolved": "۷۰۹۹۹/۲۵۲/۳۰",
+     "confidence": "corrected",
+     "classical": "70999-252"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۰۹۹۹/۲۵۲/۳۰",
+     "resolved": "۷۰۹۹۹/۲۵۲/۳۰",
+     "confidence": "corrected",
+     "classical": "70999-252"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۹/۰۶",
+     "resolved": "۱۴۰۳/۰۹/۰",
+     "confidence": "corrected",
+     "classical": "1403-09-0"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۴۵۰۲۷۸۷۱",
+     "resolved": "۵۰۲۷۸۷۱",
+     "confidence": "corrected",
+     "classical": "5027871"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵",
+     "resolved": "۵۰۲۵۳۰۵",
+     "confidence": "high",
+     "classical": "5025305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۷۸۷۳",
+     "resolved": "۵۰۲۷۸۷۳",
+     "confidence": "added",
+     "classical": "5027873"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_23.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبزگستر",
+    "receiver": "معاون محترم بزوهمش، برنامه ریزی و توسعه منابع آموزش و پرورش خراسان رضوی",
+    "subject": "با سلام؛",
+    "body_text": "با سلام؛\n\nاحتراما عطف به قرارداد شماره ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ با توجه به اعلام نظر پزشک معتمد در پرونده پزشکی تعدادی از پرسنل آن اداره محترم (به پیوست) و ذکر بیماری این افراد که لزوما با پست شغلی این افراد در تعارض بوده و احتمال بروز خطرات و آسیب‌های جدید در سلامت این افراد در آینده وجود دارد، فلذا بدین وسیله این شرکت تقاضای بررسی و به قید فوریت تغییر شغل افراد فوق الذکر را از آن اداره محترم خواستار است.\n\nبدیهی است با توجه به اطلاع رسانی این موضوع، شرکت هیج گونه مسئولیتی در مورد بروز خطرات و آسیب‌های فوق الذکر بر عهده نخواهد داشت.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر شمالی - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۲۹۷ فکس: info@sabzgostar-govareshk.ir\n۳۸۳۸۸۲۶۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۹۴۹",
+     "resolved": "۲۹۴۹",
+     "confidence": "high",
+     "classical": "2949"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۳/۳۱",
+     "resolved": "۱۴۰۳/۰۳/۳۱",
+     "confidence": "high",
+     "classical": "1403-03-31"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "high",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۳۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "added",
+     "classical": "38388261"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_25.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کستر",
+    "receiver": "مدیریت محترم شرکت آب منطقه مشهد",
+    "subject": "ضمانت نامه به شماره ۴۶۵۸",
+    "body_text": "احتراهما، با توجه به برگزاری مناقصه ارائه خدمات ناجیگری و مربیگری رشته های مختلف ورزشی، مورخ ۱۳۰۷/۲۸ و عدم برنده شدن این شرکت خواهشمند است دستور فراماید نسبت به استرداد ضمانت نامه به شماره شماره ۴۴۶۵۹ در مورخ ۱۴۰۳/۰۷/۲۶ به نماینده این شرکت آقای یاسین عباسیان اقدام لازم صورت پذیرد.",
+    "contact_info": "آدرس: مشهد-بلاوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف تلفن: ۵۰۲۷۸۷۱-۵۰۲۷۸۷۳ فکس: ۵۵۲۵۳-۵۰۱۱۵۰ Email : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "other",
+     "value": "۴۶۵۸",
+     "resolved": "۴۶۵۸",
+     "confidence": "unverified",
+     "classical": "30446580"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۳۰۷/۲۸",
+     "resolved": "۱۳۰۷/۲۸",
+     "confidence": "unverified",
+     "classical": "117"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۴۴۶۵۹",
+     "resolved": "۴۴۶۵۹",
+     "confidence": "unverified",
+     "classical": "30446580"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۳۰/۰۷/۲۶",
+     "resolved": "۱۴۰۳/۰۷/۲۶",
+     "confidence": "corrected",
+     "classical": "1403-07-26"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۵۰۲۷۸۷۱-۵۰۴۷۸۷۳",
+     "resolved": "۵۰۲۷۸۷۱-۵۰۲۷۸۷۳",
+     "confidence": "corrected",
+     "classical": "5027871-5027873"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵-۵۰۱۱۵۰",
+     "resolved": "۵۵۲۵۳-۵۰۱۱۵۰",
+     "confidence": "corrected",
+     "classical": "55253-511"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۹۳۰۵۲۰۳۶۵",
+     "resolved": "۹۳۰۵۲۰۳۶۵",
+     "confidence": "added",
+     "classical": "930520365"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_30.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "بانک ملی هاشمیه مشهد",
+    "subject": "پیرو تقدیم حسابرسی برای مطابقت های لازم خواهشمند",
+    "body_text": "با سلام؛\n\nاحتراما، پیرو تقدیم حساب رسی برای مطابق های لازم خواهم ند است صورت حساب این شرکت را مربوط به دوره های منتهی به ۱۴۰۱ و ۱۴۰۲ به نماینده این شرکت جناح آقا عباسیان به کد ملی ۳۴۹۰۵۰۴۲۲۴ تحویل فرمایید.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لاجن، پلاک ۱۱۷، طبقه هشتم\nتلفن: ۳۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰-۱۱۵۰ فکس: ۵۰۲۵۳۰۵-۵۰-۱۱۵۰ Email : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۱",
+     "resolved": "۱۴۰۱",
+     "confidence": "high",
+     "classical": "1401"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۱۴۰۲",
+     "resolved": "۱۴۰۲",
+     "confidence": "corrected",
+     "classical": "1402"
+    },
+    {
+     "field": "body_text",
+     "kind": "national_id",
+     "value": "۳۴۹۰۵۰۴۲۲۴",
+     "resolved": "۳۴۹۰۵۰۴۲۲۴",
+     "confidence": "high",
+     "classical": "3490504224"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰-۱۱۵۰",
+     "resolved": "۳۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰-۱۱۵۰",
+     "confidence": "low",
+     "classical": "5027871-5027871-117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵-۵۰-۱۱۵۰",
+     "resolved": "۵۰۲۵۳۰۵-۵۰-۱۱۵۰",
+     "confidence": "unverified",
+     "classical": "5025305-117"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_33.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیریت محترم بانک ملی شعبه حافظ",
+    "subject": "پیوست مدارک شرکت سبز گستر گوارشک جهت انعام امور حسابرسی به آن شعبه محترم ارسال می گردد لذا خواهشمند است دستور فرمایید اقدام لازم صورت پذیرد.",
+    "body_text": "با سلام؛\n\nاحتراما، به پیوست مدارک شرقت سبز گستر گوارشک جهت انجام امور حسابرسی به آن شعبه محترم ارسل می گردد.لذا خواهمند است دستور فراماید اقدام لازم صوریت پذیرد.",
+    "contact_info": "آدرس: مشهد - بلوار کوتر - کوتر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۹۷ فکس: ۳۸۳۸۸۵۷۵ Emil: Sabzgostar2006@gmail.com\n۳۸۳۸۸۲۶۱"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۶۴۸۱-۳۸۳۸۲۹۷",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388481-38388481-38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "high",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "2556"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "added",
+     "classical": "38388261"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_35.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کشت",
+    "receiver": "جناب مهندس طالبی",
+    "subject": "تعداد پرسنل شاغل در شرکت سبز کشت",
+    "body_text": "با سلام؛\n\nاحتراما، به استحضار می رساند تعداد پرسنل شاغل د شرکت سبز کشت گوارشک ۱۴ نفر بوده و نیز تعداد افراد تحت تکفل نفرات فوق الذکر ۳۱ نفر می باشند مراتب جهت اطلاع و اقدام مقتضی ارسال می گردد.",
+    "contact_info": "آدرس: مشهد - بلویار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵ رؤ نوشت: خانم علمی جهت اطلاع."
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۴۸۱-۳۸۳۶۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۵۷۶",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_36.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزکشت",
+    "receiver": "جناب آقای پهلوان نماینده محترم اداره کل آموزش و پرورش خراسان رضوی",
+    "subject": "احراز هویت پرسنل در سامانه جامع روابط کار",
+    "body_text": "با سلام؛\n\nاحتراهما، پیرو قرارداد منعقده به شماره ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ جهت احراز هویت پرسنال در سامانه جامع روابط کار خواهشمند است نسبت به ارسال اطلاعات هویتی پرسنل شامل نام و نام خانوادگی، کد ملی، شماره شبا و شماره تلفن جهت بهره برداری بعد اقدام لازم را مبذول فرمایید",
+    "contact_info": "آدرس: مشهد - بلوار کوتر - کوتر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵\nفکس: ۳۸۳۸۸۲۹۷\nEmil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۹۴۹",
+     "resolved": "۲۹۴۹",
+     "confidence": "high",
+     "classical": "2949"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۳۰۳/۳۱/۱۴",
+     "resolved": "۱۴۰۳/۰۳/۳۱",
+     "confidence": "corrected",
+     "classical": "1403-03-31"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۹۶۱-۳۸۴۰۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۴۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "22556"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_37.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "ریاست محترم بانک سامان شعبه هاشمیه مشهد",
+    "subject": "پیوست لیست پرسنل جهت واریز حقوق به حضور معرفی می گردید.",
+    "body_text": "با توجه به پیوست لیست پرسونل جهت واریز حق به تعداد [۳۲] نفر و جمعا به مبلغ [۹۴,۲۵۱,۵۹۷] ریال به حضور معرفی می گردد.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۰۲۷۸۷۱۵۰۲۷۶۱۵۰۲۷۸۷۱۵۰۲۵۳۰۵۰۲۵۴۳۰۵۰۵۱۱۵۰۵۰۳۰۵۰۵۱۱۵۰\nEmail : Sabz_gostar8@yahoo.com\n۵۰۲۷۸۷۳"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "amount",
+     "value": "۹۴,۲۵۱,۵۹۷",
+     "resolved": "۹۴,۲۵۱,۵۹۷",
+     "confidence": "unverified",
+     "classical": "051-5027871"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۰۲۷۸۷۱۵۰۲۷۶۱۵۰۲۷۸۷۱۵۰۲۵۳۰۵۰۲۵۴۳۰۵۰۵۱۱۵۰۵۰۳۰۵۰۵۱۱۵۰",
+     "resolved": "۰۲۷۸۷۱۵۰۲۷۶۱۵۰۲۷۸۷۱۵۰۲۵۳۰۵۰۲۵۴۳۰۵۰۵۱۱۵۰۵۰۳۰۵۰۵۱۱۵۰",
+     "confidence": "unverified",
+     "classical": "5025305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۷۸۷۳",
+     "resolved": "۵۰۲۷۸۷۳",
+     "confidence": "added",
+     "classical": "5027873"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_38.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "ریاست محترم بانک سامان شعبه هاشمیه مشهد",
+    "subject": "پیوست لیست پرسنل جهت واریز حقوق به حضور معرفی",
+    "body_text": "احتراهما، به پیوست لیست پرسنلمجهت واریزحقوقبه تعداد نفر و جمعا به مبلغ ریال به حضور معرفی می گردد.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۳ - ۵۰۲۷۸۷۱ - ۵۰۱۱۵۰ فکس: ۵۰۲۵۳۰۵"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۷۸۷۳",
+     "resolved": "۵۰۲۷۸۷۳",
+     "confidence": "high",
+     "classical": "5027873"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۴۲۷۸۶۱",
+     "resolved": "۵۰۲۷۸۷۱",
+     "confidence": "corrected",
+     "classical": "5027871"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۱۱۵۰",
+     "resolved": "۵۰۱۱۵۰",
+     "confidence": "unverified",
+     "classical": "5025305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵",
+     "resolved": "۵۰۲۵۳۰۵",
+     "confidence": "high",
+     "classical": "5025305"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_39.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مرکز محترم بیمارستان طالقانی",
+    "subject": "انجام آزمایشات بدو استفاده",
+    "body_text": "با سلام؛\n\nاحتیاطا، به دین وسیله آقای ابوالفضل اسدی زاده به شماره ملی ۰۹۲۴۴۲۴۱۱۷. جهت انجام آزمایشات بدو استخدام به حضور معنی می‌گردد. خواهشمند است نسبت به انجام آزمایشات و معاینات مساعدت و نتایج را به پیوست فرم معاینات ارسال نمایید.",
+    "contact_info": "آدرس: مشهد - بلوار کوتر - کوتر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱-۳۸۳۸۸۵۷۵-۳۸۳۸۸۲۹۷۰\nفکس: ۳۸۳۸۸۲۶۱\nEmil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۹۲۴۴۲۴۱۱۷",
+     "resolved": "۰۹۲۴۴۲۴۱۱۷",
+     "confidence": "corrected",
+     "classical": "0924424117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۹۴۶۱-۳۸۲۸۸۵۷۵-۳۸۳۹۰۲۹۷",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱-۳۸۳۸۸۵۷۵-۳۸۳۸۸۲۹۷۰",
+     "confidence": "corrected",
+     "classical": "38388481-38388261-38388575-383882970"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۴۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "22056"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_4.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "اداره محترم آموزش و پروش ناحیه ۵ مشهد",
+    "subject": "پیگیری قرارداد شماره ۲۹۰۶۳۰ مورخ ۱۴۰۲/۱۲/۲۷",
+    "body_text": "با سلام؛ احتراما، پیرو قرارداد شماره ۲۹۰۶۳۰ مورخ ۱۴۰۲/۱۲/۲۷ فی مابین این شرکت با اداره کل محترم آموزش وپروش جهت تحصیل اسناد مالکیت خواهشمند است دستور فرمایید تا سند اجاره آستان قدس املاک زیر بهره برداری به این شرکت تحویل داده شود.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵ Emil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۳۲۹۰۶۳",
+     "resolved": "۲۹۰۶۳۰",
+     "confidence": "corrected",
+     "classical": "290630"
+    },
+    {
+     "field": "subject",
+     "kind": "date",
+     "value": "۱۴۰۲/۱۲/۲۷",
+     "resolved": "۱۴۰۲/۱۲/۲۷",
+     "confidence": "high",
+     "classical": "1402-12-27"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۳۲۹۰۶۳",
+     "resolved": "۲۹۰۶۳۰",
+     "confidence": "corrected",
+     "classical": "290630"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۲/۱۲/۲۷",
+     "resolved": "۱۴۰۲/۱۲/۲۷",
+     "confidence": "high",
+     "classical": "1402-12-27"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۴۸۱-۳۸۳۶۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۵۰۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "high",
+     "classical": "2006"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۵۰۰",
+     "resolved": "۱۵۰۰",
+     "confidence": "added",
+     "classical": "1500"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_40.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "متعبعد له: شرکت پدیدآوران کاوه البرز",
+    "subject": "تعهدنامه سرشماره خط خدماتی",
+    "body_text": "تعهد: شرکت سبز گستر گوارشک شماره ثبت ۲۷۸۷۴ شناسه ملی ۱۰۳۸۰۴۳۲۶۲۰ آدرس مشهد - خیابان کوتر شمالی - کوتر شمالی\nتعهد له: شرکت پدیدآوران کاوه البرز شماره ثبت ۱۱۹۴۳ شناسه ملی ۱۰۵۷۰۰۲۰۵۴۴ آدرس : تهران، ونک، خیابان شهید دکترشمسم",
+    "contact_info": "متعبعد: شرکت سبزگستر گوارشک، شماره ثبت ۲۷۸۷۴، شناسه ملی ۱۰۳۸۰۴۳۲۶۲۰، آدرس مشهد - خیاب. کوتر شمالی - کوتر شم. پلاک ۷، کد پستی ۹۱۷۸۶۶۴۱۹۱۷، تلفن ثابت ۰۵۱۳۸۳۸۸۴۸۱\nتعهد ل: شرکت پدیداوران کاوه البرز، شماره ثبت ۱۱۹۴۳، شناسه ملی ۱۰۵۷۰۰۲۰۵۴۴، آدرس : تهران، ونک، خیابان شهید دکترشمس، بلاک ۱۳، طبقه ۲، واحد جنوبی کدپستی ۱۴۳۵۶۸۳۳۱۵\n۳۸۳۸۸۲۹۷ ۳۸۳۸۸۲۶۱ ۳۸۳۸۸۵۷۵"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۷۸۷۴",
+     "resolved": "۲۷۸۷۴",
+     "confidence": "high",
+     "classical": "27874"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۳۸۰۴۳۲۶۲۰",
+     "resolved": "۱۰۳۸۰۴۳۲۶۲۰",
+     "confidence": "high",
+     "classical": "10380432620"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۱۹۴۳",
+     "resolved": "۱۱۹۴۳",
+     "confidence": "high",
+     "classical": "11943"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۵۷۰۰۲۰۵۴۴",
+     "resolved": "۱۰۵۷۰۰۲۰۵۴۴",
+     "confidence": "high",
+     "classical": "10570020544"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۲۷۸۷۴",
+     "resolved": "۲۷۸۷۴",
+     "confidence": "high",
+     "classical": "27874"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۱۰۳۸۰۴۳۲۶۲۰",
+     "resolved": "۱۰۳۸۰۴۳۲۶۲۰",
+     "confidence": "high",
+     "classical": "10380432620"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۹۱۷۸۶۶۴۱۹۱۷",
+     "resolved": "۹۱۷۸۶۶۴۱۹۱۷",
+     "confidence": "high",
+     "classical": "91786641917"
+    },
+    {
+     "field": "contact_info",
+     "kind": "national_id",
+     "value": "۵۱۳۸۳۸۸۴۸۱",
+     "resolved": "۰۵۱۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "05138388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۹۴۳",
+     "resolved": "۱۱۹۴۳",
+     "confidence": "high",
+     "classical": "11943"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۱۱۰۵۷۰۰۲۰۵۴۴",
+     "resolved": "۱۰۵۷۰۰۲۰۵۴۴",
+     "confidence": "corrected",
+     "classical": "10570020544"
+    },
+    {
+     "field": "contact_info",
+     "kind": "national_id",
+     "value": "۱۴۳۵۶۸۳۳۱۵",
+     "resolved": "۱۴۳۵۶۸۳۳۱۵",
+     "confidence": "high",
+     "classical": "1435683315"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "added",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "added",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "added",
+     "classical": "38388575"
+    },
+    {
+     "field": "body_text",
+     "kind": "mobile",
+     "value": "۰۹۱۵۱۱۴۱۰۹۴",
+     "resolved": "۰۹۱۵۱۱۴۱۰۹۴",
+     "confidence": "added",
+     "classical": "09151141094"
+    },
+    {
+     "field": "body_text",
+     "kind": "national_id",
+     "value": "۰۹۴۰۰۳۴۷۲۷",
+     "resolved": "۰۹۴۰۰۳۴۷۲۷",
+     "confidence": "added",
+     "classical": "0940034727"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۴۹۹۵۷۰۰۰",
+     "resolved": "۴۹۹۵۷۰۰۰",
+     "confidence": "added",
+     "classical": "49957000"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_42.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "[ناخوانا]",
+    "subject": "تعهدنامه تعریف شماره خدماتی",
+    "body_text": "تحت عنوان: تعهدنامه تعریف محتوای خدماتی، در ارتباط با ارسال پیامک به مشتریان، متن اصلی نامه شامل توضیحات و شرایط خدماتی ارائه شده است.",
+    "contact_info": "آدرس: مشهد - بلوار کوتر شمالی - کوتر شمالی - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷\nفاکس: ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۵۷۵\n۳۸۳۸۸۲۶۱"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "high",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۴۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۵۸۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "high",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "added",
+     "classical": "38388261"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "1392",
+     "resolved": "1392",
+     "confidence": "added",
+     "classical": "1392"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_43.JPG",
+   "fields_after": {
+    "sender": "سازمان مطبوعاتی و اطلاع رسانی استان",
+    "receiver": "[ناخوانا]",
+    "subject": "[ناخوانا]",
+    "body_text": "با توجه به موارد الزامی و صحت سننجی آن مطابق با سامانه احراز هویت انجام شد.\n\nجمعه هدف: کارمندان شرکت و نیروهای طرف قرارداد\nموضوع محتوای پیامک خدماتی: ثبت نام، تایید ثبت نام و تایید مدارک ارسالی توسط سامانه",
+    "contact_info": "آدرس: مشهد - بلوار کوتر شمالی - کوتر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵\nفکس: [ناخوانا]\nایمیل: info@sabzgostar-govareshk.ir"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۴۸۱-۳۸۳۶۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "27874",
+     "resolved": "27874",
+     "confidence": "added",
+     "classical": "27874"
+    },
+    {
+     "field": "body_text",
+     "kind": "national_id",
+     "value": "1038043262",
+     "resolved": "1038043262",
+     "confidence": "added",
+     "classical": "1038043262"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "411416365531",
+     "resolved": "411416365531",
+     "confidence": "added",
+     "classical": "411416365531"
+    },
+    {
+     "field": "body_text",
+     "kind": "mobile",
+     "value": "9151141094",
+     "resolved": "9151141094",
+     "confidence": "added",
+     "classical": "9151141094"
+    },
+    {
+     "field": "body_text",
+     "kind": "national_id",
+     "value": "5138388297",
+     "resolved": "5138388297",
+     "confidence": "added",
+     "classical": "5138388297"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "05138388481",
+     "resolved": "05138388481",
+     "confidence": "added",
+     "classical": "05138388481"
+    },
+    {
+     "field": "body_text",
+     "kind": "mobile",
+     "value": "09151141094",
+     "resolved": "09151141094",
+     "confidence": "added",
+     "classical": "09151141094"
+    },
+    {
+     "field": "body_text",
+     "kind": "national_id",
+     "value": "0940034727",
+     "resolved": "0940034727",
+     "confidence": "added",
+     "classical": "0940034727"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_50.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز قاستر",
+    "receiver": "مدیر عامل محترم شرکت شیر پاستوریزه پکاه خراسان",
+    "subject": "دیالا شماره شبای شرکت سبز قاستر گوارشک جهت اطلاع و اقدام مقتضی",
+    "body_text": "با سلام؛\n\nاحتراما، عطف به قرارداد فی مابین در خصوص امور خدماتی دیالا شماره شبای شرکت سبز قاستر غوارشک جهت اطلاح و اقدام مقتصی ارسال می گردد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵ Emil: Sabzgostar2006@gmail.com\n۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۶۱-۳۸۳۸۹۴۸۱-۳۸۴۳۸۰۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "2556"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "added",
+     "classical": "38388297"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "070560930504003111300001",
+     "resolved": "070560930504003111300001",
+     "confidence": "added",
+     "classical": "070560930504003111300001"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "9305",
+     "resolved": "9305",
+     "confidence": "added",
+     "classical": "9305"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_51.JPG",
+   "fields_after": {
+    "sender": "سازمان شیر باستوریزه پکاه خراسان",
+    "receiver": "مدیر عامل محترم شرکت شیر باستوریزه بکاه خراسان",
+    "subject": "مقدونی ارسال می گردد.",
+    "body_text": "با سلام،\n\nاحتراما، عطف به قرارداد فی مابین در خصوص امور خدماتی ذیلا شماره حساب شرکت سبز گستر گوارشک جهت اطلاع و اقدام مقتضی ارسال می گردد.\n\nشماره حساب:۱-۳۱۱۱۳۰۰-۴۰-۳۱۱۹۳۰۵\n\nبانک سامان هاشمیه مشهد کد ۹۳۰۵",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوتر شمالی ۲۵ - پلاک ۷ تلفن:۸۳۸۸۲۹۷ فکس:۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ Emil:Sabzgostar2006@gmail.com\n۳۸۳۸۸۲۶"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱-۰۰۳۱۱۳۰۰-۴۰-۳۱۱۹۳۰۵",
+     "resolved": "۱-۳۱۱۱۳۰۰-۴۰-۳۱۱۹۳۰۵",
+     "confidence": "low",
+     "classical": "3111300-9305"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۹۳۰۵",
+     "resolved": "۹۳۰۵",
+     "confidence": "high",
+     "classical": "9305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۸۳۸۸۲۹۷",
+     "resolved": "۸۳۸۸۲۹۷",
+     "confidence": "high",
+     "classical": "8388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "high",
+     "classical": "38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "822556"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶",
+     "resolved": "۳۸۳۸۸۲۶",
+     "confidence": "added",
+     "classical": "3838826"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_54.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "مدیریت محترم شرکت آب و فاضلات مشهد",
+    "subject": "موضوع: استرداد ضمانات نامه به شماره ۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹ در مورخ ۱۴۰۳/۰۷/۲۴ به نماینده این شرکت",
+    "body_text": "با توجه به برگزاری مناقصه انجام خدمات نظافت، پذیرایی، و سایر خدمات فنی در مجموعه ساختمان های ستادی مورخ ۱۴۰۳/۰۷/۲۴ و عدم برنده شدن این شرکت خواهشمند است دستور فرمایید نسبت به استرداد ضمانات نامه به شمار",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵ ایمیل: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۵۲۰۳۶۷۸۴۸۶۳۰۹",
+     "resolved": "۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹",
+     "confidence": "corrected",
+     "classical": "9305203678486309"
+    },
+    {
+     "field": "subject",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۷/۲۴",
+     "resolved": "۱۴۰۳/۰۷/۲۴",
+     "confidence": "high",
+     "classical": "1403-07-24"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۴۳/۰۷/۲۴",
+     "resolved": "۱۴۰۳/۰۷/۲۴",
+     "confidence": "corrected",
+     "classical": "1403-07-24"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۸۱-۳۸۳۷۸۸۴۸۱",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "2556"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_55.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "ریاست محترم بانک سامان شعبه بلوار هاشمیه",
+    "subject": "ابطال ضمانات نامه بانکی صادر شده",
+    "body_text": "با سلام\n\nاحتراما، خواهشمند است نسبت به ابطال ضمانات نامه بانگی صادر شده به مبلغ ۱۰۰۰/۰۰۰/۷۷۵ میلیون ریال در تاریخ ۱۴۰۳/۰۷/۲۴ در وجوه شرکت آب و فاضلاب مشهد اقدام نمایید.\nپیش از همکاری متقابل شما سپاسگزاریم.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲، ۳۸۳۶۸۴۸۱-۳۸۳۷۸۴۸۵۷۵\nفکس: ۳۸۳۰۸۲۶۱-۳۸۴۰۸۸۵۷۴\ne-mail: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۰۰/۰۰۰/۷۷۵",
+     "resolved": "۱۰۰۰/۰۰۰/۷۷۵",
+     "confidence": "unverified",
+     "classical": "1403-1403-38388575"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۴/۰۷/۲۳",
+     "resolved": "۱۴۰۳/۰۷/۲۴",
+     "confidence": "corrected",
+     "classical": "1403-07-24"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲",
+     "confidence": "corrected",
+     "classical": "383882"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۴۸۱-۳۸۳۷۸۴۸۵۷۵",
+     "resolved": "۳۸۳۶۸۴۸۱-۳۸۳۷۸۴۸۵۷۵",
+     "confidence": "low",
+     "classical": "38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۲۶۱-۳۸۴۰۸۸۵۷۴",
+     "resolved": "۳۸۳۰۸۲۶۱-۳۸۴۰۸۸۵۷۴",
+     "confidence": "low",
+     "classical": "38388261-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "822556"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_56.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیریت محترم شرکت آب و فاضلاب مشهد",
+    "subject": "موضوع: درخواست استرداد ضمان نامه به شماره ۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹ در مورخ ۱۴۰۳/۰۷/۲۴ به نماینده این شرکت",
+    "body_text": "با توجه به برگزاری مناقصه انجام خدمات نظافت، پذیرایی، و سایر خدمات فنی در مجموعه ساختمان های ستادی مورخ ۱۴۰۳/۰۷/۲۴ و عدم برندگی شدن این شرکت خواهشمند است دستور فرمایید نسبت به استرداد ضمان نامه به شماره۹۳۰۵ۡ۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹در مورخ۱۴۰۳/۰۷/۲۴به نماینده این شرکت آقای یاسین عباسیان اقدام لازم صورت پذیرد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ Emil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹",
+     "resolved": "۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹",
+     "confidence": "high",
+     "classical": "9305203678486309"
+    },
+    {
+     "field": "subject",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۷/۲۴",
+     "resolved": "۱۴۰۳/۰۷/۲۴",
+     "confidence": "high",
+     "classical": "1403-07-24"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۳۰/۰۷/۲۴",
+     "resolved": "۱۴۰۳/۰۷/۲۴",
+     "confidence": "corrected",
+     "classical": "1403-07-24"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۹۳۰۵",
+     "resolved": "۹۳۰۵",
+     "confidence": "unverified",
+     "classical": "9305203678486309"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۰۳۶۷۸۴۸۶۳۰۹",
+     "resolved": "۹۳۰۵۲۰۳۶۷۸۴۸۶۳۰۹",
+     "confidence": "corrected",
+     "classical": "9305203678486309"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۷/۲۴",
+     "resolved": "۱۴۰۳/۰۷/۲۴",
+     "confidence": "high",
+     "classical": "1403-07-24"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۸۱-۳۸۳۹۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱-۳۸۳۸۴۸۱-۳۸۳۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "822056"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_59.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "جناب آقای بهلوان",
+    "subject": "تحت عنوان: متن جلوی موضوع",
+    "body_text": "با سلام\n\n- احتراما عطف قرارداد شماره ۲۹۴۹۰ مورخ ۱۴۰۳/۰۳/۳۱، خواهشمنداست با توجه به اتمام قرارداد سه ماهه پرسنل ذیل، نسبت به تعیین وضعیت ایشان مبنی بر تمدید یا اتمام قرداد، تصمیمات لازم را اتخاذ و کتب‌آاعلام فرمایید.\n\n۱- آقای مهدی هنری\n۲- آقای امیر بابایی\n۳- آقای علی رخشانی\n۴- آقای سعید یوسفی\n۵- آقای حیدر عابدینی سلجوقی\n۶- خانم سارا صفردی\n۷- خانم سعیده جلالی",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۵۷۵\nEmil: Sabzgostar2006@gmail.com\n۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۹۴۹",
+     "resolved": "۲۹۴۹۰",
+     "confidence": "corrected",
+     "classical": "29490"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۳/۳۱",
+     "resolved": "۱۴۰۳/۰۳/۳۱",
+     "confidence": "high",
+     "classical": "1403-03-31"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۹۵۷۵",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۶۸۲۶۱-۳۸۴۰۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "low",
+     "classical": "2056"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "added",
+     "classical": "38388297"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_60.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیر عامل محترم شرکت شیر پاستوریزه پگاه خراسان",
+    "subject": "لیست پرسنل به شرح پیوست تقدیم حضور میگردد.",
+    "body_text": "با سلام؛\n\nاحتراما، با توجه به برندگی شدن این شرکت در مناقصه تامین نیروی انسانی لیست پرسنل به شرح بیوست تقدیم حضر میگردد.\n\nپیش از همکاری متقابل شما سپاسگزاریم.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۹۶۱-۳۸۴۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۲۸۴۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "27874",
+     "resolved": "27874",
+     "confidence": "added",
+     "classical": "27874"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_64.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کستر",
+    "receiver": "مدیریت محترم بانک ملت شعبه سعدی",
+    "subject": "گواهی اشتغال به کار",
+    "body_text": "با سلام؛\n\nاحتراما بدین وسیله گواهی می شود آقای الهه عابدینی فرزند حسین با کد ملی ۰۹۳۷۹۹۵۷۴۶ از تاریخ ۱۴۰۳/۰۴/۰۱ با قرارداد یکساله در این شرکت مشغول به کار می باشد، این گواهی به درخواست نامبرده صرف جهت امور بانکی صادر گردیده است.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۰۵۱۱-۵۰۲۷۸۷۱-۵۰۲۷۸۷۳ فکس: ۵۰۲۵۳۰۵-۰۵۱۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۳۷۹۹۵۷۴۶",
+     "resolved": "۰۹۳۷۹۹۵۷۴۶",
+     "confidence": "corrected",
+     "classical": "0937995746"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۴/۰۱",
+     "resolved": "۱۴۰۳/۰۴/۰۱",
+     "confidence": "high",
+     "classical": "1403-04-01"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۷۸۷۱-۵۰۲۸۷۴-۵۰۱۱۵۰",
+     "resolved": "۰۵۱۱-۵۰۲۷۸۷۱-۵۰۲۷۸۷۳",
+     "confidence": "corrected",
+     "classical": "0511-5027871-5027873"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵-۵۰۵۱۱",
+     "resolved": "۵۰۲۵۳۰۵-۰۵۱۱",
+     "confidence": "corrected",
+     "classical": "5025305-0511"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۳۹۴۳",
+     "resolved": "۳۹۴۳",
+     "confidence": "added",
+     "classical": "3943"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_65.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "ریاست محترم باک سامان شعبه هاشمیه",
+    "subject": "خدمات ناجیگری و مربیگری مجموعه فرنگی ورزشی شرکت آب منطقه ای خراسان رضوی",
+    "body_text": "با سلام؛\n\nاحتراما با توجه به اینکه این شرکت قصد شرکت در مناقصه خدمات ناجیگری و مربیگری مجموعه فرنگی ورزشی شرکت آب منطقه ای خراسان رضوی را دارد خواهشمند است نسبت به تائید توان مالی این شرکت ذیل این نامه دستور لازم را صادر فرمایید.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰۱۱۵۰-۵۰۲۵۳۰۵\nفاکس: ۰۵۱۱-۵۰۲۵۳۰۵"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۵۰۲۷۸۷۱-۵۰۲۴۷۸۷۲-۵۰۱۱۵۰-۵۰۲۵۳۰۵۰",
+     "resolved": "۵۰۲۷۸۷۱-۵۰۲۷۸۷۱-۵۰۱۱۵۰-۵۰۲۵۳۰۵",
+     "confidence": "corrected",
+     "classical": "5027871-5027871-5025305-5025305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۱۱-۵۰۰۲۵۰۵۰",
+     "resolved": "۰۵۱۱-۵۰۲۵۳۰۵",
+     "confidence": "corrected",
+     "classical": "0511-5025305"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_67.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیریت محترم بانک مهر ایران",
+    "subject": "موضوع: گواهی اشتغال به کار",
+    "body_text": "با سلام؛\n\nاحتراما بدین وسیله گواهی می شود آقای حسن برات زاده فرزند محمد با کد ملی ۳۹۴۳۸۰۳۹۲۳۸۸۹۸۰ از تاریخ ۱۴۰۳/۰۴/۰۱ با قرارداد یکساله در این شرکت مشغول به کار می باشد، این گواهی به درخواست نامبرده صرف جهت امور بانکی صادر گردیده است.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۳-۵۰۲۷۸۷۱ فکس: ۵۰۲۵۳۰۵-۵۰۱۱۵۰ Email : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۳۹۴۳۸۰۳۹۲۳۸۸۹۸۰",
+     "resolved": "۳۹۴۳۸۰۳۹۲۳۸۸۹۸۰",
+     "confidence": "unverified",
+     "classical": "9803943"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۴/۰۱",
+     "resolved": "۱۴۰۳/۰۴/۰۱",
+     "confidence": "high",
+     "classical": "1403-04-01"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۷۸۷۳-۵۰۴۲۷۸۷۱",
+     "resolved": "۵۰۲۷۸۷۳-۵۰۲۷۸۷۱",
+     "confidence": "corrected",
+     "classical": "5027873-5027871"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵-۵۰۱۱۵۰",
+     "resolved": "۵۰۲۵۳۰۵-۵۰۱۱۵۰",
+     "confidence": "unverified",
+     "classical": "5025305-5025305"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۹۸۰۳۹۴۳",
+     "resolved": "۹۸۰۳۹۴۳",
+     "confidence": "added",
+     "classical": "9803943"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_68.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز قشنتر",
+    "receiver": "[ناخوانا]",
+    "subject": "امتناع برخی مراکز از پذیرش حق سوپر مترالاس",
+    "body_text": "امتناع، به توجه پذیرفته حق سوپر مترالس در ماه ۱۳۹۷/۲/۳۰ فرامینی، عامل استانداردی نجات رساله‌ها فواصلندست نسبت به بودجه مبلغ مذکور باسرح لست مجموعه اقدامات دفاعی، انجول خمسه.",
+    "contact_info": "آدرس: مشهد-بلوارلادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۳۰-۵۰۲۷۸۷۱-۵۰۲۵۳۰۵ فکس: ۰۵۱۱-۵۰۲۵۳۰۵ Email : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۳۹۷/۲/۳۰",
+     "resolved": "۱۳۹۷/۲/۳۰",
+     "confidence": "unverified",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۷۸۷۳-۵۰۲۸۷۱-۵۰۴۲۵۳۰۵",
+     "resolved": "۵۰۲۷۸۷۳۰-۵۰۲۷۸۷۱-۵۰۲۵۳۰۵",
+     "confidence": "corrected",
+     "classical": "50278730-5027871-5025305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۱۱-۵۰۲۵۳۰۵",
+     "resolved": "۰۵۱۱-۵۰۲۵۳۰۵",
+     "confidence": "corrected",
+     "classical": "0511-5025305"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_69.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کشت",
+    "receiver": "شرکت محترم آب و فاضلاب مشهد",
+    "subject": "تحصیل مبلغ صورت وضعیت های مربوط به قرارداد شماره ۲۳",
+    "body_text": "با سلام؛\n\nاحتراما، عطف به قرارداد شماره شماره ۱۴۰۳/۶۱۰۲۳ مورخ ۱۴۰۳/۰۵/۰۲ به دین وسیله شماره شبا این شرکت جهت واریز مبالغ صورت وضعیت های مربوطه به قرارداد فوق الذکر به حضور ارسال میگردد.\n\nشماره حساب: ۱۰۳۸۰۴۳۲۶۲۰\nشماره شبا: ۰۷۰۵۶۰۹۳۰۵۰۴۰۰۳۱۱۱۳۰۰۰۰۱ IR070560930504003111300001\nشناسه ملی شرکت: ۰۷۰۵۶۰۹۳۰۵۰۴۰۰۳۱۱۱۳۰۰۰۰۱\nبانک سامان هاشمیه مشهد کد ۹۳۰۵",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵ Emil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۲۳/۶۱۰۲۳",
+     "resolved": "۱۴۰۳/۶۱۰۲۳",
+     "confidence": "corrected",
+     "classical": "1403-61023"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۵۰/۲",
+     "resolved": "۱۴۰۳/۰۵/۰۲",
+     "confidence": "corrected",
+     "classical": "1403-05-02"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۳۸۰۴۳۲۶۲۰",
+     "resolved": "۱۰۳۸۰۴۳۲۶۲۰",
+     "confidence": "high",
+     "classical": "10380432620"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۰۰۳۱۱۱۳۰۰۵۴۰۰۳۰۵۹۳۰۵",
+     "resolved": "۰۷۰۵۶۰۹۳۰۵۰۴۰۰۳۱۱۱۳۰۰۰۰۱",
+     "confidence": "corrected",
+     "classical": "070560930504003111300001"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "IR070569304003113001",
+     "resolved": "IR070560930504003111300001",
+     "confidence": "corrected",
+     "classical": "070560930504003111300001"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۳۷۰۵۶۹۳۰۴۰۰۱۱۱۰۳۸",
+     "resolved": "۰۷۰۵۶۰۹۳۰۵۰۴۰۰۳۱۱۱۳۰۰۰۰۱",
+     "confidence": "corrected",
+     "classical": "070560930504003111300001"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۹۳۰۵",
+     "resolved": "۹۳۰۵",
+     "confidence": "high",
+     "classical": "9305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۷۴۸۱-۳۸۳۶۸۴۸۱",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "low",
+     "classical": "822006"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_7.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "ریاست محترم تامین اجتماعی شعبه ۳ مشهد",
+    "subject": "تحضر می رساند شرکت سبز گوارشک به شماره ثبت ۲۷۸۷۴ با کد کارگاهی ۶۳۶۸۲۶۰۶۳۴ در خصوص وضعیت یکی از بیمه شدگان به نام آقای مرتضی غلامی پردون با شماره ملی ۱۱۷ و شماره بیمه ۱۳۰۸۸۰۸۰",
+    "body_text": "با سلام؛\n\nاحتراما به استحضار می رساند شرکت صبز گوارشک به ثبت شماره ۲۷۸۷۴ با کد کارگاه ۶۳۶۸۲۶۰۶۳۴ در خصوص وضعیت یکی از بیمه شدگان به نام آقای مرتضی غلامی پردون با شماره ملی ۰۸۸۰۲۶۶۱۴۷و شماره بیمه ۰۰۶۸۴۷۳۰۸۸، که در تاریخ ۱۴۰۳/۰۹/۰۶ دچار حادثه ناشی از کار و منجر به آسیب دیدگی شکستگی لگن شده؛ با عنایت به عدم اطلاع این شرکت از زمان محدود گزارش حادثه ضمن عرض پوزش از تأخیر به وجود آمده نسبت به ارائه گزارش به پیوست نامه به حضورتان ارسال می گردد. لذا خواهشمند است اقدامات مقتصدی لازم در جریان برخورداری بیمه شده حادثه دیده از تعهدات سازمان اقدامات شایسته را بعمل آورید.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۱-۵۰۲۷۸۷۱-۰۵۱۱ فکس: ۵۰۲۵۳۰۵-۵۰۲۵۳۰۵-۰۵۱۱ Email : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "other",
+     "value": "۲۷۸۷۴",
+     "resolved": "۲۷۸۷۴",
+     "confidence": "high",
+     "classical": "27874"
+    },
+    {
+     "field": "subject",
+     "kind": "national_id",
+     "value": "۶۳۶۸۲۶۰۶۳۴",
+     "resolved": "۶۳۶۸۲۶۰۶۳۴",
+     "confidence": "high",
+     "classical": "6368260634"
+    },
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۱۳۶۶۱۴۷",
+     "resolved": "۱۱۷",
+     "confidence": "corrected",
+     "classical": "117"
+    },
+    {
+     "field": "subject",
+     "kind": "reference",
+     "value": "۱۳۰۸۸۰۸۰",
+     "resolved": "۱۳۰۸۸۰۸۰",
+     "confidence": "unverified",
+     "classical": "0068473088"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۷۸۹۴",
+     "resolved": "۲۷۸۷۴",
+     "confidence": "corrected",
+     "classical": "27874"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۶۳۶۵۸۲۶۰۶۳۴",
+     "resolved": "۶۳۶۸۲۶۰۶۳۴",
+     "confidence": "corrected",
+     "classical": "6368260634"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۳۶۵۶۱۴۷",
+     "resolved": "۰۸۸۰۲۶۶۱۴۷",
+     "confidence": "corrected",
+     "classical": "0880266147"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۳۰۶۸۴۷۳۰۸۸",
+     "resolved": "۰۰۶۸۴۷۳۰۸۸",
+     "confidence": "corrected",
+     "classical": "0068473088"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۹۱/۰۶",
+     "resolved": "۱۴۰۳/۰۹/۰۶",
+     "confidence": "corrected",
+     "classical": "1403-09-06"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۵۰۲۷۸۶۱-۵۰۴۲۷۸۱۵۰-۵۰۵۱۱۰",
+     "resolved": "۵۰۲۷۸۷۱-۵۰۲۷۸۷۱-۰۵۱۱",
+     "confidence": "corrected",
+     "classical": "5027871-5027871-0511"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۴۵۳۰۵-۵۰۳۵۰۵-۵۱۱۱",
+     "resolved": "۵۰۲۵۳۰۵-۵۰۲۵۳۰۵-۰۵۱۱",
+     "confidence": "corrected",
+     "classical": "5025305-5025305-0511"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_70.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "جناب آقای عنوانی ریاست محترم اداره حقوقی املاک و حمایت قضایی آموزش و پروش خراسان رضوی",
+    "subject": "تحلیل مدارک مربوط به املاک آموزش و پرورش",
+    "body_text": "با سلام\n\nاحتراما عطف به قرارداد شماره ۸۲۲۸/ص/۱۴۰۳/۱۴۰۳ با توجه به اینکه این شرکت کپی، تصویر و رونوشت از مدارک مربوط به امالک آموزش و پرورش را ثبت نمی نماید به پیوست کپی صورت مجلس تفکیکی آپارتمان های مرتفع جهت بهرهبرداری بعدی ارسال می گردد. خواهشمند است دستور فرمایید تا اسکن از موارد ارسالی تهییه و در سوابق نگهداری گردد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷-۳۸۴۸۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۶۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۸۲۲۸",
+     "resolved": "۸۲۲۸",
+     "confidence": "high",
+     "classical": "8228"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۶۰۳/۱۴۰۲",
+     "resolved": "۱۴۰۳/۱۴۰۳",
+     "confidence": "corrected",
+     "classical": "1403-1403"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۸۸۲۹۷-۳۸۴۸۶۱-۳۸۴۹۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۹۷-۳۸۴۸۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388297-38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۳",
+     "resolved": "۱۴۰۳",
+     "confidence": "added",
+     "classical": "1403"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۶۰۰",
+     "resolved": "۱۶۰۰",
+     "confidence": "added",
+     "classical": "1600"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_72.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "جناب آقای عنوانی ریاست محترم اداره حقوقی املاک و حمایت قضایی آموزش و پروفس",
+    "subject": "نامه درخواست مراجعه به ادارات شهرداری و استان قدیس رضوی و اوقیاف",
+    "body_text": "با سلام؛\n\nاحتراما عطف به قرارداد شماره ۸۲۲۸/ص/۶۳۰/۱۴۰۳/۱۶ مورخ ۱۴۰۳/۰۳/۰۶ به جهت اینکه پرسنل این شرکت جهت انجام امور اداری نیاز به مراجعه به ادارات شهرداری و استان قدس رضوی و اوقیاف را دارند، خواهشمند است معرفی نامه لازم جهت ادارات فوق به نام شرکت صادر و در اختیار قرار گیرد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴ ایمیل: Sabzgostar2056@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۸۲۲۸",
+     "resolved": "۸۲۲۸",
+     "confidence": "high",
+     "classical": "8228"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۶۳۰/۱۴۰۳/۱۶",
+     "resolved": "۶۳۰/۱۴۰۳/۱۶",
+     "confidence": "corrected",
+     "classical": "630-1403"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۲/۰۳/۰۶",
+     "resolved": "۱۴۰۳/۰۳/۰۶",
+     "confidence": "corrected",
+     "classical": "1403-03-06"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۸۸۲۹۷-۳۸۴۸۶۴۸۱-۳۸۴۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388297-38388261-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۳۸۸۴۶۱-۳۸۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴",
+     "confidence": "corrected",
+     "classical": "38388261-383884"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2056",
+     "confidence": "corrected",
+     "classical": "2056"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_73.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "ریاست محترم اداره حقوقی املاک و حمایت قضایی آموزش و پروش خراسان رضوی",
+    "subject": "تحت عنوان:",
+    "body_text": "با سلام؛\n\nاحتراهما عطف به قرارداد شماره ۸۲۲۸/ص/۱۶۰۰/۱۴۰۳ مورخ ۱۴۰۳/۱۶۰۰/۶۳۰ با توجه به اینکه اخذ اسناد دفترچه ای به ادارات ثبت اسناد مناطق مختلف می باشد خواهشند است به صورت عاجل نسبت به درخواست ارسال اسناد از محل خزانه به اداره کل ثبت اسناد خراسان اقدام شایسه صورت پذیرد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۸۲۲۸",
+     "resolved": "۸۲۲۸",
+     "confidence": "high",
+     "classical": "8228"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۶۰۰/۱۴۳۰",
+     "resolved": "۱۶۰۰/۱۴۰۳",
+     "confidence": "corrected",
+     "classical": "1600-1403"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۱۶/۰۳",
+     "resolved": "۱۴۰۳/۱۶۰۰/۶۳۰",
+     "confidence": "corrected",
+     "classical": "1403-1600-630"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۴۸۱-۳۸۳۶۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۴۸۲",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_74.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "معاونت محترم پژوهش برنامهریزی و توسعه منابع آموزش و پرورش خراسان رضوی",
+    "subject": "با سلام؛",
+    "body_text": "با سلام؛\n\nو احتراما این شرکت آمادگی دارد به نسبت به بازسازی ۱۷ واحد مسکونی آن مدیریت واقع در آپارتمان‌های مرتفع به شرح زیر اقدام نماید:\n۱_ بازسازی و در صورت لزوم تعویض کف واحدها\n۲_ بازسازی و در صوره لزوم تعویض کابینتهای آشپزخانه\n۳_ بازسازی و در ضرط لزوم تعویض سیستم سرمایشی و نصب کولر گازی\n۴_ بازسازی و در ظرط لزوم تعویص کاشی و سرامیک سرویس بهداشتی\n۵_ در ضرط امکان نصب توالت فرنگی\n۶_ در ضرط نیاز نقاشی یا نصب کاغذ دیواری\n۷_ در ضرط نیاب زاسازی یا تعویض دربهای واحدها\nدر قبالی انجام امور فوق تقاضای موارد زیر را دارم:\n۱_ برای بهره برداری استیجاری ۴ ساله\n۲_ افزایش مبلغ اجاره ۲۰ درصد سالیانه\n۳_ بر اساس نظریه کارشناسی مبلغ ۲۰ درصد در اجاره تعیین شده به صورت حجمی\n۴_ امکان واغذاری به غیر\n۵_ افزایش مدت دو ماه کاری جهت باز سازی واحد ها به مدت قرارداد\nبدیهی است پس از اتمام دوره تمامی وسایل و امورات انجام شده به آموزش و پروش خواهد شد لذا خواهشمند است دستور فرمایید تا نسبت به بررسی موضوع اقدام شایسته صورت پذیرد.\n\nبا تشکر",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۶۲۹۷-۳۸۳۷۸۸۵۷۵ فکس: ۳۸۳۳۸۴۸۰\n۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۶۲۹۷-۳۸۳۷۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۶۲۹۷-۳۸۳۷۸۸۵۷۵",
+     "confidence": "low",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۳۸۴۸۰",
+     "resolved": "۳۸۳۳۸۴۸۰",
+     "confidence": "low",
+     "classical": "38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "added",
+     "classical": "38388297"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_75.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "شرکت محترم پدیدآوران کاوه البرز",
+    "subject": "موضوع: معرفی نامه",
+    "body_text": "با سلام؛\n\nاحتراما، به استحضار می رسند آقای سبحان شفیعی با کد ملی ۰۹۲۲۴۷۶۷۵۶ و با سمت کارشناسی انفورماتیک و شماره موبایل ۰۹۹۱۷۳۸۳۵۹۰، به عنوان رابط جهت انجام کلیه امور مربوط به سامانه پیامکی متعلق به این شرکت معرفی می گردید.\n\nضمنا این شرکت متوجه می گردد در صورت تغییر رابط فعالی، بلافضل رابط جدید را معرفی نماید.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵\nفکس: ۳۸۳۸۸۲۶۱\nEmil: Sabzgostar2006@gmail.com\n۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۹۲۴۷۶۷۵۶",
+     "resolved": "۰۹۲۲۴۷۶۷۵۶",
+     "confidence": "corrected",
+     "classical": "0922476756"
+    },
+    {
+     "field": "body_text",
+     "kind": "national_id",
+     "value": "۰۹۱۷۳۸۳۵۹۰",
+     "resolved": "۰۹۹۱۷۳۸۳۵۹۰",
+     "confidence": "corrected",
+     "classical": "09917383590"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۸۸۴۸۱-۳۸۴۹۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۴۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "32556"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "added",
+     "classical": "38388297"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_76.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "مدیریت محترم بانک سامان شعبه هاشمی",
+    "subject": "ابطال چک های ذیل الذکر به حضور معرفی میگردد",
+    "body_text": "با سلام؛\n\nاحتراما، آقای امیر رضا شفیعی به عنوان نماینده این شرکت جهت ابطال چک های ذیل الذکر به حضور معروفی میگردد. خواهشمند است دستور فرمایید اقدام مقتصدی صورت پذیرد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵\nفاکس: ۳۸۳۸۸۲۶۱\nEmil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۹۷-۳۸۳۸۶۲۶۱-۳۸۳۹۸۴۸۱-۳۸۴۰۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388297-38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۴۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "400"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_77.JPG",
+   "fields_after": {
+    "sender": "شرکتخدماتیسبزگستر",
+    "receiver": "سرکارخانم انصافی",
+    "subject": "کارگزار رسمی بیمه کد ۱۵۸۲",
+    "body_text": "با سلام؛ عطف به بیمه نامه شماره ۷۰۹۹۹/۲۵۲/۳۰۰-۷۰۰۰ فی مابین این شرکت و بیمه سامان خواهشمند است لیست پیوست به تعداد ۱۴ نفر از قلم افتادگی به بیمه نامه فوق الذکر اضافه گردد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵"
+   },
+   "records": [
+    {
+     "field": "subject",
+     "kind": "other",
+     "value": "۱۵۸۲",
+     "resolved": "۱۵۸۲",
+     "confidence": "high",
+     "classical": "1582"
+    },
+    {
+     "field": "body_text",
+     "kind": "amount",
+     "value": "۷۰۹۹۹/۲۵۲/۳۰۰-۷۰۰۰",
+     "resolved": "۷۰۹۹۹/۲۵۲/۳۰۰-۷۰۰۰",
+     "confidence": "unverified",
+     "classical": "70999-252-900-900"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۲۶۱-۳۸۳۹۸۴۸۱-۳۸۴۳۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388297-3838826-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "national_id",
+     "value": "۳۸۳۰۸۴۸۵۷۶",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۴۰۳",
+     "resolved": "۱۴۰۳",
+     "confidence": "added",
+     "classical": "1403"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_79.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کشت",
+    "receiver": "جناب آقای پهلوان نماینده محترم اداره کل آموزش و پروش خراسان رضوی",
+    "subject": "تحصیل حقوق نیروها در سامانه مالیاتی متاسفانه امکان ارسال لیست حقوق نیروها در این سامانه",
+    "body_text": "با سلام؛\n\nاحتراما عطف به قرارداد داد ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ با توجه به عدم درج تاریخ ترک کار نیرو های قراردادی توسط شرکت خدماتی قبلی در سامانه امور مالیاتی متاسفانه امکان ارسال لست حقوق نیرو ها در این سامانه میسر نمی باشد. پناهچه تا پایان وقت اداری مورخ ۱۴۰۳/۲۷ نسبت به درج تاریخ ترک کار توسط شرکت خدماتی قبلی اقدام لازم صورت نپذیرد مسئولیت جرائم و اضافه بر دانخت مالیات حقوق نیروها به عهده اداره کل آموزش و بروش خواهد بود.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۵۷۵ Emil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۹۴۹",
+     "resolved": "۲۹۴۹",
+     "confidence": "high",
+     "classical": "2949"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۳/۳۱",
+     "resolved": "۱۴۰۳/۰۳/۳۱",
+     "confidence": "high",
+     "classical": "1403-03-31"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۴۰۵/۲۷",
+     "resolved": "۱۴۰۳/۲۷",
+     "confidence": "corrected",
+     "classical": "1403"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۹۷-۳۸۳۸۶۲۶۱-۳۸۳۷۸۴۸۱-۳۸۴۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۹۷-۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388297-38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "national_id",
+     "value": "۳۸۳۰۸۴۸۵۷۰",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "32506"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_8.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز کست",
+    "receiver": "مدیریت محترم بانک رفاه شعبه خیام",
+    "subject": "درخواست صرفه جویی در انجام امور بانکی",
+    "body_text": "با سلام؛\n\nاحتراما به دین وسیله گواهی می شود آقای سید مهدی هندسه فرزندسید هاشم با کد ملی ۰۹۴۳۰۱۹۶۳۱ در این شرکت مشغول بکار می باشد، این گواهی به درخواست نامبرده صرفه جویی انجام امور بانکی صادر گردیده است.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۴۸۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۹۶۳۰۹۴۳۰",
+     "resolved": "۰۹۴۳۰۱۹۶۳۱",
+     "confidence": "corrected",
+     "classical": "0943019631"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۸۱-۳۸۳۷۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۴۸۰",
+     "resolved": "۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_80.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "اداره کل تعاون، کار و رفاه اجتماعی خراسان رضوی",
+    "subject": "گزارش نتایج مناقصاتی",
+    "body_text": "با سلام\n\nاحتراما، گزارش نتایج مناقصلاتی که این شرکت از طریق سامانه ستاد در آن مشارکت نموده است به شرح ذیل تقدیم حضرت می گردد. لذا خواهشمنداست نسبت به صدور معرفی نامه جدید اقدامات لازم را مبذول فرمایید.",
+    "contact_info": "آدرس: مشهد-بلوار لادن، میدان لادن، ساختمان لادن، پلاک ۱۱۷، طبقه همکف\nتلفن: ۵۰۲۷۸۷۱-۵۰۲۷۸۷۳-۰۵۱۱-۵۰۲۵۳۰۵-۵۱۱۱۵۰\nفکس: ۵۰۲۵۳۰۵-۵۵۱۱۵۰\nEmail : Sabz_gostar8@yahoo.com"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "۱۱۷",
+     "resolved": "۱۱۷",
+     "confidence": "high",
+     "classical": "117"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۵۰۲۷۸۷۱-۵۰۲۴۷۸۷۳-۵۰۵۰۱۱۵۰-۵۰۴۵۳۰۵۰-۵۱۱۱۵۰",
+     "resolved": "۵۰۲۷۸۷۱-۵۰۲۷۸۷۳-۰۵۱۱-۵۰۲۵۳۰۵-۵۱۱۱۵۰",
+     "confidence": "corrected",
+     "classical": "5027871-5027873-0511-5025305-0511"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۵۰۲۵۳۰۵۵۰-۵۵۱۱۵۰",
+     "resolved": "۵۰۲۵۳۰۵-۵۵۱۱۵۰",
+     "confidence": "corrected",
+     "classical": "5025305-0511"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_81.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "مدیر کل محترم اداره کل آموزش و پروش",
+    "subject": "است دستور فرمایید مبالغ صورت و ضعیت های ارسالی به شماره شبا زیر مربوط به حساب این شرکت واریژ گردد.",
+    "body_text": "با سلام؛\n\nاحتراما، عطف به قرارداد شماره ۲۹۴۹ مورخ ۱۴۰۳/۰۳/۳۱ خواهشمند است دستور فرمایید مبالغ صورت وضعیت های ارسالی به شماره شبا زیر مربوط به حساب این شرکت واریز گردد.\n\nشماره شبا: IR.۰۷۰۵۶۰۹۳۰۵",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱-۳۸۳۸۸۲۹۷ فکس: ۳۸۳۸۸۲۶۱ ایمیل: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۲۹۴۹",
+     "resolved": "۲۹۴۹",
+     "confidence": "high",
+     "classical": "2949"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۰۳/۳۱",
+     "resolved": "۱۴۰۳/۰۳/۳۱",
+     "confidence": "high",
+     "classical": "1403-03-31"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۰۷۰۵۶۰۹۳۰۵۴۰۰۳۱۱۱۳۰۰۰۱",
+     "resolved": "۰۷۰۵۶۰۹۳۰۵",
+     "confidence": "corrected",
+     "classical": "0705609305"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۹۴۸۶-۳۸۳۹۰۴۸۷",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۲۶۱-۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388481-38388261-38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۷۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "corrected",
+     "classical": "38388261"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "000"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_82.JPG",
+   "fields_after": {
+    "sender": "شرکت مخابراتی سبز کستر",
+    "receiver": "مدیریت محترم شرکت توزیع نیروی برق شهرستان مشهد",
+    "subject": "مناقصه خدمات عمومی آن شرکت محترم به حضور معرفی میگردد.",
+    "body_text": "با سلام؛ احتراما، محمود فاطمی جهت شرکت در جلسه رفع ابهامات مناقصه خدمات عمومی آن Шркет محترم به حضور معروفی میگردد.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۹۶۱-۳۸۲۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_85.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "[ناخوانا]",
+    "subject": "[ناخوانا]",
+    "body_text": "در تاریخ ۱۴۰۳/۰۵/۱۰ قرارداد شماره ۱۶۲/۴۰۳/س گک\nفی مابین شرکت سبز گستر و آقای محسن طبسی فرزند حسین با کد ملی ۰۹۲۲۴۱۹۰۵۱، با توافق طرفین اقاله گردید و تسویه حساب فی مابین صورت پذیرفت.",
+    "contact_info": "آدرس: مشهد - بلوار کوتر - کوتر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵\nفکس: [ناخوانا]\nEmil: Sabzgostar2006@gmail.com"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰/۰۵/۱۴۰۳",
+     "resolved": "۱۴۰۳/۰۵/۱۰",
+     "confidence": "corrected",
+     "classical": "1403-05-10"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۶۲/۴۰۳",
+     "resolved": "۱۶۲/۴۰۳",
+     "confidence": "unverified",
+     "classical": "1640-403"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۹۲۲۴۱۹۰۵۱",
+     "resolved": "۰۹۲۲۴۱۹۰۵۱",
+     "confidence": "corrected",
+     "classical": "0922419051"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۶۴۸۱-۳۸۳۷۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "unverified",
+     "classical": "22556"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_86.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز قستر",
+    "receiver": "جناب آقای حجت الله زارع",
+    "subject": "موضوع: اقدام و نتیجه",
+    "body_text": "با سلام؛\n\nاحتراما با توجه به اینگه سند شماره ۰۳۸۲۳۸، پلاک ثبتی ۵۸۲ فرعی از ۱۷۳- اصلی بخش ۱۰ مشهد قرار است به عنوان وثیقه در شعبه ۱ بازپرسی مشهد تحت کلاسه ۰۱۰۰۲۳۸ ارائه گردید خواهشمند است نسبت به ارزیابی آن اقدام و نتیجه را اعلام فرمایید.\n\nبا تشکر",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷ تلفن: ۳۸۳۸۸۴۸۱-۳۸۳۸۸۴۸۱، ۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷ Emil: Sabzgostar2006@gmail.com\n۳۸۳۸۸۲۶۱"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۳۸۲۳۸",
+     "resolved": "۰۳۸۲۳۸",
+     "confidence": "corrected",
+     "classical": "038238"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۵۸۲",
+     "resolved": "۵۸۲",
+     "confidence": "high",
+     "classical": "582"
+    },
+    {
+     "field": "body_text",
+     "kind": "other",
+     "value": "۱۷۳",
+     "resolved": "۱۷۳",
+     "confidence": "high",
+     "classical": "173"
+    },
+    {
+     "field": "body_text",
+     "kind": "reference",
+     "value": "۱۰۰۲۳۸",
+     "resolved": "۰۱۰۰۲۳۸",
+     "confidence": "corrected",
+     "classical": "0100238"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۶۴۸۱",
+     "resolved": "۳۸۳۸۸۴۸۱-۳۸۳۸۸۴۸۱",
+     "confidence": "corrected",
+     "classical": "38388481-38388481"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۸۵۷۵",
+     "resolved": "۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    },
+    {
+     "field": "contact_info",
+     "kind": "other",
+     "value": "2006",
+     "resolved": "2006",
+     "confidence": "high",
+     "classical": "2006"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۶۱",
+     "resolved": "۳۸۳۸۸۲۶۱",
+     "confidence": "added",
+     "classical": "38388261"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_87.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز گستر",
+    "receiver": "ریاست محترم بانک سامان شعبه بلوار هاشمیه",
+    "subject": "لغو ضمان نامه بانکی صادر شده",
+    "body_text": "با سلام\n\nاحتراما، خواهشمند است نسبت به لغو ضمان نامه بانکی صادر شده به مبلغ ۲/۹۷۵/۰۰۰ میلیون ریال در تاریخ ۱۴۰۳/۰۳/۱۰ در وجوه شرکت عمران شهر جدید گلبهار اقدام نمایید.\nپیش پیش از همکاری متقابل شما سپاسگزاریم.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۹۷۰-۳۸۳۸۸۴۸۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۶"
+   },
+   "records": [
+    {
+     "field": "body_text",
+     "kind": "amount",
+     "value": "۲/۹۷۵/۰۰۰",
+     "resolved": "۲/۹۷۵/۰۰۰",
+     "confidence": "unverified",
+     "classical": "675-000"
+    },
+    {
+     "field": "body_text",
+     "kind": "date",
+     "value": "۱۴۰۳/۱۰/۱۰",
+     "resolved": "۱۴۰۳/۰۳/۱۰",
+     "confidence": "corrected",
+     "classical": "1403-03-10"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۲۹۷-۳۸۳۸۴۶۱-۳۸۳۷۸۴۸۱-۳۸۲۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۹۷۰-۳۸۳۸۸۴۸۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "383882970-38388481-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۰۸۴۸۲",
+     "resolved": "۳۸۳۸۸۲۶",
+     "confidence": "corrected",
+     "classical": "3838826"
+    }
+   ]
+  },
+  {
+   "doc_id": "CamScanner ⁨7-1-25 10.26⁩_88.JPG",
+   "fields_after": {
+    "sender": "شرکت خدماتی سبز قنطر",
+    "receiver": "اداره کل تعاون، کار و رفاه اجتماعی خراسان رضوی",
+    "subject": "گزارش نتایج مناقصاتی",
+    "body_text": "با سلام\n\nاحتراما، گزارش نتایج مناقصلاتی که این شرکت از طریق سامانه ستاد در آن مشارکت نموده است به شرح ذیل تقدیم حضرتم گردید. لذا خواهمنداست نسبت به صدور معرفی نامه جدید اقدامات لازم را مبذول فرمایید.",
+    "contact_info": "آدرس: مشهد - بلوار کوثر - کوثر شمالی ۲۵ - پلاک ۷\nتلفن: ۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵ فکس: ۳۸۳۸۸۲۹۷"
+   },
+   "records": [
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۸۸۴۸۱-۳۸۳۸۶۱-۳۸۴۳۸۸۵۷۵",
+     "resolved": "۳۸۳۸۸۲۶۱-۳۸۳۸۸۴۸۱-۳۸۳۸۸۵۷۵",
+     "confidence": "corrected",
+     "classical": "38388261-38388481-38388575"
+    },
+    {
+     "field": "contact_info",
+     "kind": "reference",
+     "value": "۳۸۳۹۲۹۷",
+     "resolved": "۳۸۳۸۸۲۹۷",
+     "confidence": "corrected",
+     "classical": "38388297"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,48 @@
+{
+  "generated_utc": "2026-09-22T12:14:36+00:00",
+  "cache_prompt": false,
+  "n": 10,
+  "wall_seconds": 89.6,
+  "provenance": {
+    "service_version": "0.1.0",
+    "backend": "llamacpp",
+    "primary": {
+      "name": "Qwen2.5-VL-7B-Instruct-Q4_K_M",
+      "gguf": "D:\\models\\models\\lmstudio-community\\Qwen2.5-VL-7B-Instruct-GGUF\\Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "mmproj": "D:\\models\\models\\lmstudio-community\\Qwen2.5-VL-7B-Instruct-GGUF\\mmproj-model-f16.gguf",
+      "grammar": true
+    },
+    "secondary": {
+      "name": "coreOCR-7B-050325-preview-Q4_K_S",
+      "enabled": false,
+      "gguf": "D:\\models\\models\\mradermacher\\coreOCR-7B-050325-preview-GGUF\\coreOCR-7B-050325-preview.Q4_K_S.gguf"
+    },
+    "temperature": 0.0,
+    "cache_prompt": false,
+    "max_tokens": 2048,
+    "engine": {
+      "context": 16384,
+      "n_gpu_layers": 99,
+      "image_min_tokens": 1024,
+      "image_max_tokens": 4096
+    },
+    "numeric": {
+      "reader": "glyph2",
+      "inject_footer": true,
+      "inject_body": true,
+      "digit_cnn_sha256": "e0e286aaf5595898"
+    },
+    "tesseract": {
+      "langs": "fas+eng",
+      "cmd": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+      "tessdata_dir": "E:\\ghasemi\\ocr\\tessdata"
+    },
+    "preprocess": {
+      "enabled": true,
+      "max_bytes": 300000,
+      "format": "JPEG",
+      "max_edge": 3200
+    },
+    "python": "3.12.10"
+  }
+}

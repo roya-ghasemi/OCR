@@ -1,0 +1,127 @@
+{
+  "generated_utc": "2026-09-03T12:50:00+00:00",
+  "scope": "90 real administrative letters; GT-free structural analysis only",
+  "n_documents": 90,
+  "n_usable": 89,
+  "field_fill": {
+    "sender": {
+      "n": 89,
+      "pct_of_usable": 1.0
+    },
+    "receiver": {
+      "n": 52,
+      "pct_of_usable": 0.5843
+    },
+    "subject": {
+      "n": 19,
+      "pct_of_usable": 0.2135
+    },
+    "body_text": {
+      "n": 18,
+      "pct_of_usable": 0.2022
+    },
+    "contact_info": {
+      "n": 52,
+      "pct_of_usable": 0.5843
+    }
+  },
+  "field_length": {
+    "sender": {
+      "n": 89,
+      "min": 7,
+      "median": 15,
+      "max": 2116
+    },
+    "receiver": {
+      "n": 52,
+      "min": 11,
+      "median": 38,
+      "max": 720
+    },
+    "subject": {
+      "n": 19,
+      "min": 10,
+      "median": 100,
+      "max": 1118
+    },
+    "body_text": {
+      "n": 18,
+      "min": 9,
+      "median": 375,
+      "max": 1093
+    },
+    "contact_info": {
+      "n": 52,
+      "min": 82,
+      "median": 117,
+      "max": 312
+    }
+  },
+  "schema_collapse": {
+    "n_documents": 18,
+    "pct_of_usable": 0.2022,
+    "by_field": {
+      "sender": 5,
+      "subject": 8,
+      "receiver": 5
+    },
+    "caps": {
+      "sender": 180,
+      "receiver": 180,
+      "subject": 240
+    }
+  },
+  "cross_field_duplication": {
+    "n_documents": 0,
+    "pct_of_usable": 0.0,
+    "pairs": {}
+  },
+  "digit_systems_by_field": {
+    "sender": {
+      "persian_indic": 8,
+      "ascii": 5,
+      "arabic_indic": 1
+    },
+    "receiver": {
+      "persian_indic": 6,
+      "ascii": 5
+    },
+    "subject": {
+      "persian_indic": 4,
+      "ascii": 9
+    },
+    "body_text": {
+      "persian_indic": 9,
+      "ascii": 14
+    },
+    "contact_info": {
+      "persian_indic": 40,
+      "ascii": 50
+    }
+  },
+  "arabic_letterforms_by_field": {
+    "sender": 5,
+    "subject": 7,
+    "contact_info": 6,
+    "body_text": 7,
+    "receiver": 10
+  },
+  "identifier_integrity": {
+    "iban": {
+      "valid": 0,
+      "found": 1,
+      "pass_rate": 0.0
+    },
+    "national_id": {
+      "valid": 12,
+      "found": 65,
+      "pass_rate": 0.1846
+    },
+    "mobile": {
+      "valid": 20,
+      "found": 20,
+      "pass_rate": 1.0
+    }
+  },
+  "n_documents_with_identifier": 42
+}
