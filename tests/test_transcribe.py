@@ -1,0 +1,194 @@
+# -*- coding: utf-8 -*-
+"""Full-text transcription (ocr_service/transcribe.py) and rule-cut letter fields
+(ocr_service/letter_fields.py). Pure tests need nothing installed; the end-to-end
+test needs Tesseract with Persian data and skips without it."""
+from __future__ import annotations
+
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+import numpy as np
+import pytest
+from PIL import Image, ImageDraw, ImageFont
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT), str(ROOT / "ocr_eval")]
+
+from ocr_service.letter_fields import extract  # noqa: E402
+from ocr_service.transcribe import Line, Transcriber, Word, clean_ink  # noqa: E402
+
+
+@dataclass
+class L:                       # the shape letter_fields reads: .text, .bbox, .confidence
+    text: str
+    bbox: tuple
+    confidence: float = 0.9
+
+
+def _page(texts, h=3000):
+    step = h // (len(texts) + 1)
+    return [L(t, (100, (i + 1) * step, 2000, (i + 1) * step + 50)) for i, t in enumerate(texts)]
+
+
+# --- letter fields: verbatim or null, never generated -------------------------------
+
+def test_letter_fields_are_verbatim_runs_of_lines():
+    lines = _page(["شماره: ۱۲۳", "جناب آقای دکتر سلطانی", "معاون محترم پژوهش", "موضوع: درخواست لغو ضمانت‌نامه",
+                   "با سلام؛", "احتراماً عطف به نامه شماره ۷۰۹", "با تشکر", "آدرس: مشهد - بلوار کوثر",
+                   "تلفن: ۳۸۳۸۸۵۷۵"])
+    f, is_letter = extract(lines, 3000)
+    assert is_letter
+    assert f["receiver"] == "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش"
+    assert f["subject"] == "درخواست لغو ضمانت‌نامه"
+    assert f["body_text"] == "با سلام؛\nاحتراماً عطف به نامه شماره ۷۰۹\nبا تشکر"
+    assert f["contact_info"] == "آدرس: مشهد - بلوار کوثر\nتلفن: ۳۸۳۸۸۵۷۵"
+    every = "\n".join(l.text for l in lines)
+    assert all(v is None or all(part in every for part in v.split("\n")) for v in f.values())
+
+
+def test_subject_is_null_unless_a_subject_label_is_printed():
+    f, _ = extract(_page(["ریاست محترم بانک سامان", "با سلام؛", "احتراما خواهشمند است ..."]), 3000)
+    assert f["subject"] is None             # the GT's summarised subjects are not invented
+
+
+def test_a_page_that_is_not_a_letter_gets_no_fields():
+    f, is_letter = extract(_page(["بهار دل‌انگیز از راه رسید", "کودکان با شادی بازی می‌کردند"]), 3000)
+    assert not is_letter and all(v is None for v in f.values())
+
+
+def test_a_stray_mark_before_the_salutation_does_not_hide_it():
+    f, _ = extract(_page(["ریاست محترم بانک سامان شعبه هاشمیه", "۰ با سلام؛", "احتراما خواهشمند است"]), 3000)
+    assert f["receiver"] == "ریاست محترم بانک سامان شعبه هاشمیه"
+    assert f["body_text"].startswith("۰ با سلام")
+
+
+def test_an_ocr_damaged_opening_is_still_found_but_the_closing_formula_is_not_an_opening():
+    f, _ = extract(_page(["ریاست محترم بانک ملت", "اشه احترام بر مذاکرات قبلی پیوست", "با احترام"]), 3000)
+    assert f["body_text"].startswith("اشه احترام بر مذاکرات")
+    f, is_letter = extract(_page(["گزارش کار ماهانه", "با احترام"]), 3000)
+    assert f["body_text"] is None
+
+
+def test_low_confidence_or_label_lines_never_join_the_receiver():
+    lines = _page(["پیوست: ندارد", "سا ۹۴ او سم", "مدیریت محترم شرکت آب", "موضوع: گواهی اشتغال", "با سلام"])
+    lines[1].confidence = 0.2
+    f, _ = extract(lines, 3000)
+    assert f["receiver"] == "مدیریت محترم شرکت آب"
+
+
+# --- line selection and clean-up ------------------------------------------------------
+
+def _w(t, c, x0, x1, y0=100, y1=140):
+    return Word(t, c, (x0, y0, x1, y1))
+
+
+def test_best_reading_per_line_wins_and_same_row_reads_right_to_left():
+    weak = Line([_w("بسا", 40, 500, 600), _w("توچسه", 45, 300, 480)], (300, 100, 600, 140), "psm4")
+    strong = Line([_w("با", 95, 520, 600), _w("توجه", 92, 300, 480)], (300, 100, 600, 140), "line-fas")
+    left = Line([_w("شماره:", 90, 20, 200)], (20, 100, 200, 140), "psm3")
+    rows = Transcriber._select([weak, strong, left])
+    assert [[L.text for L in r] for r in rows] == [["با توجه", "شماره:"]]
+    assert Transcriber._join_row(rows[0]).text == "با توجه شماره:"
+
+
+def test_two_clean_halves_of_a_tilted_line_beat_one_merged_reading():
+    # the user's page: psm 6 read the whole tilted line merged with the next one and
+    # lost «نسیم خنک صبحگاهی»; psm 3/4 read it as two clean halves
+    merged = Line([_w("بهار", 90, 1800, 1900), _w("دل‌انگیز", 90, 1600, 1780), _w("از", 90, 1500, 1580),
+                   _w("راه", 90, 1400, 1480), _w("سیم", 70, 600, 700), _w("بحگاهی", 60, 300, 500),
+                   _w("ک", 40, 250, 280)], (220, 166, 2196, 273), "psm6")
+    right = Line([_w("بهار", 92, 1800, 1900), _w("دل‌انگیز", 91, 1600, 1780), _w("از", 95, 1500, 1580),
+                  _w("راه", 93, 1400, 1480)], (1238, 189, 1904, 260), "psm4")
+    left = Line([_w("نسیم", 90, 600, 720), _w("خنک", 88, 500, 590), _w("صبحگاهی", 86, 300, 490),
+                 _w("از", 92, 250, 290)], (222, 159, 1221, 227), "psm4")
+    rows = Transcriber._select([merged, right, left])
+    assert Transcriber._join_row(rows[0]).text == "بهار دل‌انگیز از راه نسیم خنک صبحگاهی از"
+
+
+def test_a_junk_piece_is_dropped_before_its_row_is_joined():
+    t = Transcriber(None, None, None)
+    real = Line([_w("شادی", 90, 1500, 1600), _w("و", 90, 1450, 1480), _w("هیجان", 88, 1300, 1430)],
+                (1300, 100, 1600, 140), "psm4")
+    speck = Line([_w("اس", 35, 2150, 2170), _w("ی", 20, 2180, 2190)], (2150, 100, 2190, 140), "psm6")
+    lines = t._finish_rows([[speck, real]])
+    assert [L.text for L in lines] == ["شادی و هیجان"]
+
+
+def test_invented_harakat_are_stripped_but_a_real_single_mark_stays():
+    assert Transcriber._clean_word("بِمُدیرِیَت", latin=False) == "بمدیریت"
+    assert Transcriber._clean_word("احتراماً", latin=False) == "احتراماً"
+    assert Transcriber._clean_word("بهارِ", latin=False) == "بهارِ"
+
+
+def test_a_lone_far_character_at_a_line_end_is_trimmed_but_a_real_short_word_is_kept():
+    line = Line([_w("۰", 60, 1900, 1910), _w("با", 90, 1700, 1760), _w("و", 90, 1640, 1660), _w("سلام", 90, 1500, 1630)],
+                (1500, 100, 1910, 140), "psm4")
+    Transcriber._trim_edges(line)
+    assert line.text == "با و سلام"
+
+
+def test_table_cells_read_right_to_left_even_when_tesseract_emits_numbers_left_to_right():
+    # row «۲۳ | ۱۳ | ۹ مشهد»: Tesseract gave the two number cells in visual LTR order
+    row = Line([_w("۱۳", 90, 1000, 1060), _w("۲۳", 90, 1500, 1560), _w("۹", 90, 400, 430), _w("مشهد", 90, 250, 390)],
+               (250, 100, 1560, 140), "psm4")
+    Transcriber._order_segments(row)
+    assert row.text == "۲۳ ۱۳ ۹ مشهد"
+    prose = Line([_w("با", 90, 560, 600), _w("توجه", 90, 470, 550)], (470, 100, 600, 140), "psm4")
+    Transcriber._order_segments(prose)
+    assert prose.text == "با توجه"                  # normal word spacing: order untouched
+
+
+def test_rules_and_specks_go_glyphs_and_their_dots_stay():
+    ink = np.zeros((1000, 1000), bool)
+    ink[500:503, 50:950] = True                     # a table rule
+    ink[300:330, 400:420] = True                    # a letter body (shorter than the H/25 vertical-rule kernel)
+    ink[334:338, 405:409] = True                    # its dot
+    ink[800:802, 100:102] = True                    # a speck far from anything
+    out = clean_ink(ink)
+    assert not out[501, 500] and out[315, 410] and out[336, 407] and not out[801, 101]
+
+
+# --- end to end on a rendered Persian page ---------------------------------------------
+
+def _font(px):
+    for f in (r"C:\Windows\Fonts\tahoma.ttf", r"C:\Windows\Fonts\arial.ttf",
+              "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"):
+        if Path(f).is_file():
+            return ImageFont.truetype(f, px)
+    pytest.skip("no font with Persian glyphs")
+
+
+def _render(lines, px=44):
+    import arabic_reshaper
+    from bidi.algorithm import get_display
+    font = _font(px)
+    W, H = 1800, 240 + len(lines) * int(px * 2.2)
+    im = Image.new("RGB", (W, H), "white")
+    d = ImageDraw.Draw(im)
+    for i, t in enumerate(lines):
+        s = get_display(arabic_reshaper.reshape(t))
+        w = d.textbbox((0, 0), s, font=font)[2]
+        d.text((W - 120 - w, 120 + i * int(px * 2.2)), s, font=font, fill="black")
+    return im
+
+
+def test_every_line_of_a_multi_paragraph_page_comes_back_in_order():
+    from ocr_service.config import Settings
+    cfg = Settings()
+    cmd, data = cfg.resolved_tesseract()
+    t = Transcriber(cmd, data, cfg.resolved_digit_model())
+    if not t.health()["tesseract"]["available"]:
+        pytest.skip("Tesseract with Persian data not installed")
+    gt = ["جلسه بررسی طرح توسعه خدمات هوشمند", "روز دوشنبه ساعت ده صبح برگزار می‌شود",
+          "خواهشمند است مستندات را ارسال کنید", "همچنین نسخه نهایی گزارش تهیه شود",
+          "پاسخ این پرسش به عوامل زیادی بستگی دارد"]
+    tr = t.transcribe(_render(gt))
+    from fulltext_score import semiglobal
+    from normalize import normalize
+    text = normalize(tr.text)
+    for line in gt:                                  # nothing dropped (the 1,400-char cap bug)
+        g = normalize(line)
+        assert semiglobal(g, text) / len(g) < 0.2, (line, tr.text)
+    firsts = [text.find(normalize(l).split()[0]) for l in gt]
+    assert firsts == sorted(firsts), tr.text          # reading order kept

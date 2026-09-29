@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 """Celery app. Broker and result backend are the same Redis (`OCRS_REDIS_URL`).
 
-One `OcrPipeline` per worker process, created lazily on first task — the model
-client is not fork-safe and the llama-server must not be spawned per task.
+One `OcrPipeline` per worker process, created lazily on first task.
 
 Windows dev note: Celery's prefork pool does not work on Windows; run
     celery -A ocr_service.tasks worker --pool=solo -l info
-Production (Linux, docker-compose): default prefork, `--concurrency` = number of
-engine slots you can actually serve (see README).
+Production (Linux, docker-compose): default prefork. Each page already runs up to
+`OCRS_WORKERS` Tesseract processes in parallel, so `--concurrency` x `OCRS_WORKERS`
+should not exceed the CPU cores.
 """
 from __future__ import annotations
 
-import asyncio
 import base64
 import logging
 
@@ -42,7 +41,7 @@ celery_app.conf.update(
     broker_transport_options=_transport_opts,
     task_serializer="json", result_serializer="json", accept_content=["json"],
     result_expires=settings.job_ttl_s, task_track_started=True,
-    worker_prefetch_multiplier=1,      # one image at a time per worker: GPU-bound
+    worker_prefetch_multiplier=1,      # one image at a time per worker: CPU-bound
     task_acks_late=True,
     task_time_limit=int(settings.request_timeout_s) + 60,
 )
@@ -55,14 +54,12 @@ def get_pipeline():
     if _pipeline is None:
         from .pipeline import OcrPipeline
         _pipeline = OcrPipeline(settings)
-        _pipeline.start_engines()          # synchronous spawn, before any event loop (Windows proactor bug)
-        asyncio.run(_pipeline.start())
+        _pipeline.health()
     return _pipeline
 
 
 @celery_app.task(name="ocr_service.ocr", bind=True)
-def ocr_task(self, image_b64: str, mime: str, doc_id: str | None = None) -> dict:
+def ocr_task(self, image_b64: str, doc_id: str | None = None, mime: str | None = None) -> dict:
+    # `mime` is accepted and ignored so jobs queued by an older API still run
     self.update_state(state="STARTED")
-    p = get_pipeline()
-    res = asyncio.run(p.run(base64.b64decode(image_b64), mime, doc_id))
-    return res.model_dump()
+    return get_pipeline().run_sync(base64.b64decode(image_b64), doc_id).model_dump()

@@ -142,10 +142,13 @@ def test_estimate_skew_sign():
 
 # --- contract -------------------------------------------------------------------
 
-def test_response_contract_carries_candidates_and_confidence():
-    r = OcrResponse(doc_id="x", fields={"sender": "a"}, numeric_fields=[{
-        "field": "body_text", "kind": "amount", "value": "۲۲۱", "value_ascii": "221",
-        "confidence": "low", "tesseract_value": "321", "candidates": ["۲۲۱", "321"]}],
-        numeric_summary={}, primary={"model": "m", "ok": True, "latency_s": 1.0},
-        cross_check={"enabled": False}, timing={}, needs_review=True, service={})
-    assert r.numeric_fields[0].candidates == ["۲۲۱", "321"] and r.needs_review
+def test_response_contract_is_text_first_with_line_and_number_provenance():
+    r = OcrResponse(doc_id="x", text="با سلام\nمبلغ ۳۲۱/۰۰۰/۰۰۰ ریال",
+                    lines=[{"text": "با سلام", "bbox": [1, 2, 3, 4], "confidence": 0.9, "source": "psm4", "paragraph": 0}],
+                    numbers=[{"value": "۳۲۱/۰۰۰/۰۰۰", "value_ascii": "321/000/000", "bbox": [5, 6, 7, 8],
+                              "source": "glyph", "confidence": 0.8}],
+                    is_letter=False, fields={}, needs_review=False, skew_deg=0.0, image_size=[10, 10],
+                    timing={}, service={})
+    assert r.text.startswith("با سلام") and r.numbers[0].source == "glyph"
+    # a non-letter page carries no invented structure: every field is null
+    assert all(v is None for v in r.fields.model_dump().values())

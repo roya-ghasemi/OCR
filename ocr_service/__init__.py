@@ -1,18 +1,19 @@
-"""Hybrid Persian OCR service — VLM reader + Tesseract numeric validation.
+"""Persian OCR service — full-text transcription of any image, CPU only.
 
 Layout
-    config.py            settings (env-driven), model paths, backend selection
-    backends/            InferenceBackend interface + llama.cpp / vLLM / Triton
-    numeric_validator.py Tesseract cross-check of every numeric span, backend-agnostic
-    preprocess.py        deskew / auto-crop / compress (server fallback + client spec)
-    pipeline.py          preprocess -> primary VLM -> [secondary VLM] -> numeric validation
-    schemas.py           response contract (fields, per-number confidence, candidates)
-    api.py               FastAPI: POST /ocr, GET /health, GET /jobs/{id}
-    tasks.py             Celery app + task (Redis broker/backend)
-    benchmark.py         before/after report on a labelled folder
-    make_eval_set.py     builds the evaluation file the benchmark consumes
+    config.py             settings (env-driven): Tesseract, digit model, thresholds
+    transcribe.py         image -> every printed line in reading order (+ numbers)
+    letter_fields.py      letter fields cut from the transcript by rules (never generated)
+    pipeline.py           transcribe -> fields -> response
+    schemas.py            response contract
+    api.py                FastAPI: POST /ocr, GET /health, GET /jobs/{id}
+    tasks.py              Celery app + task (queued mode)
+    digit_reader_v2.py    CNN Persian/Latin digit reader (models/digit_cnn.npz)
+    digit_cnn_data.py     ...its training-data generator; digit_cnn_train.py its trainer
+    numeric_validator.py, numeric_reconcile.py, digit_reader.py
+                          number helpers from the earlier VLM path, kept with their tests
+    preprocess.py         crop / deskew / compress helpers for clients that pre-process
 
-The evaluated legacy path (`main.py`, `/ocr` on :8000) is untouched; this package is
-mounted separately so every historical number in `ocr_eval/` stays comparable.
+No language model is used anywhere (E19, ocr_eval/experiments.md).
 """
-__version__ = "0.1.0"
+__version__ = "1.0.0"

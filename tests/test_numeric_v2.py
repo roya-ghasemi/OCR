@@ -27,7 +27,8 @@ from ocr_service import digit_cnn_data as D  # noqa: E402
 from ocr_service.numeric_reconcile import Policy, reconcile, summarize  # noqa: E402
 from ocr_service.numeric_validator import to_ascii_digits  # noqa: E402
 
-MODEL = ROOT / "models" / "digit_cnn.npz"
+from ocr_service.config import settings as _settings  # noqa: E402
+MODEL = _settings.resolved_digit_model() or ROOT / "models" / "digit_cnn.npz"   # a worktree finds the main checkout's
 needs_model = pytest.mark.skipif(not MODEL.is_file(), reason="models/digit_cnn.npz not built")
 
 
@@ -52,7 +53,7 @@ def _render(tokens, px=40, seed=1, y_rel=0.45):
 
 def _reader():
     from ocr_service.digit_reader_v2 import GlyphReaderV2
-    return GlyphReaderV2()
+    return GlyphReaderV2(model_path=MODEL)
 
 
 def _atoms(reads):
@@ -173,119 +174,6 @@ def test_summary_counts_every_confidence_class():
     _, recs = reconcile(fields, [R("۱۱۱۱۱۱۱", 500), R("۲۲۲۲۲۲۳", 560), R("۳۸۳۸۸۵۷۵", 950)], 1000)
     s = summarize(recs)
     assert s["n_numeric"] == 3 and s["high"] == 1 and s["corrected"] == 1 and s["added"] == 1
-
-
-# --- end-to-end wiring (no engine, no GPU) -------------------------------------
-
-@needs_model
-def test_pipeline_glyph2_path_corrects_fields_and_reports_new_confidences(tmp_path):
-    """The whole `OcrPipeline.run` path with a stub backend: the page is read, the
-    model's digits are corrected in the returned `fields`, and the response carries
-    the `corrected`/`added` classes. Guards the wiring, not the reader."""
-    import asyncio
-    import io
-
-    from ocr_service.backends import Extraction
-    from ocr_service.config import PRIMARY_DEFAULT, SECONDARY_DEFAULT, Settings
-    from ocr_service.pipeline import OcrPipeline
-
-    page = _render([("word", D.shape("تلفن")), ("punct", ":"), ("number", "۰۵۱۱-۵۰۲۷۸۷۱-۵۰۲۷۸۷۳")],
-                   px=44, y_rel=0.90)                      # the footer band
-    buf = io.BytesIO(); page.save(buf, "JPEG", quality=92)
-
-    class StubBackend:
-        name = "stub"
-
-        async def start(self): pass
-
-        async def stop(self): pass
-
-        async def health(self): return {"model": "stub", "ok": True}
-
-        async def extract(self, data, mime, doc_id):
-            # the model read one phone number with two digits wrong
-            return Extraction(ok=True, model="stub", latency_s=0.0, attempts=1, grammar_used=True,
-                              fields={"sender": None, "receiver": None, "subject": None,
-                                      "body_text": None, "contact_info": "تلفن: ۰۵۱۱-۵۰۲۷۸۷۳"})
-
-    cfg = Settings(primary=PRIMARY_DEFAULT, secondary=SECONDARY_DEFAULT, preprocess_incoming=False)
-    p = OcrPipeline(cfg)
-    if p.reconciler is None:
-        pytest.skip("glyph2 reader unavailable")
-    p.primary = StubBackend()
-    res = asyncio.run(p.run(buf.getvalue(), "image/jpeg", "t1"))
-
-    assert res.service["numeric_reader"] == "glyph-cnn-v2"
-    classes = {n.confidence for n in res.numeric_fields}
-    assert classes & {"high", "corrected", "added"}, [n.model_dump() for n in res.numeric_fields]
-    # the number the model omitted entirely is reported and appended to contact_info
-    assert "۵۰۲۷۸۷۱" in (res.fields.contact_info or "")
-
-
-# --- D61: a declared setting must reach the wire ---------------------------------
-
-def test_cache_prompt_is_actually_sent_to_the_engine():
-    """Regression guard for D61: `Settings.cache_prompt` was stamped into provenance
-    for weeks while llama.cpp ran with its own default (true), because nothing put it
-    in the request. Provenance that reports a value the request does not carry is the
-    D48 / false-green class of defect, so assert on the REQUEST, not the config."""
-    import asyncio
-
-    from ocr_pipeline.extraction import LetterExtractor
-
-    seen = {}
-
-    class FakeCompletions:
-        async def create(self, **kwargs):
-            seen.update(kwargs)
-            raise RuntimeError("stop after capturing the request")
-
-    class FakeClient:
-        chat = type("C", (), {"completions": FakeCompletions()})()
-
-    for flag in (False, True):
-        seen.clear()
-        ex = LetterExtractor(FakeClient(), "m", extra_body={"cache_prompt": flag})
-        asyncio.run(ex.extract("data:image/jpeg;base64,AA==", doc_id="t"))
-        assert seen.get("extra_body", {}).get("cache_prompt") is flag, seen.get("extra_body")
-        assert "grammar" in seen["extra_body"]          # and it did not displace the GBNF grammar
-
-
-def test_unverified_numbers_flag_the_document_for_review():
-    """E15: flagging only `low` left 1 of 51 dev documents flagged while 34 carried a
-    wrong number. `unverified` is the least reliable class measured, so it must flag."""
-    import asyncio
-    import io
-
-    from ocr_service.backends import Extraction
-    from ocr_service.config import PRIMARY_DEFAULT, SECONDARY_DEFAULT, Settings
-    from ocr_service.pipeline import OcrPipeline
-
-    page = _render([("word", D.shape("مبلغ")), ("number", "۳۲۱/۰۰۰/۰۰۰")], px=44)
-    buf = io.BytesIO(); page.save(buf, "JPEG", quality=92)
-
-    class Stub:
-        name = "stub"
-
-        async def start(self): pass
-
-        async def stop(self): pass
-
-        async def health(self): return {}
-
-        async def extract(self, data, mime, doc_id):
-            # a number that is nowhere on the page -> unverified
-            return Extraction(ok=True, model="stub", latency_s=0.0, attempts=1,
-                              fields={"sender": None, "receiver": None, "subject": None,
-                                      "body_text": "شماره ۹۸۷۶۵۴۳۲۱۰", "contact_info": None})
-
-    p = OcrPipeline(Settings(primary=PRIMARY_DEFAULT, secondary=SECONDARY_DEFAULT, preprocess_incoming=False))
-    if p.reconciler is None:
-        pytest.skip("glyph2 reader unavailable")
-    p.primary = Stub()
-    res = asyncio.run(p.run(buf.getvalue(), "image/jpeg", "t2"))
-    assert any(n.confidence == "unverified" for n in res.numeric_fields)
-    assert res.needs_review is True
 
 
 # --- grouped amounts must survive intact ------------------------------------------
