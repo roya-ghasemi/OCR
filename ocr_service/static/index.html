@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خواندن متن تصویر</title>
+<style>
+:root{
+  --bg:#f4f5f7; --panel:#fff; --ink:#15181d; --muted:#667085; --line:#e3e6ea;
+  --accent:#1f6feb; --accent-soft:#e8f0fe; --ok:#0f7b46; --warn:#b54708;
+  --warn-soft:#fef0c7; --bad:#b42318; --bad-soft:#fee4e2; --radius:12px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0f1115;--panel:#171a21;--ink:#e6e8ec;--muted:#98a2b3;--line:#262b35;
+        --accent:#4c8dff;--accent-soft:#16233a;--ok:#3ccb7f;--warn:#f5b544;
+        --warn-soft:#3a2c12;--bad:#f97066;--bad-soft:#3b1a17;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.7 "Segoe UI","Vazirmatn",Tahoma,"Noto Naskh Arabic","Noto Sans Arabic",system-ui,sans-serif;}
+header{display:flex;align-items:center;gap:12px;padding:14px 22px;background:var(--panel);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;flex-wrap:wrap}
+h1{font-size:17px;margin:0;font-weight:650}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.warn{background:var(--warn)}
+#health{color:var(--muted);font-size:13px}
+main{max-width:1500px;margin:0 auto;padding:22px}
+.drop{background:var(--panel);border:2px dashed var(--line);border-radius:var(--radius);
+  padding:30px;text-align:center;transition:.15s;cursor:pointer}
+.drop:hover,.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop p{margin:6px 0;color:var(--muted);font-size:14px}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 18px;
+  font:inherit;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn.ghost.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:18px 0 12px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.card>h2{font-size:13px;margin:0;padding:11px 16px;border-bottom:1px solid var(--line);
+  color:var(--muted);font-weight:600;letter-spacing:.02em}
+.card>.body{padding:16px}
+.imgwrap{position:relative;line-height:0;background:#fff}
+.imgwrap img{width:100%;height:auto;display:block}
+.imgwrap svg{position:absolute;inset:0;width:100%;height:100%}
+.imgwrap rect{fill:none;stroke:var(--accent);stroke-width:2;opacity:.55}
+.imgwrap rect.cell{stroke:var(--warn)}
+/* rendered document */
+.doc{background:#fff;color:#15181d;padding:34px 38px;border-radius:8px;
+  box-shadow:0 1px 3px rgba(0,0,0,.09);min-height:200px}
+.doc p{margin:0 0 14px;text-align:justify;text-justify:inter-word}
+.doc p:last-child{margin-bottom:0}
+.doc table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14px}
+.doc th,.doc td{border:1px solid #cfd4da;padding:7px 10px;text-align:right;vertical-align:top}
+.doc thead th{background:#f1f3f5;font-weight:650}
+.doc .ltr{direction:ltr;text-align:left}
+.fields{margin:0 0 20px;border:1px solid #dfe3e8;border-radius:8px;overflow:hidden}
+.fields div{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:9px 14px;
+  border-bottom:1px solid #eceff2;font-size:14px}
+.fields div:last-child{border-bottom:0}
+.fields dt{color:#667085;font-weight:600}
+.fields dd{margin:0;white-space:pre-wrap}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+.pill.ok{background:#e7f6ed;color:#0f7b46} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.mut{background:var(--accent-soft);color:var(--accent)}
+.notice{border-radius:8px;padding:11px 15px;font-size:13.5px;margin-bottom:14px}
+.notice.warn{background:var(--warn-soft);color:var(--warn)}
+.notice.bad{background:var(--bad-soft);color:var(--bad)}
+.notice ul{margin:6px 0 0;padding-inline-start:20px}
+table.nums{width:100%;border-collapse:collapse;font-size:13.5px}
+table.nums th,table.nums td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}
+table.nums th{color:var(--muted);font-weight:600;font-size:12.5px}
+table.nums td.v{font-size:16px;font-weight:600}
+pre.raw{margin:0;white-space:pre-wrap;font:14px/1.85 inherit;direction:rtl}
+pre.json{margin:0;white-space:pre;overflow:auto;max-height:600px;direction:ltr;text-align:left;
+  font:12.5px/1.6 ui-monospace,Consolas,monospace}
+.meta{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:10px}
+.spin{width:17px;height:17px;border:2.5px solid var(--line);border-top-color:var(--accent);
+  border-radius:50%;animation:s .7s linear infinite;display:inline-block;vertical-align:-3px}
+@keyframes s{to{transform:rotate(360deg)}}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1>خواندن متن تصویر</h1>
+  <span class="dot" id="hdot"></span><span id="health">در حال بررسی سرویس…</span>
+</header>
+
+<main>
+  <div class="drop" id="drop">
+    <button class="btn" type="button" id="pick">انتخاب تصویر</button>
+    <p>یا فایل را همین‌جا رها کنید — JPG، PNG، WEBP، TIFF، BMP، GIF</p>
+    <input type="file" id="file" accept="image/*" class="hide">
+  </div>
+
+  <div id="status" class="bar hide"></div>
+
+  <div id="out" class="hide">
+    <div class="bar">
+      <button class="btn ghost on" data-view="doc">نمای سند</button>
+      <button class="btn ghost" data-view="raw">متن خام</button>
+      <button class="btn ghost" data-view="json">JSON</button>
+      <span style="flex:1"></span>
+      <button class="btn ghost" id="boxes">نمایش کادر خط‌ها</button>
+      <button class="btn ghost" id="copy">کپی متن</button>
+      <button class="btn ghost" id="save">ذخیره JSON</button>
+    </div>
+    <div class="grid">
+      <div>
+        <div class="card"><h2>تصویر اصلی</h2>
+          <div class="imgwrap" id="imgwrap"><img id="img" alt=""><svg id="ov"></svg></div>
+        </div>
+        <div class="card" style="margin-top:18px"><h2>عددها</h2><div class="body" id="nums"></div></div>
+      </div>
+      <div>
+        <div class="card"><h2>خروجی</h2><div class="body">
+          <div id="v-doc"></div>
+          <pre class="raw hide" id="v-raw"></pre>
+          <pre class="json hide" id="v-json"></pre>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const el = (t, c, txt) => { const n = document.createElement(t); if (c) n.className = c;
+  if (txt != null) n.textContent = txt; return n; };
+let DATA = null, URL_ = null;
+
+/* ---------- service health ---------- */
+fetch('health').then(r => r.json()).then(h => {
+  const ok = h.status === 'ok';
+  $('#hdot').className = 'dot ' + (ok ? 'ok' : h.status === 'degraded' ? 'warn' : 'bad');
+  $('#health').textContent = ok ? 'سرویس آماده است'
+    : h.status === 'degraded' ? 'آماده، ولی خوانندهٔ رقم در دسترس نیست' : 'سرویس آماده نیست';
+}).catch(() => { $('#hdot').className = 'dot bad'; $('#health').textContent = 'سرویس در دسترس نیست'; });
+
+/* ---------- upload ---------- */
+const drop = $('#drop'), fileIn = $('#file');
+$('#pick').onclick = () => fileIn.click();
+drop.onclick = e => { if (e.target === drop || e.target.tagName === 'P') fileIn.click(); };
+fileIn.onchange = () => fileIn.files[0] && send(fileIn.files[0]);
+['dragenter', 'dragover'].forEach(k => drop.addEventListener(k, e => {
+  e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(k => drop.addEventListener(k, e => {
+  e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) send(f); });
+
+function status(html, cls) {
+  const s = $('#status'); s.className = 'bar'; s.innerHTML = html;
+  if (cls) s.firstElementChild && s.firstElementChild.classList.add(cls);
+}
+
+async function send(file) {
+  if (!file.type.startsWith('image/')) return status('<span class="pill bad">فقط فایل تصویری</span>');
+  status('<span><span class="spin"></span> در حال خواندن ' + file.name + ' …</span>');
+  $('#out').classList.add('hide');
+  if (URL_) URL.revokeObjectURL(URL_);
+  URL_ = URL.createObjectURL(file);
+  const fd = new FormData(); fd.append('file', file);
+  try {
+    let r = await fetch('ocr', { method: 'POST', body: fd });
+    let d = await r.json().catch(() => ({}));
+    if (r.status === 202 && d.job_id) d = await poll(d.job_id);
+    else if (!r.ok) throw new Error(d.detail || ('خطای ' + r.status));
+    DATA = d; render(d);
+    status('<span class="pill ok">آماده</span> <span style="color:var(--muted)">'
+      + file.name + ' — ' + (d.timing && d.timing.total_s != null ? d.timing.total_s + ' ثانیه' : '') + '</span>');
+  } catch (e) {
+    status('<span class="pill bad">خطا</span> <span style="color:var(--muted)">' + e.message + '</span>');
+  }
+}
+
+async function poll(id) {
+  for (;;) {
+    await new Promise(r => setTimeout(r, 900));
+    const r = await fetch('jobs/' + id), j = await r.json();
+    if (j.status === 'done') return j.result;
+    if (j.status === 'error') throw new Error(j.error || 'پردازش ناموفق بود');
+  }
+}
+
+/* ---------- blocks: paragraphs and tables ---------- */
+function blocks(lines) {
+  const out = [];
+  for (let i = 0; i < lines.length;) {
+    if (lines[i].cells && lines[i].cells.length >= 2) {
+      let j = i; while (j < lines.length && lines[j].cells && lines[j].cells.length >= 2) j++;
+      if (j - i >= 2) { out.push({ table: lines.slice(i, j) }); i = j; continue; }
+    }
+    const p = lines[i].paragraph, run = [];
+    while (i < lines.length && lines[i].paragraph === p
+           && !(run.length && lines[i].cells && lines[i].cells.length >= 2
+                && lines[i + 1] && lines[i + 1].cells && lines[i + 1].cells.length >= 2)) {
+      run.push(lines[i]); i++;
+    }
+    out.push({ para: run });
+  }
+  return out;
+}
+
+/* Columns of a table: cell x-ranges clustered across its rows, rightmost first (RTL). */
+function columns(rows) {
+  const cells = rows.flatMap(r => r.cells).slice().sort((a, b) => a.bbox[0] - b.bbox[0]);
+  const cols = [];
+  for (const c of cells) {
+    const last = cols[cols.length - 1];
+    const ov = last ? Math.min(last.x1, c.bbox[2]) - Math.max(last.x0, c.bbox[0]) : -1;
+    if (last && ov > 0.5 * Math.min(last.x1 - last.x0, c.bbox[2] - c.bbox[0])) {
+      last.x0 = Math.min(last.x0, c.bbox[0]); last.x1 = Math.max(last.x1, c.bbox[2]);
+    } else cols.push({ x0: c.bbox[0], x1: c.bbox[2] });
+  }
+  return cols.sort((a, b) => b.x1 - a.x1);          // right to left
+}
+
+function tableEl(rows) {
+  const cols = columns(rows), t = el('table');
+  const head = el('thead'), hr = el('tr');
+  rows.forEach((r, i) => {
+    const tr = el('tr');
+    for (const col of cols) {
+      const hit = r.cells.find(c => Math.min(col.x1, c.bbox[2]) - Math.max(col.x0, c.bbox[0])
+                                    > 0.3 * (c.bbox[2] - c.bbox[0]));
+      const td = el(i === 0 ? 'th' : 'td', null, hit ? hit.text : '');
+      tr.appendChild(td);
+    }
+    (i === 0 ? head : t).appendChild(tr);
+  });
+  if (head.children.length) t.insertBefore(head, t.firstChild);
+  return t;
+}
+
+const LATIN = /^[\s\d\p{P}A-Za-z]+$/u;
+
+/* The API reports review reasons in English so they stay stable for callers; this page
+   is read in Persian. */
+function fa(r) {
+  let m;
+  if ((m = r.match(/^(\d+) low-confidence line/))) return m[1] + ' خط با اطمینان پایین';
+  if ((m = r.match(/^(\d+) number\(s\) not confirmed/))) return m[1] + ' عدد که خوانندهٔ رقم تأیید نکرده';
+  if ((m = r.match(/^amount\(s\) with an incomplete group of three: (.+)$/)))
+    return 'مبلغ با گروه سه‌رقمی ناقص: ' + m[1];
+  if (r === 'no text found') return 'متنی پیدا نشد';
+  return r;
+}
+
+function render(d) {
+  $('#out').classList.remove('hide');
+  $('#img').src = URL_;
+  $('#img').onload = () => overlay(d);
+
+  /* rendered document */
+  const doc = el('div', 'doc');
+  if (d.needs_review && d.review_reasons.length) {
+    const n = el('div', 'notice warn');
+    n.appendChild(el('strong', null, 'نیاز به بازبینی'));
+    const ul = el('ul'); d.review_reasons.forEach(r => ul.appendChild(el('li', null, fa(r))));
+    n.appendChild(ul); doc.appendChild(n);
+  }
+  if (d.is_letter) {
+    const names = { sender: 'فرستنده', receiver: 'گیرنده', subject: 'موضوع',
+                    body_text: 'متن نامه', contact_info: 'تماس' };
+    const box = el('dl', 'fields');
+    for (const k of ['sender', 'receiver', 'subject', 'body_text', 'contact_info']) {
+      if (!d.fields[k]) continue;
+      const row = el('div');
+      row.appendChild(el('dt', null, names[k]));
+      row.appendChild(el('dd', null, d.fields[k]));
+      box.appendChild(row);
+    }
+    if (box.children.length) doc.appendChild(box);
+  }
+  if (!d.lines.length) doc.appendChild(el('p', null, 'متنی خوانده نشد.'));
+  for (const b of blocks(d.lines)) {
+    if (b.table) { doc.appendChild(tableEl(b.table)); continue; }
+    const txt = b.para.map(l => l.text).join(' ');
+    const p = el('p', LATIN.test(txt) ? 'ltr' : null, txt);
+    doc.appendChild(p);
+  }
+  $('#v-doc').replaceChildren(doc);
+
+  $('#v-raw').textContent = d.text || '';
+  $('#v-json').textContent = JSON.stringify(d, null, 2);
+
+  /* numbers */
+  const nums = $('#nums');
+  if (!d.numbers.length) { nums.replaceChildren(el('p', null, 'عددی پیدا نشد.')); }
+  else {
+    const t = el('table', 'nums');
+    t.innerHTML = '<tr><th>عدد</th><th>لاتین</th><th>منبع</th><th>گروه هزارگان</th><th>اطمینان</th></tr>';
+    for (const n of d.numbers) {
+      const tr = el('tr');
+      tr.appendChild(el('td', 'v', n.value));
+      const a = el('td'); a.appendChild(el('span', 'ltr', n.value_ascii)); tr.appendChild(a);
+      const s = el('td'); s.appendChild(el('span', 'pill ' + (n.source === 'glyph' ? 'ok' : 'warn'),
+        n.source === 'glyph' ? 'خوانندهٔ رقم' : 'تأیید نشده')); tr.appendChild(s);
+      const g = el('td');
+      if (n.grouping === 'ok') g.appendChild(el('span', 'pill ok', 'درست'));
+      else if (n.grouping === 'broken') g.appendChild(el('span', 'pill bad', 'ناقص'));
+      else g.textContent = '—';
+      tr.appendChild(g);
+      tr.appendChild(el('td', null, Math.round(n.confidence * 100) + '٪'));
+      t.appendChild(tr);
+    }
+    nums.replaceChildren(t);
+  }
+  const m = el('div', 'meta');
+  [['خط', d.lines.length], ['عدد', d.numbers.length],
+   ['اندازه', d.image_size.join(' × ')], ['کجی', d.skew_deg + '°'],
+   ['زمان', (d.timing.total_s ?? '?') + ' ثانیه']].forEach(([k, v]) =>
+    m.appendChild(el('span', null, k + ': ' + v)));
+  nums.appendChild(m);
+}
+
+/* ---------- box overlay ---------- */
+let showBoxes = false;
+function overlay(d) {
+  const svg = $('#ov'), img = $('#img');
+  svg.setAttribute('viewBox', '0 0 ' + d.image_size[0] + ' ' + d.image_size[1]);
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.replaceChildren();
+  if (!showBoxes) return;
+  const ns = 'http://www.w3.org/2000/svg';
+  for (const L of d.lines) {
+    const parts = L.cells && L.cells.length >= 2 ? L.cells.map(c => [c.bbox, 'cell']) : [[L.bbox, '']];
+    for (const [b, cls] of parts) {
+      const r = document.createElementNS(ns, 'rect');
+      r.setAttribute('x', b[0]); r.setAttribute('y', b[1]);
+      r.setAttribute('width', b[2] - b[0]); r.setAttribute('height', b[3] - b[1]);
+      if (cls) r.setAttribute('class', cls);
+      svg.appendChild(r);
+    }
+  }
+}
+$('#boxes').onclick = e => { showBoxes = !showBoxes; e.target.classList.toggle('on', showBoxes);
+  if (DATA) overlay(DATA); };
+
+/* ---------- view switch + actions ---------- */
+document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('[data-view]').forEach(x => x.classList.toggle('on', x === b));
+  for (const v of ['doc', 'raw', 'json']) $('#v-' + v).classList.toggle('hide', v !== b.dataset.view);
+});
+$('#copy').onclick = () => DATA && navigator.clipboard.writeText(DATA.text || '')
+  .then(() => status('<span class="pill ok">متن کپی شد</span>'));
+$('#save').onclick = () => {
+  if (!DATA) return;
+  const a = el('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(DATA, null, 2)],
+    { type: 'application/json' }));
+  a.download = (DATA.doc_id || 'ocr') + '.json'; a.click(); URL.revokeObjectURL(a.href);
+};
+</script>
+</body>
+</html>

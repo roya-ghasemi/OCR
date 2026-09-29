@@ -192,3 +192,54 @@ def test_every_line_of_a_multi_paragraph_page_comes_back_in_order():
         assert semiglobal(g, text) / len(g) < 0.2, (line, tr.text)
     firsts = [text.find(normalize(l).split()[0]) for l in gt]
     assert firsts == sorted(firsts), tr.text          # reading order kept
+
+
+# --- numbers: read what is printed, flag what cannot be right ---------------------------
+
+def test_a_grouped_amount_is_judged_by_its_groups_and_a_date_is_left_alone():
+    from ocr_service.transcribe import amount_grouping
+    assert amount_grouping("۱۲۵,۰۰۰,۰۰۰") == "ok"
+    assert amount_grouping("۷/۷۷۵/۰۰۰/۰۰۰") == "ok"
+    assert amount_grouping("۳۲۱/۰۰۰/۰۰") == "broken"          # a digit went missing
+    assert amount_grouping("۱۲.۹۷۸۰۲۱۹.۵۷۱") == "broken"      # two groups ran together
+    assert amount_grouping("۱۶۵.۰۰۰۰۰۰") == "broken"          # a separator was missed
+    assert amount_grouping("۱۴۰۳/۰۹/۲۰") == "none"            # a date
+    assert amount_grouping("۱۶۰/۱۶۰۰/۱۴۰۳") == "none"         # a reference number
+    assert amount_grouping("۰۵۱۱-۵۰۲۷۸۷۱") == "none"          # a phone number
+
+
+def test_one_number_read_in_two_pieces_is_rejoined_without_inventing_a_separator():
+    from types import SimpleNamespace
+    t = Transcriber(None, None, None, number_min_prob=0.6)
+    def read(text, x0, x1):          # what _fix_numbers reads off a digit-reader result
+        return SimpleNamespace(text=text, box=(x0, 12, x1, 48), n_digits=len(text),
+                               mean_prob=0.9, line_h=36.0)
+    line = Line([_w("۱۴۰۳۰۹۰", 90, 100, 300, 10, 50)], (100, 10, 300, 50), "psm4")
+    t._fix_numbers([line], [read("۱۴۰۳", 100, 200), read("۰۹۰۶", 205, 300)], 1.0)
+    assert line.words[0].text == "۱۴۰۳۰۹۰۶"        # joined, and «۱۴۰۳/۰۹/۰/۶» never happens
+
+    far = Line([_w("۱۴۰۳۰۹۰", 90, 100, 400, 10, 50)], (100, 10, 400, 50), "psm4")
+    t._fix_numbers([far], [read("۱۴۰۳", 100, 200), read("۰۹۰۶", 300, 400)], 1.0)
+    assert far.words[0].text == "۱۴۰۳۰۹۰"          # too far apart to be one number: untouched
+
+
+def test_a_table_row_is_split_into_cells_and_prose_is_not():
+    row = [_w("مبلغ صورت وضعیت", 90, 1500, 1900), _w("۱۲۵,۰۰۰,۰۰۰", 90, 400, 700)]
+    assert [c["text"] for c in Transcriber._cells(row, 40, 1.0)] == ["مبلغ صورت وضعیت", "۱۲۵,۰۰۰,۰۰۰"]
+    assert Transcriber._cells([_w("با", 90, 560, 600), _w("توجه", 90, 470, 550)], 40, 1.0) == []
+
+
+def test_a_stretched_connector_is_shortened_and_a_dash_is_left_alone():
+    from ocr_service.transcribe import squeeze_kashida
+    ink = np.zeros((60, 200), bool)
+    ink[10:50, 10:40] = True                    # a letter
+    ink[37:50, 40:100] = True                   # joined to the next by a long kashida
+    ink[10:50, 100:130] = True                  # the next letter
+    ink[20:33, 150:190] = True                  # a dash: as flat, but standing alone
+    im = Image.fromarray(np.where(ink, 0, 255).astype(np.uint8))
+    out, xmap = squeeze_kashida(im)
+    assert out.width < im.width and len(xmap) == out.width
+    kept = set(xmap.tolist())
+    assert all(x in kept for x in range(150, 190))            # the dash stands alone: untouched
+    assert len([x for x in range(40, 100) if x in kept]) <= 15   # 60 columns -> a connector
+    assert all(x in kept for x in list(range(10, 40)) + list(range(100, 130)))   # letters whole

@@ -52,6 +52,9 @@ class OcrPipeline:
         weak_nums = sum(1 for n in tr.numbers if n.source == "tesseract" or n.confidence < REVIEW_NUMBER_CONF)
         if weak_nums:
             reasons.append(f"{weak_nums} number(s) not confirmed by the digit reader")
+        broken = [n.value for n in tr.numbers if n.grouping == "broken"]
+        if broken:
+            reasons.append(f"amount(s) with an incomplete group of three: {', '.join(broken)}")
 
         return OcrResponse(
             doc_id=doc_id, text=tr.text,

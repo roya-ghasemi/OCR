@@ -975,3 +975,95 @@ Letter fields cut from the transcript by rules (`letter_fields.py`), plain per-f
 | prose page (hand GT) | 11.4% | **10.6%** | | |
 
 The line now reads «…رنگارنگ شدند. نسیم خنک صبخگاهی از میان» (one dot error left, Tesseract's). The test split was scored twice more here (seven looks in total); nothing was tuned on it. Guards: `test_two_clean_halves_of_a_tilted_line_beat_one_merged_reading`, `test_a_junk_piece_is_dropped_before_its_row_is_joined`, `test_invented_harakat_are_stripped_but_a_real_single_mark_stays`, `test_an_ocr_damaged_opening_is_still_found_but_the_closing_formula_is_not_an_opening`.
+
+---
+
+## E20 — 2026-09-29 — amounts that can be trusted, kashida, and a page to read the result on
+
+Asked for: financial numbers good enough to ship, stretched Persian words fixed, and a
+visual UI instead of Postman. Architecture unchanged (Tesseract + CNN digit reader, CPU).
+
+### Where the number errors actually were
+
+224 whole-number failures across dev+test, classified by comparing each missed GT number
+with its nearest reading in the transcript:
+
+| share | class | example |
+|---:|---|---|
+| 46% | not read at all (letterhead, stamps, handwriting — D67/D68) | `10380436012` |
+| 14% | digit substitution | `38388575` → `38288575` |
+| **11%** | **spurious trailing zero** | `8228` → `82280` |
+| **9%** | **invented separator** | `1403/09/06` → `1403/09/0/6` |
+| 9% | digit dropped | `0943019631` → `943019631` |
+| 6% | longer and different (mostly a `:0` suffix) | `…38388575` → `…38388575:0` |
+| 5% | other spurious digit | `38388575` → `238388575` |
+
+**31% of all number failures were our own doing**: the pixels were read correctly and the
+code then corrupted the result. That is the part worth fixing first, and it needs no
+better recognition at all.
+
+Root causes, from the glyph data rather than from reading the code (D72, D73):
+
+* the trailing `۰` of «۸۲۲۸۰» has **P(zero) = 0.05** — the classifier called it a `5` —
+  and stands 4× the run's inter-digit gap away. `_finish` re-judged any short mid-line
+  glyph as a dot-zero *after* trimming the run's ends, with no zero evidence required, so
+  a comma or a letter's dot became a digit and could not then be dropped.
+* `_fix_numbers` glued two reads of one number with a **guessed** separator
+  (`":" if ":" in w.text else ("," if … else "/")`) — punctuation printed by rule in a
+  service whose contract is that nothing is generated.
+
+### Kashida
+
+Word-level alignment over dev+test: 7,447 aligned word pairs, **90% exact**; 58 single
+mid-word insertions, **41 of them «بلوار» → «بلسوار»** — one letterhead address, on 21 of
+the 51 dev pages. Measured on the page: the elongation in «مشهـــد» is a **flat** run
+(identical top and bottom for 45 columns), 17 px thick, standing **on the baseline** and
+joined to a glyph at both ends. The three `-` dashes on the same line are just as flat but
+float 17–24 px above the baseline and stand alone. A first detector that keyed only on
+"flat and joined" squeezed dashes between phone numbers and cost 1.1 points of number
+accuracy; adding the stroke-thickness and baseline tests removed the regression entirely.
+
+The alternative offered — a table of common kashida misreadings — was refused: a
+word-replacement table is the lexicon stage removed in phase 0.3, `test_no_lexicon_stage_in_runtime`
+fails on it, and it prints words nobody read.
+
+### Measured
+
+| | dev (51) E19b | **dev E20** | test (33) E19b | **test E20** |
+|---|---:|---:|---:|---:|
+| coverage CER | 14.9% | **14.7%** | 18.5% | **18.1%** |
+| … body_text | 11.5% | **11.3%** | 17.8% | **17.4%** |
+| … contact_info | 16.6% | **16.1%** | 15.5% | **14.6%** |
+| digit atoms | 81.6% | **83.6%** | 79.5% | **80.6%** |
+| **whole numbers exact** | 67.2% | **75.8%** | 62.4% | **68.8%** |
+| seconds per page (p50) | 2.9 | **2.9** | 3.0 | **3.0** |
+
+Whole-number error rate 32.8% → **24.2%** on dev, 37.6% → **31.2%** on test. The test
+split was scored once more here (eight looks in total); nothing was tuned on it.
+
+### Thousands-group validation (D75)
+
+`amount_grouping()` labels a number `ok` / `broken` / `none`. Validated against the corpus
+ground truth: **27 correct amounts judged `ok`, 0 false alarms.** On the user's invoice it
+flags «۱۶۵.۰۰۰۰۰۰» and «۱۲.۹۷۸۰۲۱۹.۵۷۱` and passes the four amounts that are right. It
+**never repairs** — the missing digit would have to be invented — and it is also used to
+choose between two readings of one token.
+
+### The page at `/`
+
+`ocr_service/static/index.html`, vanilla HTML/CSS/JS, no CDN, works offline. Drop an
+image in: letter fields on top, right-to-left justified paragraphs, and a real `<table>`
+wherever consecutive lines split into aligned cells (`lines[].cells`, new in the
+response; columns clustered by cell x-overlap, rightmost first). Every number is listed
+with its source and grouping verdict, and the line/cell boxes can be laid over the
+original. Verified end to end in a browser on the user's invoice `_12`: 1 table rebuilt,
+4 fields shown, 6 amounts judged — the two broken ones flagged.
+
+Guards: `test_a_grouped_amount_is_judged_by_its_groups_and_a_date_is_left_alone`,
+`test_one_number_read_in_two_pieces_is_rejoined_without_inventing_a_separator`,
+`test_a_table_row_is_split_into_cells_and_prose_is_not`,
+`test_a_stretched_connector_is_shortened_and_a_dash_is_left_alone`. 110 tests pass.
+
+Still open: D67 (letterhead `sender` unread), D68 (handwriting/stamps/perspective),
+D69 (`needs_review` not discriminative). Numbers are better but **not yet money-safe**:
+about 1 in 4 whole numbers still has a wrong digit somewhere.

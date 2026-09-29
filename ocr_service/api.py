@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 r"""FastAPI service.
 
+    GET  /                the upload page (static/index.html)
     POST /ocr            image -> full transcript (+ letter fields when it is a letter)
                          (or, with OCRS_ASYNC_MODE=1 or ?mode=async, a job_id)
     GET  /jobs/{job_id}  status / result of a queued job
@@ -15,10 +16,12 @@ import io
 import logging
 import uuid
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Literal, Optional
 
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image, UnidentifiedImageError
 
 from . import __version__
@@ -45,6 +48,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Persian OCR — full-text transcription", version=__version__, lifespan=lifespan)
+
+STATIC = Path(__file__).resolve().parent / "static"
+
+
+app.mount("/static", StaticFiles(directory=STATIC), name="static")
+
+
+@app.get("/", include_in_schema=False)
+def index() -> FileResponse:
+    """The upload page: pick an image, read the page back as it is laid out."""
+    return FileResponse(STATIC / "index.html", media_type="text/html; charset=utf-8")
 
 
 def _check_image(data: bytes) -> None:

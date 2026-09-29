@@ -62,6 +62,35 @@ _HARAKAT = re.compile("[ً-ْ]")
 _LATIN_WORD = re.compile(r"[A-Za-z]{2,}")
 
 
+def amount_grouping(tok: str) -> str:
+    """How a number token uses thousands separators.
+
+    `ok` — a correctly grouped amount: one separator kind, 1-3 digits then groups of
+    exactly three («۱۲۵,۰۰۰,۰۰۰», «۷/۷۷۵/۰۰۰/۰۰۰»).
+    `broken` — grouped, but a group is not three digits («۳۲۱/۰۰۰/۰۰»,
+    «۱۲.۹۷۸۰۲۱۹.۵۷۱», «۱۶۵.۰۰۰۰۰۰» where two groups ran together): a digit was lost or
+    invented, so the amount must not be trusted. It is flagged, never repaired —
+    filling the gap in would mean printing a digit nobody read.
+    `none` — not a grouped amount: dates, reference, account and phone numbers.
+
+    Checked against the corpus ground truth: it calls 27 amounts `ok` and raises no
+    false alarm on a correct one.
+    """
+    t = re.sub(r"^\D+|\D+$", "", tok.translate(_ASCII_DIGITS))
+    if not re.fullmatch(r"\d+(?:[,./]\d+)+", t) or len({*re.findall(r"[,./]", t)}) != 1:
+        return "none"
+    head, *rest = re.split(r"[,./]", t)
+    if not 1 <= len(head) <= 3:
+        return "none"                       # «۱۴۰۳/۰۹/۲۰» is a date, not an amount
+    if len(rest) >= 2 and all(len(g) == 3 for g in rest):
+        return "ok"
+    if len(rest) >= 2 and any(len(g) == 3 for g in rest):
+        return "broken"                     # grouped, but one group is not whole
+    if any(len(g) > 4 for g in rest) and len(re.sub(r"\D", "", t)) >= 6:
+        return "broken"                     # a separator was missed: «۱۶۵.۰۰۰۰۰۰»
+    return "none"
+
+
 def _key(w: str) -> str:
     return _KEY.sub("", w).replace("ي", "ی").replace("ك", "ک")
 
@@ -96,6 +125,7 @@ class NumberOut:
     bbox: list[int]
     source: str                                   # glyph (CNN digit reader) | tesseract
     confidence: float                             # 0..1
+    grouping: str = "none"                        # ok | broken | none (see amount_grouping)
 
 
 @dataclass
@@ -105,6 +135,8 @@ class LineOut:
     confidence: float                             # mean word confidence, 0..1
     source: str
     paragraph: int
+    cells: list = field(default_factory=list)     # [{text, bbox}] when the line is split into
+    #                                               table cells; empty for ordinary prose
 
 
 @dataclass
@@ -284,6 +316,53 @@ def text_lines(ink: np.ndarray) -> tuple[list[tuple[int, int, int, int]], float]
     return _rows_to_lines(textlike[lab]), med_h
 
 
+def squeeze_kashida(im: Image.Image) -> tuple[Image.Image, np.ndarray | None]:
+    """Shorten the elongations justified Persian is stretched with.
+
+    A kashida is a flat horizontal connector — a run of columns with the same top and
+    bottom edge, joined to a glyph at both ends. A dash is just as flat but stands
+    alone, so it is left alone. Stretched to 45 px a connector grows teeth under
+    Tesseract: «بلــوار» came back as «بلسوار» on 21 of the 51 dev pages, «مشهـــد» as
+    «مشهصد». Cut back to an ordinary connector's width, the word reads (D74).
+
+    Returns the narrowed image and the map from its columns back to the original x —
+    word boxes must still be reported in page coordinates.
+    """
+    ink = np.asarray(im.convert("L")) < 128
+    H, W = ink.shape
+    cols = ink.any(0)
+    if cols.sum() < 8:
+        return im, None
+    top = np.argmax(ink, 0)
+    bot = H - 1 - np.argmax(ink[::-1], 0)
+    h = np.where(cols, bot - top + 1, 0)
+    runs = (np.diff(ink.astype(np.int8), axis=0) == 1).sum(0) + ink[0].astype(int)
+    xh = float(np.percentile(h[cols], 90))
+    body = cols & (h >= 0.5 * xh)
+    if not body.any():
+        return im, None
+    base = float(np.median(bot[body]))                   # where the letters stand
+    # a full stroke, thinner than a letter, level along its whole length
+    flat = cols & (runs == 1) & (h >= 0.22 * xh) & (h <= 0.5 * xh)
+    flat[:-1] &= (np.abs(np.diff(top)) <= 1) & (np.abs(np.diff(bot)) <= 1)
+    idx = np.flatnonzero(flat)
+    if not len(idx):
+        return im, None
+    keep, least = max(2, int(0.30 * xh)), max(5, int(0.38 * xh))
+    drop = np.zeros(W, bool)
+    for r in np.split(idx, np.flatnonzero(np.diff(idx) != 1) + 1):
+        a, b = int(r[0]), int(r[-1]) + 1
+        if b - a < least or b - a <= keep or a == 0 or b >= W - 1:
+            continue
+        # a kashida runs along the baseline and joins a letter at each end; a dash floats
+        # above it, and an underline or a rule remnant sits below — leave those alone
+        if cols[a - 1] and cols[b + 1] and abs(bot[a] - base) <= 0.15 * xh:
+            drop[a + keep:b] = True
+    if not drop.any():
+        return im, None
+    return Image.fromarray(np.where(ink[:, ~drop], 0, 255).astype(np.uint8)), np.flatnonzero(~drop)
+
+
 def _crop(im: Image.Image, box, pad: int = 2) -> Image.Image:
     x0, y0, x1, y1 = box
     return im.crop((max(0, x0 - pad), max(0, y0 - pad), min(im.width, x1 + pad), min(im.height, y1 + pad)))
@@ -381,6 +460,7 @@ class Transcriber:
     def _read_line(self, img: Image.Image, lang: str) -> list[Word]:
         """psm 7 (single line), with psm 13 (raw line) when 7 is empty or unsure:
         psm 7 returns nothing for some clean lines that 13 reads perfectly."""
+        img, xmap = squeeze_kashida(img)
         framed = ImageOps.expand(img, border=30, fill=255)
 
         def read(psm):
@@ -388,10 +468,14 @@ class Transcriber:
             return ws, (sum(w.conf for w in ws) / len(ws) if ws else -1.0)
 
         a, ma = read("7")
-        if ma >= 70:
+        if ma < 70:
+            b, mb = read("13")
+            a = b if mb > ma else a
+        if xmap is None:
             return a
-        b, mb = read("13")
-        return b if mb > ma else a
+        last = len(xmap) - 1
+        return [Word(w.text, w.conf, (int(xmap[min(max(w.box[0], 0), last)]), w.box[1],
+                                      int(xmap[min(max(w.box[2] - 1, 0), last)]) + 1, w.box[3])) for w in a]
 
     # -- selection -----------------------------------------------------------------
     @staticmethod
@@ -571,11 +655,21 @@ class Transcriber:
                 if min(r.mean_prob for r in rs) < self.number_min_prob:
                     continue
                 rs.sort(key=lambda r: r.box[0])
-                core = rs[0].text
-                for nxt in rs[1:]:
-                    t = nxt.text.translate(_ASCII_DIGITS)
-                    sep = ":" if ":" in w.text else ("," if re.match(r"^\d{3}(\D|$)", t) else "/")
-                    core += sep + nxt.text
+                core, joined = rs[0].text, True
+                for prev, nxt in zip(rs, rs[1:]):
+                    # the reader split one number in two, so put it back together — but
+                    # never invent a separator that is not printed on the page: guessing
+                    # one turned «۱۴۰۳/۰۹/۰۶» into «۱۴۰۳/۰۹/۰/۶» and «۱۳» into «۱/۳» (D73)
+                    if nxt.box[0] - prev.box[2] > 0.35 * max(prev.line_h, nxt.line_h):
+                        joined = False
+                        break
+                    core += nxt.text
+                if not joined:
+                    continue
+                # between two readings of one amount, keep the one whose thousands
+                # groups are whole: «۳۲۱/۰۰۰/۰۰» is a lost digit, «۳۲۱/۰۰۰/۰۰۰» is not
+                if amount_grouping(core) == "broken" and amount_grouping(w.text) == "ok":
+                    continue
                 m = re.match(r"^(\D*)(.*?)(\D*)$", w.text)      # keep the token's own punctuation
                 pre, suf = (m.group(1), m.group(3)) if m else ("", "")
                 L.words[i] = Word(pre + core.replace(",", "،") + suf, 101.0 + min(r.mean_prob for r in rs), w.box)
@@ -627,6 +721,25 @@ class Transcriber:
                 w = _HARAKAT.sub("", w)
         return w
 
+    @staticmethod
+    def _cells(words: list[Word], line_h: float, scale: float) -> list[dict]:
+        """The line's table cells: the pieces `_order_segments` separates, split at the
+        same wide gap. A line of ordinary prose has none, and says so with an empty list."""
+        cuts = [i for i in range(1, len(words))
+                if max(words[i - 1].box[0] - words[i].box[2],
+                       words[i].box[0] - words[i - 1].box[2]) > 1.2 * line_h]
+        if not cuts:
+            return []
+        out = []
+        for a, b in zip([0] + cuts, cuts + [len(words)]):
+            seg = words[a:b]
+            out.append({"text": " ".join(w.text for w in seg),
+                        "bbox": [int(round(min(w.box[0] for w in seg) / scale)),
+                                 int(round(min(w.box[1] for w in seg) / scale)),
+                                 int(round(max(w.box[2] for w in seg) / scale)),
+                                 int(round(max(w.box[3] for w in seg) / scale))]})
+        return out
+
     def _assemble(self, lines: list[Line], scale: float) -> tuple[list[LineOut], list[NumberOut]]:
         # paragraph breaks: a vertical gap clearly larger than the usual line pitch
         centers = [(L.bbox[1] + L.bbox[3]) / 2 for L in lines]
@@ -643,7 +756,8 @@ class Transcriber:
                 continue
             bbox = [int(round(v / scale)) for v in L.bbox]
             conf = sum(min(w.conf, 100.0) for w in words) / len(words) / 100.0
-            out.append(LineOut(" ".join(w.text for w in words), bbox, round(conf, 3), L.source, para))
+            out.append(LineOut(" ".join(w.text for w in words), bbox, round(conf, 3), L.source, para,
+                               self._cells(words, L.bbox[3] - L.bbox[1], scale)))
             for w in words:
                 if _NUMTOK.search(w.text) and len(_NUMTOK.findall(w.text)) >= 2:
                     glyph = w.conf > 100.0
@@ -651,7 +765,8 @@ class Transcriber:
                         value=w.text, value_ascii=w.text.translate(_ASCII_DIGITS),
                         bbox=[int(round(v / scale)) for v in w.box],
                         source="glyph" if glyph else "tesseract",
-                        confidence=round((w.conf - 101.0) if glyph else w.conf / 100.0, 3)))
+                        confidence=round((w.conf - 101.0) if glyph else w.conf / 100.0, 3),
+                        grouping=amount_grouping(w.text)))
         return out, numbers
 
     @staticmethod
