@@ -146,6 +146,7 @@ class Transcript:
     numbers: list[NumberOut]
     skew_deg: float
     image_size: tuple[int, int]
+    glyph_px: float = 0.0                         # text height in the image as supplied
     timing: dict = field(default_factory=dict)
 
     def as_dict(self) -> dict:
@@ -687,7 +688,8 @@ class Transcriber:
         timing["deskew_s"] = round(time.perf_counter() - t0, 3)
 
         t = time.perf_counter()
-        scale = working_scale(im, measure_glyph_height(im))
+        glyph_px = measure_glyph_height(im)
+        scale = working_scale(im, glyph_px)
         ink = clean_ink(np.asarray(flatten(im, scale)) == 0)
         page = Image.fromarray(np.where(ink, 0, 255).astype(np.uint8))
         timing["binarise_s"] = round(time.perf_counter() - t, 3)
@@ -708,7 +710,7 @@ class Transcriber:
         text = self._join(out_lines)
         timing["total_s"] = round(time.perf_counter() - t0, 3)
         return Transcript(text=text, lines=out_lines, numbers=numbers, skew_deg=round(skew, 2),
-                          image_size=im.size, timing=timing)
+                          image_size=im.size, glyph_px=round(glyph_px, 1), timing=timing)
 
     @staticmethod
     def _clean_word(w: str, latin: bool) -> str:

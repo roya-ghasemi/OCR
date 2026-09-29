@@ -244,6 +244,10 @@ function fa(r) {
   if ((m = r.match(/^(\d+) number\(s\) not confirmed/))) return m[1] + ' عدد که خوانندهٔ رقم تأیید نکرده';
   if ((m = r.match(/^amount\(s\) with an incomplete group of three: (.+)$/)))
     return 'مبلغ با گروه سه‌رقمی ناقص: ' + m[1];
+  if ((m = r.match(/^image resolution too low: text is (\d+) px tall/)))
+    return 'کیفیت تصویر پایین است: ارتفاع متن فقط ' + m[1] + ' پیکسل. زیر ۲۰ پیکسل نقطه‌های '
+         + 'ب/ی/پ/ن و ح/خ/ج در خود تصویر ثبت نشده‌اند و غلط املایی اجتناب‌ناپذیر است — '
+         + 'لطفاً با ۳۰۰ DPI دوباره اسکن کنید';
   if (r === 'no text found') return 'متنی پیدا نشد';
   return r;
 }
@@ -255,6 +259,15 @@ function render(d) {
 
   /* rendered document */
   const doc = el('div', 'doc');
+  if (d.glyph_px && d.glyph_px < 20) {
+    const n = el('div', 'notice bad');
+    n.appendChild(el('strong', null, 'کیفیت تصویر برای خواندن دقیق کافی نیست'));
+    n.appendChild(el('div', null, 'ارتفاع متن در این تصویر ' + d.glyph_px + ' پیکسل است. زیر ۲۰ پیکسل، '
+      + 'نقطه‌هایی که ب را از ی و پ و ن، و ح را از خ و ج جدا می‌کنند اصلاً در تصویر وجود ندارند؛ '
+      + 'برای همین کلمه‌هایی مثل «صبحگاهی» ممکن است «صبخگاهی» خوانده شوند. با ۳۰۰ DPI دوباره '
+      + 'اسکن کنید تا متن درست خوانده شود.'));
+    doc.appendChild(n);
+  }
   if (d.needs_review && d.review_reasons.length) {
     const n = el('div', 'notice warn');
     n.appendChild(el('strong', null, 'نیاز به بازبینی'));
