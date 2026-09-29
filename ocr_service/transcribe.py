@@ -60,6 +60,14 @@ _KEY = re.compile(r"[ـ‌ً-ْ\s]")
 _BIDI = re.compile("[‎‏‪-‮⁦-⁩]")
 _HARAKAT = re.compile("[ً-ْ]")
 _LATIN_WORD = re.compile(r"[A-Za-z]{2,}")
+_PERSIAN_WORD = re.compile(r"^[ء-ی‌]{2,}$")
+# A Persian comma is a small mark sitting on the baseline; Tesseract reads it as one of
+# these about as often as it reads it right.
+_COMMA_LOOKALIKE = {"»", "«", "۰", "٠", "0", "+", ",", "ء", "٫"}
+# The same mark glued to a word: «خدماتی»تولیدی»فنی» for «خدماتی،تولیدی،فنی». Digits and
+# the full stop are NOT here — inside a token they belong to a number or a sentence.
+_COMMA_IN_WORD = "»«,٫ء"
+_PERSIAN_CHAR = re.compile(r"[ء-ی]")
 
 
 def amount_grouping(tok: str) -> str:
@@ -759,6 +767,54 @@ class Transcriber:
         return w
 
     @staticmethod
+    def _fix_marks(words: list[Word], cells: int) -> list[Word]:
+        """Put back the Persian comma Tesseract keeps misreading.
+
+        «احتراما ، پیرو» comes back «احتراما ۰ پیرو» and «می باشد ،» comes back
+        «می باشد »» — 65 times across dev+test, the single commonest thing wrong with an
+        otherwise correct line. A mark standing **alone between two Persian words** is
+        that comma: a lone zero is not a word, and a closing guillemet with nothing to
+        close is not a quotation. Inside a table row a lone «۰» can be a cell value, so a
+        row with cells is left alone, and a mark at either end of the line is left alone
+        because it has no two neighbours to stand between (D81).
+        """
+        if cells >= 2 or not words:
+            return words
+        # «...» is a Persian quotation. If this line opens one, its closing mark is real.
+        quoted = any("«" in w.text for w in words)
+        out = list(words)
+        for i, w in enumerate(out):
+            t = w.text
+            # the mark standing alone, between two Persian words
+            if (0 < i < len(out) - 1 and t in _COMMA_LOOKALIKE and not (t in "«»" and quoted)
+                    and _PERSIAN_WORD.match(out[i - 1].text) and _PERSIAN_WORD.match(out[i + 1].text)):
+                out[i] = Word("،", w.conf, w.box)
+                continue
+            # the mark glued to a word, with a Persian letter on its left
+            if not any(c in _COMMA_IN_WORD for c in t):
+                continue
+            ch = list(t)
+            for j, c in enumerate(ch):
+                if c not in _COMMA_IN_WORD or (c in "«»" and quoted):
+                    continue
+                if j == 0:
+                    # «,طبقه»: a comma that drifted to the front of the next word. Only
+                    # the unambiguous ones — a leading «»» could open nothing, a leading
+                    # «ء» belongs to the word.
+                    if c in ",٫" and len(ch) > 1 and _PERSIAN_CHAR.match(ch[1]):
+                        ch[j] = "،"
+                    continue
+                if not _PERSIAN_CHAR.match(ch[j - 1]):
+                    continue
+                after = ch[j + 1] if j + 1 < len(ch) else ""
+                # between two letters, or trailing the word — but «شیء» keeps its hamza
+                if _PERSIAN_CHAR.match(after) or (after == "" and c in "»,"):
+                    ch[j] = "،"
+            if "".join(ch) != t:
+                out[i] = Word("".join(ch), w.conf, w.box)
+        return out
+
+    @staticmethod
     def _cells(words: list[Word], line_h: float, scale: float) -> list[dict]:
         """The line's table cells: the pieces `_order_segments` separates, split at the
         same wide gap. A line of ordinary prose has none, and says so with an empty list."""
@@ -796,8 +852,10 @@ class Transcriber:
                 continue
             bbox = [int(round(v / scale)) for v in L.bbox]
             conf = sum(min(w.conf, 100.0) for w in words) / len(words) / 100.0
+            cells = self._cells(words, L.bbox[3] - L.bbox[1], scale)
+            words = self._fix_marks(words, len(cells))
             out.append(LineOut(" ".join(w.text for w in words), bbox, round(conf, 3), L.source, para,
-                               self._cells(words, L.bbox[3] - L.bbox[1], scale)))
+                               cells))
             for w in words:
                 if _NUMTOK.search(w.text) and len(_NUMTOK.findall(w.text)) >= 2:
                     glyph = w.conf > 100.0

@@ -54,10 +54,10 @@ API's own form. Read `text`; check `review_reasons`.
 .\venv312\Scripts\python.exe ocr_eval\tools\bench_fulltext.py --split dev
 ```
 ~3 min for 51 documents, CPU only. Compare `transcript.coverage_cer`,
-`atom_recall`, `number_exact_recall` with E24 (dev: 14.6%, 83.6%, 75.8%). Change one
+`atom_recall`, `number_exact_recall` with E25 (dev: 14.5%, 83.6%, 75.8%). Change one
 thing at a time, tune on dev, log the run in `ocr_eval/experiments.md` with the
 `provenance` block the tool writes. The test split (`--split test`) is for a final
-check only — it has been scored nine times in total (E17, E18, E19 ×5, E20, E24); make a
+check only — it has been scored ten times in total (E17, E18, E19 ×5, E20, E24, E25); make a
 fresh split before the next tuning cycle.
 
 ```powershell
@@ -82,6 +82,7 @@ runtime path, frozen splits, pinned engine files.
 | a stretched word gains a letter («بلــوار» → «بلسوار») | `squeeze_kashida()` in `transcribe.py`; it only cuts a flat stroke standing on the baseline and joined at both ends (D74) |
 | letterhead / handwriting / text under a stamp missing | known limits D67–D68 in `ocr_eval/error_register.md` |
 | Persian typos everywhere («صبخگاهی», «یرای», «توسمعه») | check `glyph_px` first. Under ~20 px the dots of ب/ی/پ/ن and ح/خ/ج are not in the image; the service upsamples to ~30 px and flags it, but the fix is a 300 DPI rescan (D76). A spell-corrector was measured for this and rejected — 3 fixes to 11 corruptions (D77) |
+| a comma looks wrong («»», «۰» where «،» belongs) | `Transcriber._fix_marks` — it restores «،» only where a Persian letter is on its left; quotations, table cells and numbers are exempt (D81) |
 | a word was silently changed | `ocr_service/spellfix.py` — it may only move dots (a word is replaced by one with the same skeleton), and only where the reader was unsure. `OCRS_SPELLFIX=0` turns it off; `/health` shows whether the list loaded |
 | a correct word was "corrected" | it is missing from Tesseract's Persian list, so it looked like a non-word (`کتبا` is the known case, D80). Add it to `ocr_service/data/fas_words.txt` |
 | a non-letter page looks "empty" | it is not: `fields` are null by design on a non-letter (D65), the whole page is in `text` and `lines` |

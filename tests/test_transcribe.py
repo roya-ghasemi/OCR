@@ -303,3 +303,25 @@ def test_a_low_resolution_capture_is_upsampled_and_a_good_scan_is_left_alone():
     scan = Image.new("RGB", (2424, 3232))
     assert working_scale(scan, 31.0) == 1.0           # resolves its own dots: untouched
     assert working_scale(scan, 24.0) == 1.0           # and so does this one
+
+
+def test_the_persian_comma_is_put_back_but_quotations_and_numbers_are_not_touched():
+    """Tesseract reads «،» as a guillemet, a zero or a plus 65 times across dev+test —
+    the commonest thing wrong with an otherwise correct line («احتراما ۰ پیرو»,
+    «خدماتی»تولیدی»فنی»). A mark is a comma when a Persian letter stands to its left and
+    a Persian letter or the word's end to its right (D81)."""
+    def run(tokens, cells=0):
+        return " ".join(w.text for w in Transcriber._fix_marks(
+            [Word(t, 80.0, (0, 0, 10, 10)) for t in tokens], cells))
+
+    assert run(["احتراما", "۰", "پیرو"]) == "احتراما ، پیرو"
+    assert run(["باشد", "»", "با"]) == "باشد ، با"
+    assert run(["وضعیت", "خدماتی»تولیدی»فنی"]) == "وضعیت خدماتی،تولیدی،فنی"
+    assert run(["امور", "تولیدیءفنی", "آذر"]) == "امور تولیدی،فنی آذر"
+    assert run(["لادن,", "میدان"]) == "لادن، میدان"
+
+    assert run(["شیء", "را", "دید"]) == "شیء را دید"                  # a real final hamza
+    assert run(["مبلغ", "۱۲۵,۰۰۰,۰۰۰", "ریال"]) == "مبلغ ۱۲۵,۰۰۰,۰۰۰ ریال"   # a number
+    assert run(["«زندگی,", "است.»"]) == "«زندگی، است.»"               # an open quotation
+    assert run(["ردیف", "۰", "نام"], cells=3) == "ردیف ۰ نام"         # a table cell
+    assert run(["۰", "نام"]) == "۰ نام"                               # nothing to its left

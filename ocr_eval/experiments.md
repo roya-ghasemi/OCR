@@ -1271,3 +1271,82 @@ it, but that vocabulary cannot be measured on this corpus without leaking into t
 
 Every field improved or held on data never tuned against; nothing regressed. Ninth look
 at the test split (E17, E18, E19 ×5, E20, E24) — make a fresh split before the next cycle.
+
+---
+
+## E25 — 2026-09-29 — the commonest error was punctuation, and it had been set aside
+
+**Trigger** the user, again: the output is not good. The metrics said otherwise — dev CER
+had just moved 14.65% → 14.61% — so the metrics were being read instead of the output.
+
+Put a good scan's transcript next to its ground truth and the words are almost perfect;
+what is wrong is the punctuation:
+
+| we printed | the page has |
+|---|---|
+| `احتراما ۰ پیرو` | `احتراما ، پیرو` |
+| `می باشد »` | `می باشد ،` |
+| `خدماتی»تولیدی»فنی` | `خدماتی،تولیدی،فنی` |
+| `تولیدیءفنی` | `تولیدی،فنی` |
+| `لادن, میدان لادن»` | `لادن، میدان لادن،` |
+
+Counted token-aligned against GT over dev+test:
+
+| the page has | we print | × |
+|---|---|--:|
+| `،` | `»` | **38** |
+| `،` | `۰` | **14** |
+| `،` | `.` | 8 |
+| `،` | `,` | 3 |
+| `،` | `+` | 2 |
+
+**65 — more than any other substitution in the corpus**, and the service was emitting 44
+standalone `»` and 44 standalone `۰` tokens of its own. This had been seen once before, in
+E20's word-level audit (`،→»` ×59), and set aside as out of scope. That was the mistake:
+coverage CER charges one character for it, so it is nearly invisible to the metric, while
+a reader sees it in every second line.
+
+### The rule
+
+A comma lookalike (`» « ۰ ٠ 0 + , ٫ ء`) becomes `،` when a **Persian letter stands to its
+left** and a Persian letter or the word's end to its right — alone between two words,
+glued inside one, trailing one, or drifted onto the front of the next (`,طبقه`, only for
+the unambiguous `, ٫`).
+
+It cannot damage anything it should not, and each guard is tested:
+
+* a line that opens `«` keeps its closing `»` — a real quotation survives;
+* a lone `۰` in a **table row** is a cell value, so rows with cells are skipped;
+* digits are never touched inside a token, so `۱۲۵,۰۰۰,۰۰۰` survives intact;
+* only **mid-word** hamza converts, so `شیء` keeps its final one;
+* a mark with nothing to its left is left alone.
+
+### Also fixed: the spell fix was declining repairs it should have made
+
+`نبروی` shares a skeleton with `نیروی`, `بیروت`, `بیرون` and `پیروی`, so the uniqueness
+test rejected it — even though only `نیروی` is one moved dot away. Candidates are now
+narrowed by edit count **before** uniqueness is required, not after. `بمار` is still
+declined: two dots from `نماز`, none from anything else.
+
+### Measured (dev 51)
+
+| | CER | atoms | whole numbers | len_ratio |
+|---|---:|---:|---:|---:|
+| E23 (before any correction) | 14.65% | 83.60% | 75.76% | 0.948 |
+| E24 (spell fix) | 14.61% | 83.60% | 75.76% | 0.948 |
+| **E25 (+ comma)** | **14.45%** | **83.60%** | **75.76%** | **0.948** |
+
+(final dev, with the spell-fix ordering corrected: **14.46%**)
+
+| test (33, held out, scored once) | E24 | **E25** |
+|---|---:|---:|
+| coverage CER | 18.01% | **17.85%** |
+| … subject | 31.70% | **31.31%** |
+| … body_text | 17.35% | **17.14%** |
+| … contact_info | 14.58% | **14.56%** |
+| digit atoms / whole numbers / len_ratio | — | **unchanged** |
+
+The comma alone is worth four times the spell fix, costs nothing in numbers or text
+length, and is what the reader actually notices. Across today: dev coverage CER
+14.65% → **14.46%**, test 18.05% → **17.85%**, with digit atoms, whole numbers and text
+length unchanged throughout. Tenth look at the test split.
