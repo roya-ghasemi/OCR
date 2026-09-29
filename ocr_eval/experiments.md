@@ -1067,3 +1067,78 @@ Guards: `test_a_grouped_amount_is_judged_by_its_groups_and_a_date_is_left_alone`
 Still open: D67 (letterhead `sender` unread), D68 (handwriting/stamps/perspective),
 D69 (`needs_review` not discriminative). Numbers are better but **not yet money-safe**:
 about 1 in 4 whole numbers still has a wrong digit somewhere.
+
+---
+
+## E21 — 2026-09-29 — the typos are the capture, not the reader
+
+**Trigger** user report: "obvious OCR typos caused by low image quality — «صبخگاهی»
+instead of «صبحگاهی», «توسمعه» instead of «توسعه»", with an instruction to add a
+post-processing spell-correction layer and to relax `test_no_lexicon_stage_in_runtime`
+for it.
+
+### The spell-corrector was built to policy, measured, and rejected (D77)
+
+`dehkhoda/REMOVED.md` does not forbid correction outright; it sets four conditions. Built
+to (a)-(c) — domain lexicon from the corpus (462 words seen in ≥3 documents),
+frequency-weighted, edit distance 1, single unambiguous candidate — and run over the
+user's prose page:
+
+| | |
+|---|---|
+| real fixes | **3** (`گزارس`→`گزارش`, `فنسی`→`فنی`, `ایسن`→`این`) |
+| corruptions | **11** — `شادی`→`هادی`, `گذشته`→`گشته` (both onto the signatory's name), `باید`→`باشد`, `میان`→`میدان`, `انسان`→`انسانی`, `بدون`→`بدین`, **`۱۴۰۴`→`۱۴۰۳`** |
+| the reported word | **no candidate**: «صبحگاهی», «نسیم», «خنک» appear 0× in the corpus |
+
+72% of the prose page's tokens are outside the domain lexicon, so "not in the lexicon"
+does not mean "not a word" — which is the assumption the whole design rests on. This
+independently reproduces the 2026-09-01 hand audit (2 improved, 47 damaged). Condition
+(d) cannot be met by this design, so the guard stands unmodified and nothing shipped.
+
+### What the typos actually are (D76)
+
+Text height at native resolution:
+
+| | text height | reads |
+|---|--:|---|
+| corpus scans (all 90) | 24-42 px | correctly |
+| `prose_page.jpg` | **12 px** | «صبخگاهی», «توسمعه», «هوسمند» |
+| `exampel_paper.png` | **7 px** | «استحعضصار», «یاسلام», «یرای» |
+
+A Persian dot is 1-2 px at 12 px text height. The ink that separates ب/ی/پ/ن and ح/خ/ج
+is not in the file, so no post-processor can recover it without guessing.
+
+### Adaptive upscaling, and where it stops
+
+Sweep on the prose page (Lanczos, single resample inside `flatten`), CER against a new
+hand-typed transcript (`ocr_eval/samples/prose_page.gt.txt`, 325 words):
+
+| working text height | CER | word recall | marker words |
+|---:|---:|---:|---:|
+| **24 px (E20)** | **8.8%** | 76.0% | 4/15 |
+| 28 px | 10.3% | 71.1% | 9/15 |
+| **30 px (shipped)** | **9.2%** | 75.7% | **9/15** |
+| 32 px | 12.7% | 66.8% | 10/15 |
+| 34 px | 11.5% | 72.9% | 9/15 |
+| 36 px | 15.5% | 65.2% | 8/15 |
+
+30 px holds CER flat and more than doubles the whole words read correctly, now including
+**«صبحگاهی» and «توسعه»** — the two words reported. No target improves CER; the page is
+marginal and resampling trades error classes.
+
+Keyed on the text height **as supplied**, not the working height: the latter pulled the
+24-29 px corpus scans up too and cost dev coverage CER 14.7% → 15.1%, whole numbers
+75.8% → 75.2%, latency 2.91 → 3.04 s. With the native-height gate, **all 90 corpus images
+keep their scale**, so the dev and test benchmarks are unchanged by construction.
+
+### Also
+
+`glyph_px` is now in the response and a review reason names the DPI to rescan at; the page
+at `/` shows a red banner for it. A page that is not a letter now says so on the page and
+states how much it extracted, because null letter fields were being read as "empty output"
+— the full text was always in `text` (guard:
+`test_a_page_that_is_not_a_letter_still_comes_back_whole_and_in_order`, which asserts all
+23 lines, 4 paragraphs and top-to-bottom order on the prose page).
+
+New: `ocr_eval/samples/` + `ocr_eval/tools/score_sample.py` — the corpus benchmark only
+covers administrative letters, so the general-document case had no metric at all. 113 tests.

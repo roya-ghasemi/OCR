@@ -67,6 +67,7 @@ main{max-width:1500px;margin:0 auto;padding:22px}
 .notice{border-radius:8px;padding:11px 15px;font-size:13.5px;margin-bottom:14px}
 .notice.warn{background:var(--warn-soft);color:var(--warn)}
 .notice.bad{background:var(--bad-soft);color:var(--bad)}
+.notice.mut{background:var(--accent-soft);color:var(--accent)}
 .notice ul{margin:6px 0 0;padding-inline-start:20px}
 table.nums{width:100%;border-collapse:collapse;font-size:13.5px}
 table.nums th,table.nums td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}
@@ -268,11 +269,24 @@ function render(d) {
       + 'اسکن کنید تا متن درست خوانده شود.'));
     doc.appendChild(n);
   }
-  if (d.needs_review && d.review_reasons.length) {
+  if (d.needs_review && d.review_reasons.some(r => !/^image resolution too low/.test(r))) {
     const n = el('div', 'notice warn');
     n.appendChild(el('strong', null, 'نیاز به بازبینی'));
-    const ul = el('ul'); d.review_reasons.forEach(r => ul.appendChild(el('li', null, fa(r))));
+    const ul = el('ul');
+    // the resolution problem already has its own banner above; don't say it twice
+    d.review_reasons.filter(r => !/^image resolution too low/.test(r))
+      .forEach(r => ul.appendChild(el('li', null, fa(r))));
     n.appendChild(ul); doc.appendChild(n);
+  }
+  if (!d.is_letter && d.lines.length) {
+    // a page that is not a letter is not a failure: the whole of it is in `text`.
+    const paras = new Set(d.lines.map(l => l.paragraph)).size;
+    const tables = blocks(d.lines).filter(b => b.table).length;
+    const n = el('div', 'notice mut');
+    n.textContent = 'این تصویر نامه‌ی اداری نیست، بنابراین فیلدهای نامه خالی‌اند. '
+      + 'کل متن صفحه به ترتیب خواندن استخراج شد: ' + d.lines.length + ' خط در '
+      + paras + ' پاراگراف' + (tables ? ' و ' + tables + ' جدول' : '') + '.';
+    doc.appendChild(n);
   }
   if (d.is_letter) {
     const names = { sender: 'فرستنده', receiver: 'گیرنده', subject: 'موضوع',

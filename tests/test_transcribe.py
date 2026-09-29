@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "ocr_eval")]
 
-from ocr_service.letter_fields import extract  # noqa: E402
+from ocr_service.letter_fields import FIELDS, extract  # noqa: E402
 from ocr_service.transcribe import Line, Transcriber, Word, clean_ink  # noqa: E402
 
 
@@ -264,3 +264,42 @@ def test_a_low_resolution_page_says_so_instead_of_guessing_the_letters():
     assert not reasons(31.0)                                 # a corpus scan
     assert not reasons(0.0)                                  # not measured: no claim
     assert "glyph_px" in OcrResponse.model_fields
+
+
+def test_a_page_that_is_not_a_letter_still_comes_back_whole_and_in_order():
+    """The standing requirement: not every image is an administrative letter. A page of
+    prose must return every line, top to bottom, in paragraphs — with the letter fields
+    null rather than invented, and nothing dropped because the page has no salutation."""
+    from ocr_service.config import Settings
+    from ocr_service.pipeline import OcrPipeline
+    page = ROOT / "ocr_eval" / "samples" / "prose_page.jpg"
+    if not page.is_file():
+        pytest.skip("sample page not present")
+    pipe = OcrPipeline(Settings())
+    if not pipe.health()["tesseract"]["available"]:
+        pytest.skip("Tesseract with Persian data not installed")
+    r = pipe.run_sync(page.read_bytes(), page.name)
+
+    assert not r.is_letter
+    assert all(getattr(r.fields, f) is None for f in FIELDS)     # nothing invented
+    assert len(r.lines) >= 20 and len(r.text) > 1200             # and nothing dropped
+    assert len({L.paragraph for L in r.lines}) >= 4              # its four paragraphs
+
+    tops = [L.bbox[1] for L in r.lines]
+    assert tops == sorted(tops), "lines must come back top to bottom"
+    for L in r.lines:                                            # each line reads right to left
+        assert L.text and L.text in r.text
+    assert any("resolution too low" in x for x in r.review_reasons)   # 12 px page: says so
+
+
+def test_a_low_resolution_capture_is_upsampled_and_a_good_scan_is_left_alone():
+    """Adaptive upscaling keys on the text height **as supplied**. Keying it on the
+    working height instead pulled the 24-29 px corpus scans up too and cost dev CER
+    14.7% → 15.1% (E21)."""
+    from ocr_service.transcribe import working_scale
+    photo = Image.new("RGB", (1125, 1500))            # the user's 12 px page
+    assert working_scale(photo, 12.0) == pytest.approx(30.0 / 12.0)
+    assert working_scale(Image.new("RGB", (472, 669)), 7.0) == 4.0        # capped at 4x
+    scan = Image.new("RGB", (2424, 3232))
+    assert working_scale(scan, 31.0) == 1.0           # resolves its own dots: untouched
+    assert working_scale(scan, 24.0) == 1.0           # and so does this one

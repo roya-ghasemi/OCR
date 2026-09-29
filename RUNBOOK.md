@@ -60,6 +60,7 @@ check only — it has been scored eight times in total (E17, E18, E19 ×5, E20);
 fresh split before the next tuning cycle.
 
 ```powershell
+.\venv312\Scripts\python.exe ocr_eval\tools\score_sample.py     # general documents, not letters
 .\venv312\Scripts\python.exe -m pytest -q
 ```
 Includes the phase-0 guards: no language model and no dictionary correction in the
@@ -79,5 +80,7 @@ runtime path, frozen splits, pinned engine files.
 | a `/` or `:` inside a number that is not on the page | `Transcriber._fix_numbers` — two reads are joined only when they touch, and never with an invented separator (D73) |
 | a stretched word gains a letter («بلــوار» → «بلسوار») | `squeeze_kashida()` in `transcribe.py`; it only cuts a flat stroke standing on the baseline and joined at both ends (D74) |
 | letterhead / handwriting / text under a stamp missing | known limits D67–D68 in `ocr_eval/error_register.md` |
+| Persian typos everywhere («صبخگاهی», «یرای», «توسمعه») | check `glyph_px` first. Under ~20 px the dots of ب/ی/پ/ن and ح/خ/ج are not in the image; the service upsamples to ~30 px and flags it, but the fix is a 300 DPI rescan (D76). A spell-corrector was measured for this and rejected — 3 fixes to 11 corruptions (D77) |
+| a non-letter page looks "empty" | it is not: `fields` are null by design on a non-letter (D65), the whole page is in `text` and `lines` |
 | a letter field null or wrong | `ocr_service/letter_fields.py` rules; fields are never generated, only cut from `text` |
 | everything worse after a machine move | `/health` hashes: a distro `fas.traineddata` is a different, weaker model |
