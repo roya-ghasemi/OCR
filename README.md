@@ -16,8 +16,11 @@ cd E:\ghasemi\ocr
 ```
 
 وقتی پیام `Application startup complete.` آمد (حدود ۱ ثانیه)، در مرورگر
-http://127.0.0.1:8000/docs را باز کنید، روی `POST /ocr` → **Try it out** بزنید، عکس را
-انتخاب و **Execute** کنید. متن کامل صفحه در فیلد `text` است.
+**http://127.0.0.1:8000/** را باز کنید، تصویر را بکشید و رها کنید. متن صفحه همان‌طور که
+روی کاغذ چیده شده برمی‌گردد: پاراگراف‌های راست‌به‌چپ، جدول به‌صورت جدول واقعی، فیلدهای
+نامه در بالا، و هر عدد با درستی گروه‌های سه‌رقمی‌اش.
+
+برای کار با API، http://127.0.0.1:8000/docs را باز کنید و `POST /ocr` → **Try it out**.
 
 از خط فرمان:
 
@@ -37,8 +40,9 @@ curl.exe -F "file=@exampel_paper.png" http://127.0.0.1:8000/ocr
 {
   "doc_id": "letter.jpg",
   "text": "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش ...\nسلام علیکم؛\nاحتراما عطف به نامه ...\n\nآدرس: مشهد - ...",
-  "lines":   [{"text": "جناب آقای دکتر سلطانی", "bbox": [612, 402, 1480, 455], "confidence": 0.91, "source": "psm4", "paragraph": 0}],
-  "numbers": [{"value": "۱۴۰۳/۰۹/۲۰", "value_ascii": "1403/09/20", "bbox": [...], "source": "glyph", "confidence": 0.82}],
+  "lines":   [{"text": "جناب آقای دکتر سلطانی", "bbox": [612, 402, 1480, 455], "confidence": 0.91, "source": "psm4", "paragraph": 0, "cells": []}],
+  "numbers": [{"value": "۱۴۰۳/۰۹/۲۰", "value_ascii": "1403/09/20", "bbox": [...], "source": "glyph", "confidence": 0.82, "grouping": "none"},
+              {"value": "۱۲۵,۰۰۰,۰۰۰", "value_ascii": "125,000,000", "bbox": [...], "source": "glyph", "confidence": 0.84, "grouping": "ok"}],
   "is_letter": true,
   "fields": {"sender": null, "receiver": "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش ...", "subject": null,
              "body_text": "سلام علیکم؛\n...", "contact_info": "آدرس: ...\nتلفن: ..."},
@@ -58,46 +62,72 @@ curl.exe -F "file=@exampel_paper.png" http://127.0.0.1:8000/ocr
   `موضوع:` label. On a page that is not a letter every field is `null`.
 * `needs_review` / `review_reasons` — low-confidence lines or unconfirmed numbers.
 
-Other endpoints: `GET /health` (Tesseract, digit model, their hashes), `GET /jobs/{id}`
-(queued mode), `GET /docs` (interactive upload form).
+* `numbers[].grouping` — `ok` when a grouped amount's groups are all three digits
+  («۱۲۵,۰۰۰,۰۰۰»), **`broken`** when one is not («۳۲۱/۰۰۰/۰۰», «۱۶۵.۰۰۰۰۰۰»): a digit was
+  lost or run together, so the amount must not be trusted. It is flagged, never
+  repaired — filling the gap in would mean printing a digit nobody read. `none` for
+  dates, reference, account and phone numbers.
+* `lines[].cells` — a line's pieces when a wide gap splits it (a table row), in reading
+  order; empty on ordinary prose. This is what the page at `/` rebuilds tables from.
+
+Other endpoints: `GET /` (the upload page), `GET /health` (Tesseract, digit model, their
+hashes), `GET /jobs/{id}` (queued mode), `GET /docs` (interactive API form).
 
 ## How it works
 
 ```
 image → deskew (≥1°) → binarise + remove rules/specks
-      → line candidates: Tesseract layout psm 3, 4, 6  +  own line finder read with psm 7/13 (fas, eng)
+      → line candidates: Tesseract layout psm 3, 4, 6  +  own line finder, kashida-squeezed,
+                         read with psm 7/13 (fas, eng)
       → best reading per physical line → table cells ordered right-to-left
       → CNN digit reader replaces number tokens it confirms → junk-line filter
-      → text + lines + numbers  →  letter fields cut out by rules (letters only)
+      → thousands grouping checked → text + lines + numbers
+      → letter fields cut out by rules (letters only)
 ```
 
 Code: `ocr_service/transcribe.py` (recognition), `ocr_service/letter_fields.py`
-(fields), `ocr_service/pipeline.py`, `ocr_service/api.py`. The reasoning behind every
+(fields), `ocr_service/pipeline.py`, `ocr_service/api.py`,
+`ocr_service/static/index.html` (the page at `/`). The reasoning behind every
 step, with the measurement that justified it, is in the `transcribe.py` docstring and
-experiment **E19** in `ocr_eval/experiments.md`.
+experiments **E19** and **E20** in `ocr_eval/experiments.md`.
 
-## Measured accuracy (E19)
+## Measured accuracy (E20)
 
 Real scanned letters with hand-checked ground truth (`ocr_eval/ground_truth_real_fixed_v2.jsonl`).
 Tuned on dev only. "Previous" is the Qwen2.5-VL service this replaces, on the same documents.
 
 | | dev (51) previous | dev (51) **now** | test (33) previous | test (33) **now** |
 |---|---:|---:|---:|---:|
-| page text error (coverage CER) | 28.5% | **14.9%** | 24.7% | **18.5%** |
-| letter body text error | 32.9% | **11.5%** | 26.8% | **17.8%** |
-| digit groups found | 70.8% | **81.6%** | 52.0% | **79.5%** |
-| whole numbers exact | 54.8% | **67.2%** | 36.2% | **62.4%** |
-| text recovered (length ratio) | 0.80 | **0.95** | 0.84 | **0.93** |
-| seconds per page (p50) | ~8–10 (GPU) | **2.9 (CPU)** | ~8 (GPU) | **2.9 (CPU)** |
+| page text error (coverage CER) | 28.5% | **14.7%** | 24.7% | **18.1%** |
+| letter body text error | 32.9% | **11.3%** | 26.8% | **17.4%** |
+| contact/address line error | 21.0% | **16.1%** | 24.5% | **14.6%** |
+| digit groups found | 70.8% | **83.6%** | 52.0% | **80.6%** |
+| whole numbers exact | 54.8% | **75.8%** | 36.2% | **68.8%** |
+| text recovered (length ratio) | 0.80 | **0.95** | 0.84 | **0.92** |
+| seconds per page (p50) | ~8–10 (GPU) | **2.9 (CPU)** | ~8 (GPU) | **3.0 (CPU)** |
 
-**Not production-ready for money fields:** about 1 in 3 whole numbers still has a
-wrong digit somewhere. Use `numbers[].source == "glyph"` and `needs_review`.
+**Still not money-safe:** about 1 in 4 whole numbers has a wrong digit somewhere (was 1
+in 3 before E20). Use `numbers[].grouping == "broken"` — which never fires on a correct
+amount in the whole corpus — together with `numbers[].source == "glyph"` and
+`needs_review`. The service never repairs a number it cannot read; it says so instead.
 
 Known limits (open defects D67–D69 in `ocr_eval/error_register.md`):
 stylised letterhead fonts on coloured banners are not read (`sender` is usually null);
 handwriting is not read; text under a stamp or signature can be lost; photos with
 strong perspective or very small text read worse; `subject` is null unless a
 `موضوع:` line is printed.
+
+## The page at `/`
+
+http://127.0.0.1:8000/ — drop an image in and the page comes back laid out as it is
+printed: the letter's fields on top, right-to-left justified paragraphs, and a real
+HTML table wherever the page has one (consecutive lines that split into aligned cells —
+`lines[].cells`). Beside it, every number with its source and its thousands-grouping
+verdict, and a switch that lays the line and cell boxes over the original scan. There is
+also a raw-text view and the full JSON, both copyable.
+
+One file, `ocr_service/static/index.html` — plain HTML, CSS and JavaScript, no CDN and
+no build step, so it works on a server with no internet access.
 
 ## Setup (once)
 

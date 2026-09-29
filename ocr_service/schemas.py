@@ -16,12 +16,21 @@ class LetterFields(BaseModel):
     contact_info: str | None = None
 
 
+class Cell(BaseModel):
+    text: str
+    bbox: list[int]
+
+
 class LineOut(BaseModel):
     text: str
     bbox: list[int] = Field(description="x0, y0, x1, y1 in the (deskewed) input image")
     confidence: float = Field(description="mean word confidence, 0..1")
     source: str = Field(description="which reading won: psm3 | psm4 | psm6 | line-fas | line-eng")
     paragraph: int
+    cells: list[Cell] = Field(
+        default_factory=list,
+        description="the line's pieces when a wide gap splits it (a table row), in reading order; "
+                    "empty on a line of ordinary prose")
 
 
 class NumberOut(BaseModel):
@@ -31,6 +40,10 @@ class NumberOut(BaseModel):
     source: Literal["glyph", "tesseract"] = Field(
         description="glyph: digits from the CNN digit reader; tesseract: the reader did not confirm this token")
     confidence: float = Field(description="0..1 (digit-reader mean probability, or Tesseract word confidence)")
+    grouping: Literal["ok", "broken", "none"] = Field(
+        default="none",
+        description="thousands separators: ok = whole groups of three; broken = a group of the wrong "
+                    "length, so a digit is missing or invented — check this amount; none = not an amount")
 
 
 class OcrResponse(BaseModel):

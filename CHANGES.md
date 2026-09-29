@@ -8,6 +8,17 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-29 — E20: amounts that can be trusted, kashida, and a page to read the result on
+
+| Status | File | What it is |
+|---|---|---|
+| 🟢 | `ocr_service/static/index.html` | The upload page: drop an image, get the page back laid out as it is printed — right-to-left paragraphs, letter fields on top, a real `<table>` where the page has a table, every number with its source and its thousands-grouping verdict, and the line boxes over the original. Vanilla HTML/CSS/JS, no CDN, works offline |
+| 🟡 | `ocr_service/api.py` | Serves that page at `/` and its assets at `/static` |
+| 🟡 | `ocr_service/digit_reader_v2.py` | `_finish`: a short glyph is only re-judged a dot-zero when the classifier gives zero real weight, and the run's ends are trimmed **after** that, against the run's own digit spacing (D72) |
+| 🟡 | `ocr_service/transcribe.py` | `amount_grouping()` (thousands-group validation, flags, never repairs — D75); `squeeze_kashida()` + column remap in `_read_line` (D74); `_fix_numbers` joins two reads of one number without inventing a separator (D73); `_cells()` puts a line's table cells in the response |
+| 🟡 | `ocr_service/schemas.py`, `pipeline.py` | `NumberOut.grouping`, `LineOut.cells`, and a review reason naming any amount whose groups are not whole |
+| 🟡 | `tests/test_transcribe.py` | Four guards: grouping verdicts, no invented separator, cells vs prose, kashida cut back while a dash is not |
+
 ## 2026-09-27 — E19: full-text transcription of any image; the language-model path is removed
 
 | Status | File | What it is |

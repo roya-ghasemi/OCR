@@ -375,29 +375,43 @@ class GlyphReaderV2:
         real = [k for k in run if kind[k][0] == "d"]
         if not real:
             return None
-        dh0 = float(np.median([ln[k].box[3] - ln[k].box[1] for k in real]))
 
-        def edge_ok(k: int, nb: int) -> bool:
-            # a separator, or a dot-zero the classifier believes in that sits tight
-            # against the run — stray specks and letter dots are neither
-            if kind[k][0] != "z":
-                return kind[k][0] == "d"
-            gap = min(abs(ln[k].box[0] - ln[nb].box[2]), abs(ln[nb].box[0] - ln[k].box[2]))
-            return float(ln[k].probs[0] + ln[k].probs[10]) >= 0.4 and gap <= 0.6 * dh0
+        def zero_p(k: int) -> float:
+            return float(ln[k].probs[0] + ln[k].probs[10])
 
-        while len(run) > 1 and not edge_ok(run[0], run[1]):
-            run.pop(0)
-        while len(run) > 1 and not edge_ok(run[-1], run[-2]):
-            run.pop()
-        real = [k for k in run if kind[k][0] == "d"]
-        if not real:
-            return None
+        def digit_h(r: list[int]) -> float:
+            hs = [ln[k].box[3] - ln[k].box[1] for k in r if kind[k][0] == "d"]
+            return float(np.median(hs)) if hs else ref_h
+
+        def spacing(r: list[int]) -> float:
+            """The run's own inter-glyph gap, ignoring the widest one (a separator, or
+            the suspect end itself): a number is set at a regular pitch."""
+            gs = sorted(float(ln[b].box[0] - ln[a].box[2]) for a, b in zip(r, r[1:]))
+            return float(np.median(gs[:-1] or gs)) if gs else 0.0
+
         # re-judge zeros against the run's own digit height: the line reference is
-        # inflated by letter ascenders, so a bold dot-zero can pass as a full digit
-        dh = float(np.median([ln[k].box[3] - ln[k].box[1] for k in real]))
+        # inflated by letter ascenders, so a bold dot-zero can pass as a full digit.
+        # Only where the classifier gives zero real weight, or a comma made «۸۲۲۸» into
+        # «۸۲۲۸۰» and a letter's dot made «۶۰۱» into «۶۰۱۰» (D72).
+        dh = digit_h(run)
         for k in run:
-            if kind[k][0] == "d" and (ln[k].box[3] - ln[k].box[1]) < 0.68 * dh and mid_height(ln[k], dh):
+            if (kind[k][0] == "d" and (ln[k].box[3] - ln[k].box[1]) < 0.68 * dh
+                    and mid_height(ln[k], dh) and zero_p(k) >= 0.25):
                 kind[k] = ("z", 0)
+
+        # ends: a digit, a separator, or a dot-zero the classifier believes in, standing
+        # at the run's own spacing. Stray specks, letter dots and commas are none of those.
+        while len(run) > 1:
+            lim = max(0.35 * digit_h(run), 2.2 * spacing(run))
+            for end, nb in ((0, 1), (-1, -2)):
+                k, o = run[end], run[nb]
+                if (kind[k][0] == "s" or (kind[k][0] == "z" and zero_p(k) < 0.4)
+                        or ln[max(k, o)].box[0] - ln[min(k, o)].box[2] > lim):
+                    run.pop(end)
+                    break
+            else:
+                break
+
         digits = [k for k in run if kind[k][0] in ("d", "z")]
         real = [k for k in run if kind[k][0] == "d"]
         if len(digits) < self.min_digits or not real:
