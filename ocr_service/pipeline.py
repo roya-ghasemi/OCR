@@ -19,6 +19,7 @@ from .transcribe import Transcriber
 
 REVIEW_LINE_CONF = 0.6      # a line below this mean confidence is worth a human look
 REVIEW_NUMBER_CONF = 0.7    # a number below this (or not confirmed by the digit reader) likewise
+REVIEW_MIN_GLYPH_PX = 20.0  # below this the dots of ب/ی/پ/ن and ح/خ/ج are not in the image at all
 
 
 class OcrPipeline:
@@ -46,6 +47,13 @@ class OcrPipeline:
         reasons = []
         if not tr.lines:
             reasons.append("no text found")
+        # The commonest cause of Persian typos is not the reader: below ~20 px the dots
+        # that tell ب/ی/پ/ن and ح/خ/ج apart are not in the image, so no amount of
+        # post-processing can recover them without guessing. Say so instead.
+        if tr.glyph_px and tr.glyph_px < REVIEW_MIN_GLYPH_PX:
+            reasons.append(f"image resolution too low: text is {tr.glyph_px:.0f} px tall, "
+                           f"under the {REVIEW_MIN_GLYPH_PX:.0f} px needed to resolve Persian dots — "
+                           f"rescan at 300 DPI for accurate text")
         weak_lines = sum(1 for L in tr.lines if L.confidence < REVIEW_LINE_CONF)
         if weak_lines:
             reasons.append(f"{weak_lines} low-confidence line(s)")
@@ -62,7 +70,7 @@ class OcrPipeline:
             numbers=[NumberOut(**n.__dict__) for n in tr.numbers],
             is_letter=is_letter, fields=LetterFields(**fields),
             needs_review=bool(reasons), review_reasons=reasons,
-            skew_deg=tr.skew_deg, image_size=list(tr.image_size), timing=tr.timing,
+            skew_deg=tr.skew_deg, glyph_px=tr.glyph_px, image_size=list(tr.image_size), timing=tr.timing,
             service={"version": __version__, "engine": "tesseract(fas,eng) + digit_cnn",
                      "tesseract": (self._health or {}).get("tesseract", {}).get("version")})
 

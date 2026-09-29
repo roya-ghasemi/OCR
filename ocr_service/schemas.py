@@ -56,6 +56,10 @@ class OcrResponse(BaseModel):
     needs_review: bool
     review_reasons: list[str] = Field(default_factory=list)
     skew_deg: float = Field(description="rotation applied before reading (degrees, counter-clockwise)")
+    glyph_px: float = Field(
+        default=0.0,
+        description="text height in pixels in the image as supplied. Below ~20 the dots that "
+                    "separate ب/ی/پ/ن and ح/خ/ج are not resolved and typos are unavoidable")
     image_size: list[int]
     timing: dict
     service: dict

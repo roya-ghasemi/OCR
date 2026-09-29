@@ -243,3 +243,24 @@ def test_a_stretched_connector_is_shortened_and_a_dash_is_left_alone():
     assert all(x in kept for x in range(150, 190))            # the dash stands alone: untouched
     assert len([x for x in range(40, 100) if x in kept]) <= 15   # 60 columns -> a connector
     assert all(x in kept for x in list(range(10, 40)) + list(range(100, 130)))   # letters whole
+
+
+def test_a_low_resolution_page_says_so_instead_of_guessing_the_letters():
+    """Persian dots live in 1-2 px. Below ~20 px text height they are not in the image at
+    all, so «صبحگاهی» reads «صبخگاهی» and no post-processing can know which is right."""
+    from ocr_service.pipeline import REVIEW_MIN_GLYPH_PX
+    from ocr_service.schemas import OcrResponse
+
+    def reasons(glyph_px):
+        out = []
+        if glyph_px and glyph_px < REVIEW_MIN_GLYPH_PX:
+            out.append(f"image resolution too low: text is {glyph_px:.0f} px tall, "
+                       f"under the {REVIEW_MIN_GLYPH_PX:.0f} px needed to resolve Persian dots — "
+                       f"rescan at 300 DPI for accurate text")
+        return out
+
+    assert reasons(12.0) and "12 px" in reasons(12.0)[0]     # the user's prose photo
+    assert reasons(7.0)                                      # exampel_paper.png
+    assert not reasons(31.0)                                 # a corpus scan
+    assert not reasons(0.0)                                  # not measured: no claim
+    assert "glyph_px" in OcrResponse.model_fields
