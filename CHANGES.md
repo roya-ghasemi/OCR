@@ -8,6 +8,22 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-29 — E22: stop printing what is not text
+
+| Status | File | What it is |
+|---|---|---|
+| 🟡 | `ocr_service/transcribe.py` | `_line_ok` drops a line of nothing but 1-2 character fragments below 60 confidence (handwriting, stamps, registration blocks); `_trim_edges` cuts a whole junk tail across the line's widest gap, not just one lone character |
+| 🟡 | `ocr_service/static/index.html` | The fields card no longer repeats `body_text` — it is the document rendered below it |
+| 🟡 | `tests/test_transcribe.py` | Fixture corrected: it had Tesseract seeing 7 digits where the reader returned 8, the exact ambiguity the new rule resolves |
+
+`_1`: 17 → 13 lines, all three noise lines gone, «با سلام؛ سح» → «با سلام؛». Dev CER
+14.65% → 14.69%, whole numbers unchanged at 75.8%, len_ratio 0.948 → 0.915 — 3% less
+text out and no more error, so what left was noise (D78).
+
+Tried and reverted in the same pass: believing Tesseract over the digit reader when the
+two disagree on digit count. It fixes «۱۴۰۳۵» → «۱۴۰۳» on the invoice and costs **1.7
+points of whole-number accuracy** across dev (75.8% → 74.1%).
+
 ## 2026-09-29 — E21: the typos are the capture, not the reader
 
 | Status | File | What it is |

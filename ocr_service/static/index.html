@@ -289,10 +289,12 @@ function render(d) {
     doc.appendChild(n);
   }
   if (d.is_letter) {
+    // body_text IS the document below, so it is not repeated here — only the fields
+    // that are not otherwise visible
     const names = { sender: 'فرستنده', receiver: 'گیرنده', subject: 'موضوع',
-                    body_text: 'متن نامه', contact_info: 'تماس' };
+                    contact_info: 'تماس' };
     const box = el('dl', 'fields');
-    for (const k of ['sender', 'receiver', 'subject', 'body_text', 'contact_info']) {
+    for (const k of ['sender', 'receiver', 'subject', 'contact_info']) {
       if (!d.fields[k]) continue;
       const row = el('div');
       row.appendChild(el('dt', null, names[k]));
