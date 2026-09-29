@@ -1142,3 +1142,45 @@ states how much it extracted, because null letter fields were being read as "emp
 
 New: `ocr_eval/samples/` + `ocr_eval/tools/score_sample.py` — the corpus benchmark only
 covers administrative letters, so the general-document case had no metric at all. 113 tests.
+
+---
+
+## E23 — 2026-09-29 — deleting lines is the wrong mechanism
+
+**Trigger** user report: "the output is not good at all and it has declined". The only
+change since the last good state was E22's junk filter.
+
+E22 judged a line by its **mean token length** — drop when the mean is under three
+characters and mean confidence under 60 — to remove handwriting, stamps and margin
+marks. It does remove those. It also removes:
+
+* **«با سلام (»** — the letter's opening formula. The stray bracket is a one-character
+  token and pulls the mean to 2.33. `letter_fields` cuts `body_text` from that anchor.
+* **a line that is a single token of two characters, unconditionally** — «۱۰» at
+  confidence **1.00**: a table cell, a form value, a page number.
+
+### Three filters, measured on dev (51)
+
+| | coverage CER | atom recall | whole numbers | len_ratio |
+|---|---:|---:|---:|---:|
+| **no filter (E21)** | **14.65%** | **83.60%** | 75.76% | **0.948** |
+| mean token length (E22) | 14.69% | 83.45% | 75.76% | 0.915 |
+| corrected: exempt a confident long token or a ≥2-digit number | 14.72% | 83.60% | 75.76% | 0.937 |
+
+The corrected filter keeps «با سلام (» and «۱۰», and drops the handwriting row on `_1` —
+and still lands on the **worst CER of the three**. Every filter that removes noise removes
+real text with it, and none of them improves a measured number.
+
+The reason the damage was not caught when E22 shipped: **coverage CER never charges for
+extra text**, so deleting text can only ever look free. E22's own note says as much and
+argued the loss was noise; the 3.3% it removed was not all noise.
+
+### What shipped instead
+
+`_line_ok` is confidence only. Noise is **surfaced, not deleted**: `lines[].confidence`
+already separates it — the handwritten registration block and the stamp on `_1` score
+**0.44 and 0.45** against **0.75-0.89** for the letter's own lines — and the page at `/`
+greys a line under 0.6 with a dotted underline that explains itself on hover.
+
+A deleted line cannot be recovered by the person reading the page. A marked one can.
+E22's UI fix (not printing the letter body twice) is kept.
