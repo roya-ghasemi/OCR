@@ -55,6 +55,7 @@ main{max-width:1500px;margin:0 auto;padding:22px}
 .doc th,.doc td{border:1px solid #cfd4da;padding:7px 10px;text-align:right;vertical-align:top}
 .doc thead th{background:#f1f3f5;font-weight:650}
 .doc .ltr{direction:ltr;text-align:left}
+.doc .unsure{color:#98a2b3;text-decoration:underline dotted #cbd2da 1px;text-underline-offset:3px;cursor:help}
 .fields{margin:0 0 20px;border:1px solid #dfe3e8;border-radius:8px;overflow:hidden}
 .fields div{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:9px 14px;
   border-bottom:1px solid #eceff2;font-size:14px}
@@ -307,7 +308,16 @@ function render(d) {
   for (const b of blocks(d.lines)) {
     if (b.table) { doc.appendChild(tableEl(b.table)); continue; }
     const txt = b.para.map(l => l.text).join(' ');
-    const p = el('p', LATIN.test(txt) ? 'ltr' : null, txt);
+    const p = el('p', LATIN.test(txt) ? 'ltr' : null);
+    // Every line is kept — handwriting, a stamp or a margin mark is never deleted,
+    // because a deleted line cannot be got back. The unsure ones are marked instead.
+    b.para.forEach((l, i) => {
+      const sp = el('span', l.confidence < 0.6 ? 'unsure' : null, l.text);
+      if (l.confidence < 0.6) sp.title = 'اطمینان پایین (' + Math.round(l.confidence * 100)
+        + '٪) — ممکن است دست‌خط، مُهر یا حاشیه باشد';
+      p.appendChild(sp);
+      if (i < b.para.length - 1) p.appendChild(document.createTextNode(' '));
+    });
     doc.appendChild(p);
   }
   $('#v-doc').replaceChildren(doc);

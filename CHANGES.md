@@ -8,6 +8,17 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-29 — E23: put back the text E22 deleted; mark noise instead of removing it
+
+| Status | File | What it is |
+|---|---|---|
+| 🟡 | `ocr_service/transcribe.py` | `_line_ok` is confidence only again. E22's mean-token-length rule took the letter opening «با سلام (» and a full-confidence «۱۰» with the handwriting, and cost 3.3% of the output; a corrected version that exempts confident long tokens and real numbers still measured **worse** than no filter at all (D79) |
+| 🟡 | `ocr_service/transcribe.py` | `_trim_edges` no longer cuts a line's tail across its widest gap — same failure mode, same reason |
+| 🟡 | `ocr_service/static/index.html` | A line under 0.6 confidence is greyed with a dotted underline and explains itself on hover, instead of being deleted. Handwriting and a stamp on `_1` score 0.44-0.45 against 0.75-0.89 for the letter, so they separate visually while staying in `text` |
+| ⚪ | `ocr_eval/benchmarks/bench_fulltext_dev.json` | Back to CER **14.65%**, len_ratio **0.948** |
+
+E22's UI fix is kept: the letter body is still not printed twice.
+
 ## 2026-09-29 — E22: stop printing what is not text
 
 | Status | File | What it is |

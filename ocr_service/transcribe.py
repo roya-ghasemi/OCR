@@ -499,20 +499,14 @@ class Transcriber:
         return sum(len(_key(w.text)) * (min(w.conf, 100.0) / 100.0) ** 2 for w in line.words if w.conf >= 40)
 
     def _line_ok(self, line: Line) -> bool:
+        """Confidence only. A junk filter that also judged the line's mean token length
+        deleted real text with the noise — the salutation «با سلام (», whose stray
+        bracket pulls the mean under three, and a table cell holding «۱۰» at full
+        confidence. Measured on dev: it cost coverage CER 14.65% → 14.72% and 1-3% of
+        the output. Handwriting and stamps are surfaced by `confidence`, not deleted:
+        losing a line is unrecoverable, marking one is not (D79)."""
         good = [w for w in line.words if w.conf >= 60 and len(_key(w.text)) >= 2]
-        if not good or line.mean_conf < self.min_line_conf:
-            return False
-        # Handwriting, a stamp and a letterhead banner all come back as a row of one- and
-        # two-letter fragments: «رآ ار اس مت سا کی سا ۳ ره», «تاره / سمه تعا موم مهد».
-        # Running text and number lines carry longer tokens, so the mean token length
-        # separates them where confidence alone does not — the correct phone line on the
-        # same page scores 46 (D78).
-        keys = [k for k in (_key(w.text) for w in line.words) if k]
-        if not keys:
-            return False
-        if len(keys) == 1 and len(keys[0]) <= 2:
-            return False
-        return sum(len(k) for k in keys) / len(keys) >= 3.0 or line.mean_conf >= 60.0
+        return bool(good) and line.mean_conf >= self.min_line_conf
 
     @staticmethod
     def _order_segments(line: Line) -> None:
@@ -555,24 +549,6 @@ class Transcriber:
                 w, nb = (ws[0], ws[1]) if end == 0 else (ws[-1], ws[-2])
                 if len(_key(w.text)) <= 1 and gap(w, nb) >= h:
                     ws.pop(end)
-
-        # A whole tail can be junk, not just one token: «با سلام؛ سح» and «با سلام؛ [( ی»
-        # pick up marks from the far margin, 16-32 line-heights from the words they were
-        # joined to. Cut across the line's widest gap when everything beyond it is short
-        # and unsure — a table cell that far out is long or confident, and survives (D78).
-        ws = line.words
-        if len(ws) >= 2:
-            gaps = [gap(a, b) for a, b in zip(ws, ws[1:])]
-            i = max(range(len(gaps)), key=gaps.__getitem__)
-
-            def junk(part: list[Word]) -> bool:
-                return all(len(_key(x.text)) <= 2 and x.conf < 60 for x in part)
-
-            if gaps[i] >= 2 * h:
-                if junk(ws[i + 1:]):
-                    del ws[i + 1:]
-                elif junk(ws[:i + 1]):
-                    del ws[:i + 1]
 
     def _candidates(self, page: Image.Image, ink: np.ndarray) -> list[Line]:
         with ThreadPoolExecutor(max(1, len(self.layout_psms))) as ex:
@@ -696,10 +672,6 @@ class Transcriber:
                 rs = [r for r in reads if vov(r.box, ob) > 0.5 and hov(r.box, ob) > 0.5 * (r.box[2] - r.box[0])]
                 if not rs:
                     continue
-                # Not gated on the reader finding no MORE digits than Tesseract: tried,
-                # and it costs 1.7 points of whole-number accuracy on dev (75.8% → 74.1%).
-                # Tesseract truncating a long amount while staying confident is the
-                # commoner case, and the reader recovering it is the point of D63.
                 if sum(r.n_digits for r in rs) < max(1, 0.6 * len(_NUMTOK.findall(w.text))):
                     continue
                 if min(r.mean_prob for r in rs) < self.number_min_prob:
