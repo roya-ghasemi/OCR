@@ -134,5 +134,6 @@ async def health():
     tess_ok = h["tesseract"]["available"]
     queue_ok = queue.get("reachable", True)
     status = "ok" if tess_ok and h["digit_reader"]["available"] and queue_ok else ("degraded" if tess_ok else "down")
-    return Health(status=status, tesseract=h["tesseract"], digit_reader=h["digit_reader"], queue=queue,
+    return Health(status=status, tesseract=h["tesseract"], digit_reader=h["digit_reader"],
+                  spellfix=h.get("spellfix", {}), queue=queue,
                   service={"version": __version__, **settings.provenance()})

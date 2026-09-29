@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     number_min_prob: float = 0.6           # digit reader must be this sure to replace Tesseract's digits
     workers: int = 8                       # parallel Tesseract processes per page
     letter_fields: bool = True             # also cut letter fields out of the transcript (rules only)
+    spellfix: bool = True                  # repair dot confusions against the Persian word list
     max_upload_mb: float = 25.0
 
     # --- service ------------------------------------------------------------------

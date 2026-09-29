@@ -56,15 +56,23 @@ def test_no_ground_truth_text_spans_both_splits():
 
 
 # ── 0.3 — no lexicon stage may return to the runtime ──────────────────────────
+# `spellfix` is the ONE exception, admitted in E24 under the four conditions in
+# dehkhoda/REMOVED.md: it repairs dot confusions only (a word is replaced solely by a
+# word that is identical once dots are folded away), never changes a letter's shape or a
+# word's length, never touches digits or Latin, leaves any word the reader was sure of,
+# and acts only where exactly ONE lexicon word matches. Everything else stays blocked —
+# a general edit-distance corrector is what damaged 47 of 49 tokens in the 2026-09-01
+# audit, and what reproduced as 11 corruptions in D77.
 LEXICON_TOKENS = re.compile(
     r"dehkhoda|corrector|lexicon|levenshtein|edit_distance|rapidfuzz|difflib|"
-    r"spell|دهخدا",
+    r"spell(?!fix|_?fix)|دهخدا",
     re.IGNORECASE,
 )
 
 # The serving path since E19 (the LLM path - main.py, engine.py, ocr_pipeline/ - is gone).
 RUNTIME_FILES = ["ocr_service/transcribe.py", "ocr_service/letter_fields.py", "ocr_service/pipeline.py",
-                 "ocr_service/api.py", "ocr_service/config.py", "ocr_service/tasks.py"]
+                 "ocr_service/api.py", "ocr_service/config.py", "ocr_service/tasks.py",
+                 "ocr_service/spellfix.py"]
 
 
 def _executable_source(path: Path) -> str:
@@ -187,3 +195,32 @@ def test_engine_identity_is_pinned():
     dm = prov["digit_model"]["sha256"]
     if dm is not None:
         assert dm == "e0e286aaf5595898", f"models/digit_cnn.npz differs from the measured one: {dm}"
+
+
+def test_the_spell_fix_can_only_move_dots():
+    """The one correction stage allowed back in (E24). It may swap a letter for another
+    of the SAME shape and nothing else, so it cannot invent a word: the failures that
+    kept every previous corrector out — «شادی»→«هادی», «گذشته»→«گشته», «۱۴۰۴»→«۱۴۰۳» —
+    are all unreachable, and so is any change to a word the reader was confident of."""
+    import sys
+    sys.path[:0] = [str(ROOT)]
+    from ocr_service.spellfix import SpellFix
+    sf = SpellFix()
+    if not sf.available():
+        pytest.skip("Persian word list not present")
+
+    assert sf.fix("صبخگاهی", 50.0) == "صبحگاهی"          # a dot moves: repaired
+    assert sf.fix("هوسمند", 50.0) == "هوشمند"
+    assert sf.fix("گزارس", 50.0) == "گزارش"
+
+    for w in ("شادی", "گذشته", "انسان", "باید", "میان", "بدون", "باقری", "هادی", "گشته"):
+        assert sf.fix(w, 50.0) == w, f"{w} is a word and must never be touched"
+    assert sf.fix("۱۴۰۴", 50.0) == "۱۴۰۴"                # digits are never touched
+    assert sf.fix("125,000,000", 50.0) == "125,000,000"
+    assert sf.fix("Email", 50.0) == "Email"              # nor Latin
+    assert sf.fix("صبخگاهی", 95.0) == "صبخگاهی"          # nor a confident reading
+    assert sf.fix("بمار", 50.0) == "بمار"                # two moved dots: too far to be sure
+
+    for bad, good in (("صبخگاهی", "صبحگاهی"), ("گزارس", "گزارش")):
+        assert len(sf.fix(bad, 50.0)) == len(bad)        # length never changes
+        assert good == sf.fix(bad, 50.0)

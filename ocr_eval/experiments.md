@@ -1184,3 +1184,90 @@ greys a line under 0.6 with a dotted underline that explains itself on hover.
 
 A deleted line cannot be recovered by the person reading the page. A marked one can.
 E22's UI fix (not printing the letter body twice) is kept.
+
+---
+
+## E24 — 2026-09-29 — dot confusions are repairable; the earlier attempt failed on its lexicon
+
+**Trigger** the user, for the third time: the low-quality captures still carry spelling
+mistakes, fix them after OCR and before the output.
+
+D77 had measured a corrector at **3 fixes to 11 corruptions** and closed the question.
+That verdict was about a particular design, and the design was wrong twice over:
+
+* **the lexicon** was 462 words built from corpus OCR output, so 72% of a prose page fell
+  outside it — "not in the lexicon" did not mean "not a word";
+* **the edit** was edit distance, which lets any word reach any other: «شادی»→«هادی»,
+  «گذشته»→«گشته», «۱۴۰۴»→«۱۴۰۳».
+
+### What changed
+
+**The lexicon.** Tesseract ships one. `combine_tessdata -u fas.traineddata` then
+`dawg2wordlist` on `fas.lstm-word-dawg` yields **13,892 Persian words** — 156 KB, no new
+dependency, offline, and exactly the vocabulary the recogniser was trained against. It
+contains «صبحگاهی», «بنفشه», «هوشمند» and also «شادی», «گذشته», «باقری», so those are
+words and are never candidates.
+
+**The edit.** Not distance but **skeleton identity**. Fold every letter onto its
+mark-group representative — بپتثنی, جچحخ, دذ, رزژ, سش, صض, طظ, عغ, فق, کگ, اآأإ, وؤ, هة —
+and two words are candidates only if the folded forms are equal. That is exactly the
+error a low-resolution scan makes: it loses and invents the marks, never the shapes. So
+«صبخگاهی»→«صبحگاهی» is reachable and «شادی»→«هادی» is **not** — ش and ه are different
+shapes. Digits have no group and are never touched.
+
+Then five gates: the word must not itself be in the list; the reader must have been
+unsure of it (conf < 85); exactly **one** lexicon word may share the skeleton; only
+**one** mark may move; the length may not change.
+
+That last gate is load-bearing. Without it «بمار» (a misreading of «بهار») becomes
+«نماز» — same skeleton across two moved dots, and «بهار» is not a candidate at all
+because ه is not a dot variant of م.
+
+### Measured
+
+| dev (51 letters) | off | **on** |
+|---|---:|---:|
+| coverage CER | 14.65% | **14.61%** |
+| … receiver | 5.44% | **5.30%** |
+| … subject | 36.56% | **36.45%** |
+| … body_text | 11.33% | **11.28%** |
+| digit atoms / whole numbers / len_ratio | — | **unchanged** |
+| seconds per page (p50) | 2.95 | 2.96 |
+
+| the user's prose page (12 px, 325 GT words) | off | **on** |
+|---|---:|---:|
+| CER | 9.24% | **9.00%** |
+| word recall | 75.69% | **76.92%** |
+
+**Every change audited, not sampled.** 27 word changes across the 51 dev letters, 22
+distinct: **23 correct** — `آداره→اداره` ×4, `مدبریت→مدیریت` ×2, `آقدام→اقدام` ×2,
+`جهن→جهت`, `منایع→منابع`, `الق→الف`, `قرائی→قرائت`, `مذیر/مدثر/مدبر/مدیز→مدیر`,
+`پرستل→پرسنل`, `آرسال→ارسال`, `همچتین→همچنین`, `چتانچه→چنانچه`, `آمکان→امکان`,
+`پانکی→بانکی`, `مناقصة→مناقصه` — **1 wrong**: `کتبا→کتیا`, because «کتباً» is correct
+Persian but is absent from Tesseract's list, so it became a candidate. 3 ambiguous
+(`خراید→جراید`, `یمک→نمک`, `تلد→بلد`). On the prose page: 5 changes, 4 correct, 1 wrong
+(`خواهن→خواهی`, where the right word «خواهد» was unreachable — د is not a dot variant
+of ن). On the 7 px page: 2 changes, both correct.
+
+### The guard
+
+`test_no_lexicon_stage_in_runtime` is **narrowed, not removed**: `spellfix` is admitted by
+name, and `dehkhoda`, `corrector`, `lexicon`, `levenshtein`, `edit_distance`, `rapidfuzz`
+and `difflib` stay blocked. `test_the_spell_fix_can_only_move_dots` pins the failures that
+kept every previous corrector out — «شادی», «گذشته», «باقری», «۱۴۰۴», Latin, and any word
+the reader was confident of.
+
+**Residual:** a correct word missing from Tesseract's list can still be changed, which is
+the one wrong change on dev. Adding the corpus's own administrative vocabulary would close
+it, but that vocabulary cannot be measured on this corpus without leaking into the metric.
+
+| test (33, held out, scored once) | before | **on** |
+|---|---:|---:|
+| coverage CER | 18.05% | **18.01%** |
+| … receiver | 5.22% | **4.99%** |
+| … subject | 31.86% | **31.70%** |
+| … body_text | 17.38% | **17.35%** |
+| digit atoms / whole numbers / len_ratio | — | **unchanged** |
+
+Every field improved or held on data never tuned against; nothing regressed. Ninth look
+at the test split (E17, E18, E19 ×5, E20, E24) — make a fresh split before the next cycle.

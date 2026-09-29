@@ -85,8 +85,8 @@ image → deskew (≥1°) → binarise + remove rules/specks
                          read with psm 7/13 (fas, eng)
       → best reading per physical line → table cells ordered right-to-left
       → CNN digit reader replaces number tokens it confirms → junk-line filter
-      → thousands grouping checked → text + lines + numbers
-      → letter fields cut out by rules (letters only)
+      → thousands grouping checked → dot confusions repaired against the Persian word list
+      → text + lines + numbers  →  letter fields cut out by rules (letters only)
 ```
 
 Code: `ocr_service/transcribe.py` (recognition), `ocr_service/letter_fields.py`
@@ -154,6 +154,25 @@ also a raw-text view and the full JSON, both copyable.
 One file, `ocr_service/static/index.html` — plain HTML, CSS and JavaScript, no CDN and
 no build step, so it works on a server with no internet access.
 
+## Spelling: dots, and only dots
+
+A low-resolution capture loses the marks that separate ب/پ/ت/ث/ن/ی, ج/چ/ح/خ and س/ش, so
+«صبحگاهی» comes back «صبخگاهی». After the page is read, each word the reader was **unsure
+of** is checked against Tesseract's own Persian word list (13,892 words, shipped in
+`ocr_service/data/`): a word is replaced only by one that is **identical once every letter
+is folded onto its mark group**, and only when exactly one such word exists, one mark
+moves, and the length is unchanged.
+
+That is much narrower than spell-checking, deliberately. «صبخگاهی»→«صبحگاهی» is reachable;
+«شادی»→«هادی» is not, because ش and ه are different shapes rather than the same shape with
+different dots. **Digits and Latin are never touched**, and a word the reader was confident
+of is never touched.
+
+Measured (E24): dev coverage CER 14.65% → 14.61%, numbers and text length unchanged; the
+low-resolution prose page 9.24% → 9.00% CER, word recall 75.7% → 76.9%. All 27 changes on
+dev were audited by hand: 23 correct, 1 wrong, 3 ambiguous. Switch it off with
+`OCRS_SPELLFIX=0`; `/health` reports whether the list loaded.
+
 ## Setup (once)
 
 Needs Python 3.12 (`venv312`), Tesseract 5 with the Persian/English `tessdata_best`
@@ -172,7 +191,7 @@ when running from a git worktree). Check with `GET /health`: `"status": "ok"`.
 Every setting is an environment variable `OCRS_<NAME>` (see `ocr_service/config.py`):
 `TESSERACT_CMD`, `TESSDATA_DIR`, `DIGIT_MODEL`, `LAYOUT_PSMS` (default `3,4,6`),
 `DESKEW_MIN_DEG` (1.0), `MIN_LINE_CONF` (30), `NUMBER_MIN_PROB` (0.6), `WORKERS` (8),
-`LETTER_FIELDS` (1), `MAX_UPLOAD_MB` (25), `ASYNC_MODE`, `REDIS_URL`.
+`LETTER_FIELDS` (1), `SPELLFIX` (1), `MAX_UPLOAD_MB` (25), `ASYNC_MODE`, `REDIS_URL`.
 
 ## Queued mode and deployment
 
