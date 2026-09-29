@@ -76,5 +76,7 @@ class Health(BaseModel):
     status: Literal["ok", "degraded", "down"]
     tesseract: dict
     digit_reader: dict
+    spellfix: dict = Field(default_factory=dict,
+                           description="dot-confusion repair: enabled, available, word-list size")
     queue: dict
     service: dict

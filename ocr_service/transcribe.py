@@ -396,19 +396,29 @@ def _xov(a, b) -> float:
 class Transcriber:
     def __init__(self, tesseract_cmd: str | None, tessdata_dir: str | None, digit_model: Path | None,
                  layout_psms: tuple[str, ...] = ("3", "4", "6"), deskew_min_deg: float = 1.0,
-                 min_line_conf: float = 30.0, workers: int = 8, number_min_prob: float = 0.6):
+                 min_line_conf: float = 30.0, workers: int = 8, number_min_prob: float = 0.6,
+                 spellfix: bool = True):
         self.cmd, self.tessdata = tesseract_cmd, tessdata_dir
         self.layout_psms = tuple(layout_psms)
         self.deskew_min_deg = deskew_min_deg
         self.min_line_conf = min_line_conf
         self.workers = workers
         self.number_min_prob = number_min_prob
+        self.spellfix = spellfix
         self.digit_model = digit_model
         self._glyph = None
+        self._spellfix = None
         self._glyph_error: str | None = None
         self.version: str | None = None
 
     # -- availability ------------------------------------------------------------
+    def spellfix_stage(self):
+        """The dot-confusion repair (spellfix.py), loaded once."""
+        if self._spellfix is None:
+            from .spellfix import SpellFix
+            self._spellfix = SpellFix()
+        return self._spellfix
+
     def glyph_reader(self):
         if self._glyph is None and self._glyph_error is None:
             try:
@@ -434,10 +444,14 @@ class Transcriber:
                 version = f"error: {exc}"
         self.version = version
         g = self.glyph_reader()
+        sp = self.spellfix_stage() if self.spellfix else None
         return {"tesseract": {"available": ok, "version": version, "langs": langs, "cmd": self.cmd,
                               "tessdata_dir": self.tessdata},
                 "digit_reader": {"available": g is not None, "version": getattr(g, "version", None),
-                                 "error": self._glyph_error}}
+                                 "error": self._glyph_error},
+                "spellfix": {"enabled": bool(self.spellfix),
+                             "available": bool(sp and sp.available()),
+                             "words": len(sp.words) if sp else 0}}
 
     # -- tesseract ---------------------------------------------------------------
     def _run(self, img: Image.Image, psm: str, lang: str) -> list[dict]:
@@ -774,6 +788,9 @@ class Transcriber:
                 para += 1
             latin = L.source == "line-eng"
             words = [Word(self._clean_word(w.text, latin), w.conf, w.box) for w in L.words]
+            if self.spellfix and not latin:
+                sp = self.spellfix_stage()
+                words = [Word(sp.fix(w.text, w.conf), w.conf, w.box) for w in words]
             words = [w for w in words if w.text]
             if not words:
                 continue

@@ -8,6 +8,20 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-29 — E24: repair dot confusions against Tesseract's own Persian word list
+
+| Status | File | What it is |
+|---|---|---|
+| 🟢 | `ocr_service/spellfix.py` | Dot-confusion repair. A word is replaced only by one that is **identical once every letter is folded onto its mark group** (بپتثنی, جچحخ, سش, اآأإ …) — so «صبخگاهی»→«صبحگاهی» is reachable and «شادی»→«هادی» is not. Only when the word is not itself in the list, the reader was unsure (conf < 85), exactly one candidate matches, one mark moves, and the length is unchanged. Digits and Latin are never touched |
+| 🟢 | `ocr_service/data/fas_words.txt` | 13,892 Persian words, unpacked from the `fas.traineddata` already installed (`combine_tessdata -u` → `dawg2wordlist`). 156 KB, no new dependency, offline |
+| 🟡 | `ocr_service/transcribe.py` | The stage runs per word in `_assemble`, with that word's own confidence, before the letter fields are cut — so the fields are cut from corrected text |
+| 🟡 | `ocr_service/config.py`, `pipeline.py`, `api.py`, `schemas.py` | `OCRS_SPELLFIX` (default on) and a `spellfix` block in `/health` (enabled, available, word count) |
+| 🟡 | `ocr_eval/test_phase0_guards.py` | The lexicon guard is **narrowed, not removed**: `spellfix` is admitted, everything else stays blocked, and a new test pins that «شادی», «گذشته», «باقری» and «۱۴۰۴» can never change |
+
+Dev 51: coverage CER 14.65% → **14.61%**, receiver 5.44% → **5.30%**, numbers and len_ratio
+unchanged. Prose page: CER 9.24% → **9.00%**, word recall 75.7% → **76.9%**. All 27 changes
+on dev audited: 23 correct, 1 wrong, 3 ambiguous (D80).
+
 ## 2026-09-29 — E23: put back the text E22 deleted; mark noise instead of removing it
 
 | Status | File | What it is |
