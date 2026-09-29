@@ -214,13 +214,13 @@ def test_one_number_read_in_two_pieces_is_rejoined_without_inventing_a_separator
     def read(text, x0, x1):          # what _fix_numbers reads off a digit-reader result
         return SimpleNamespace(text=text, box=(x0, 12, x1, 48), n_digits=len(text),
                                mean_prob=0.9, line_h=36.0)
-    line = Line([_w("۱۴۰۳۰۹۰", 90, 100, 300, 10, 50)], (100, 10, 300, 50), "psm4")
+    line = Line([_w("۱۴۰۳۰۹۰۶", 90, 100, 300, 10, 50)], (100, 10, 300, 50), "psm4")
     t._fix_numbers([line], [read("۱۴۰۳", 100, 200), read("۰۹۰۶", 205, 300)], 1.0)
     assert line.words[0].text == "۱۴۰۳۰۹۰۶"        # joined, and «۱۴۰۳/۰۹/۰/۶» never happens
 
-    far = Line([_w("۱۴۰۳۰۹۰", 90, 100, 400, 10, 50)], (100, 10, 400, 50), "psm4")
+    far = Line([_w("۱۴۰۳۰۹۰۶", 90, 100, 400, 10, 50)], (100, 10, 400, 50), "psm4")
     t._fix_numbers([far], [read("۱۴۰۳", 100, 200), read("۰۹۰۶", 300, 400)], 1.0)
-    assert far.words[0].text == "۱۴۰۳۰۹۰"          # too far apart to be one number: untouched
+    assert far.words[0].text == "۱۴۰۳۰۹۰۶"         # too far apart to be one number: untouched
 
 
 def test_a_table_row_is_split_into_cells_and_prose_is_not():
