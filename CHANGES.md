@@ -8,6 +8,16 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-29 — E25: put the Persian comma back
+
+| Status | File | What it is |
+|---|---|---|
+| 🟡 | `ocr_service/transcribe.py` | `_fix_marks`. Tesseract reads «،» as «»», «۰», «.» or «+» **65 times** across dev+test — more than any other substitution, and the reason a correct line still reads as broken. Restored wherever a Persian letter stands to its left: alone between two words, glued inside one, trailing one, or drifted onto the next. Quotations, table cells, numbers and a real final hamza are all left alone |
+| 🟡 | `ocr_service/spellfix.py` | Candidates are now narrowed to those within one moved dot **before** uniqueness is required, not after. «نبروی» shares a skeleton with نیروی, بیروت, بیرون and پیروی but is one dot from only «نیروی» — the old order declined it |
+| 🟡 | `tests/test_transcribe.py` | The comma rules and every guard around them |
+
+Dev coverage CER 14.61% → **14.45%**; digit atoms, whole numbers and text length unchanged.
+
 ## 2026-09-29 — E24: repair dot confusions against Tesseract's own Persian word list
 
 | Status | File | What it is |

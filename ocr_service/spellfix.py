@@ -78,15 +78,13 @@ class SpellFix:
             return word
         if word in self.words:
             return word
-        cand = self.by_skeleton.get(skeleton(word))
-        if not cand or len(cand) != 1 or cand[0] == word:
-            return word
-        fixed = cand[0]
-        # A repair may move dots; it may never change a letter's shape or the length.
-        if len(fixed) != len(word):
-            return word
-        # And only so many at once: «بمار» (a misreading of «بهار») shares a skeleton with
-        # «نماز» across TWO moved dots, and turning it into «نماز» would be an invention.
-        if sum(a != b for a, b in zip(word, fixed)) > self.max_edits:
-            return word
-        return fixed
+        # Narrow to the words this one could be, then require the answer to be unique.
+        # Both steps matter: «نبروی» shares a skeleton with نیروی, بیروت, بیرون and
+        # پیروی, but only «نیروی» is one moved dot away, so there is still nothing to
+        # choose between. Filtering after the uniqueness test would have declined it.
+        near = [w for w in self.by_skeleton.get(skeleton(word), ())
+                if w != word and len(w) == len(word)
+                and sum(a != b for a, b in zip(word, w)) <= self.max_edits]
+        # «بمار» (a misreading of «بهار») is two moved dots from «نماز» and none from
+        # anything else, so it is left exactly as it was read.
+        return near[0] if len(near) == 1 else word
