@@ -69,6 +69,10 @@ curl.exe -F "file=@exampel_paper.png" http://127.0.0.1:8000/ocr
   dates, reference, account and phone numbers.
 * `lines[].cells` — a line's pieces when a wide gap splits it (a table row), in reading
   order; empty on ordinary prose. This is what the page at `/` rebuilds tables from.
+* `glyph_px` — the text height in the image **as supplied**. Under ~20 the dots that
+  separate ب/ی/پ/ن and ح/خ/ج are not in the file, so typos like «صبخگاهی» for «صبحگاهی»
+  are unavoidable; the service resamples such a page to ~30 px and says so in
+  `review_reasons`. A 300 DPI rescan is the actual fix.
 
 Other endpoints: `GET /` (the upload page), `GET /health` (Tesseract, digit model, their
 hashes), `GET /jobs/{id}` (queued mode), `GET /docs` (interactive API form).
@@ -114,8 +118,29 @@ amount in the whole corpus — together with `numbers[].source == "glyph"` and
 Known limits (open defects D67–D69 in `ocr_eval/error_register.md`):
 stylised letterhead fonts on coloured banners are not read (`sender` is usually null);
 handwriting is not read; text under a stamp or signature can be lost; photos with
-strong perspective or very small text read worse; `subject` is null unless a
-`موضوع:` line is printed.
+strong perspective read worse; `subject` is null unless a `موضوع:` line is printed.
+**Captures under ~20 px text height produce dot confusions** (ب/ی/پ/ن, ح/خ/ج) that no
+post-processing can undo — the service upsamples and flags them (D76). A spell-corrector
+was built to the `dehkhoda/REMOVED.md` policy and measured for exactly this: 3 fixes
+against 11 corruptions, including a year and two proper nouns, and no candidate at all
+for the reported word. It is not shipped (D77).
+
+## Any image, not just letters
+
+A letter gets its five fields cut out of the transcript; **anything else — prose, a book
+page, a receipt, a table, a photo with text in it — gets every line, top to bottom, in
+reading order, with paragraphs kept and tables rebuilt.** On a page that is not a letter
+`is_letter` is false and the five fields are null *by design* (they are never invented,
+D65) — the whole page is in `text` and `lines`, and the page at `/` says so rather than
+looking empty. Guard: `test_a_page_that_is_not_a_letter_still_comes_back_whole_and_in_order`.
+
+Measured on a general-prose page (`ocr_eval/samples/`, hand-typed transcript, 325 words):
+CER 9.2%, word recall 75.7%, all 23 lines and 4 paragraphs in order — on a 12 px scan
+that should have been captured at 300 DPI.
+
+```powershell
+.\venv312\Scripts\python.exe ocr_eval\tools\score_sample.py
+```
 
 ## The page at `/`
 

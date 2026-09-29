@@ -8,6 +8,18 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-29 — E21: the typos are the capture, not the reader
+
+| Status | File | What it is |
+|---|---|---|
+| 🟡 | `ocr_service/transcribe.py` | `working_scale` resamples a page whose text is under 20 px **as supplied** up to ~30 px (Lanczos, ≤4x). Keyed on the native height so the 24-42 px corpus scans are untouched — verified on all 90, scale unchanged on every one. `glyph_px` is measured and carried into the response |
+| 🟡 | `ocr_service/pipeline.py`, `schemas.py` | `glyph_px` in the response, and a review reason naming the DPI to rescan at when it is under 20 |
+| 🟡 | `ocr_service/static/index.html` | A red banner for a low-resolution page, and a note on a page that is not a letter saying how much was extracted (null letter fields were being read as "empty output") |
+| 🟢 | `ocr_eval/samples/prose_page.jpg`, `prose_page.gt.txt` | The general-document fixture and its hand-typed transcript — the corpus benchmark only covers administrative letters |
+| 🟢 | `ocr_eval/tools/score_sample.py` | Scores any sample with a `.gt.txt` beside it: whole-page CER, word recall, length |
+| 🟡 | `tests/test_transcribe.py` | Three guards: a non-letter page comes back whole and in order; a low-resolution capture is upsampled and a good scan is not; the resolution warning fires on 12 px and 7 px and not on 31 px |
+| 🔴 | — | **No spell-corrector.** Built to the `dehkhoda/REMOVED.md` policy and measured: 3 fixes, 11 corruptions, and no candidate at all for the reported word. `test_no_lexicon_stage_in_runtime` stands unmodified (D77) |
+
 ## 2026-09-29 — E20: amounts that can be trusted, kashida, and a page to read the result on
 
 | Status | File | What it is |

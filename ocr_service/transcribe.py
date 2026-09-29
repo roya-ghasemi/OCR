@@ -167,15 +167,30 @@ def flatten(im: Image.Image, scale: float = 1.0, thr: int = 200, radius: int = 4
 
 
 def working_scale(im: Image.Image, glyph_h: float = 0.0) -> float:
-    """Tesseract reads best with glyphs ~25-40 px tall: upsample phone photos and small
-    screenshots, cap huge scans. `glyph_h` is the text height measured at 1x; when the
-    page-size rule would still leave glyphs under 24 px (a small image of small text),
-    scale to ~32 px, at most 4x. Pages whose glyphs already reach 24 px keep the rule
-    E19 was measured with."""
+    """Tesseract reads best with glyphs ~30-40 px tall: upsample phone photos and small
+    screenshots (Lanczos, in `flatten`), cap huge scans. `glyph_h` is the text height
+    measured at 1x.
+
+    A Persian dot is 1-2 px at 12 px text height, so on a low-resolution photo the marks
+    that separate ب/ی/پ/ن and ح/خ/ج fall below the sampling grid and the page comes back
+    full of «صبخگاهی» for «صبحگاهی». Resampling cannot invent the missing ink, but it
+    gives Tesseract's line model room to resolve what ink there is: on the user's 12 px
+    page, resampling to 30 px leaves whole-page CER where it was (8.8% → 9.2%, one page)
+    and takes the marker words it reads correctly from 4 of 15 to 9 — «توسعه», «کوچه»,
+    «زندگی», «ارزشمند», «اصلاحی». So a page whose text is under 20 px **as supplied** is
+    taken to ~30, at most 4x (E21).
+
+    Only such a page. Applying the same target to everything under 30 px *working*
+    height upsampled the 24-29 px corpus scans too and cost dev coverage CER
+    14.7% → 15.1% and whole numbers 75.8% → 75.2%; a scan that already resolves its own
+    dots keeps the rule E19 was measured with. Resampling cannot invent the missing ink —
+    the page is still flagged `needs_review` for its resolution."""
     scale = 2.0 if im.height < 2000 else 1.0
     if max(im.size) > 4200:
         scale = 3500 / max(im.size)
-    if glyph_h and glyph_h * scale < 24:
+    if glyph_h and glyph_h < 20:                     # a low-resolution capture
+        scale = min(4.0, 30.0 / glyph_h)
+    elif glyph_h and glyph_h * scale < 24:           # small image of small text (E19)
         scale = min(4.0, 32.0 / glyph_h)
     return scale
 
