@@ -893,3 +893,85 @@ Class precision on test: `high` 83% (23), `corrected` 71% (90), `added` 67% (33,
 **Note on method:** the test split has now been looked at twice. Its value as an unbiased estimate is weakened; a third tuning cycle should use a fresh split or nested validation.
 
 **Artefacts** `ocr_eval/benchmarks/bench_qwen25_test_amounts.json`, `reader_cnn_v3_dev.json`, `recon_amounts_final.json`.
+
+## E19 — full-text transcription replaces the VLM letter-JSON path (Tesseract ensemble + CNN digits)
+
+**Date** 2026-09-27 · **Corpus** real dev 51 (all tuning), real test 33 (final check), plus the user's own samples (a general-prose page with hand-typed GT, and three letters from this corpus) · **Trigger** user report: long / multi-paragraph pages and pages with tables came back as one paragraph; a non-letter page got an invented sender and receiver; "an image can be anything — extract everything in it".
+
+**Root causes of the report** (registered as D64–D66): the GBNF grammar capped `body_text` at 1,400 characters, so a long page could not be written out and the model stopped after a paragraph; the letter-only prompt forced five letter fields and the model filled them for a page that has none (`دفتر خدمات شهرداری میاندوآب` / `دکتر علی حسینی` — neither on the page); without the grammar, Qwen2.5-VL-7B transcribed every paragraph but emitted words of dense right-to-left lines out of order, on full pages, single lines and line fragments alike.
+
+**Screening** (8 dev letters + the prose page; metric = coverage CER, see `ocr_eval/fulltext_score.py`: per GT field, the edit distance to the best-matching substring of the transcript, so extra text such as signature blocks is not charged but missing, misread or reordered text is):
+
+| method | letters CER | prose page CER | letters digit atoms |
+|---|---:|---:|---:|
+| previous service (stored predictions) | 23.0% | — (one paragraph) | 69.1% |
+| Tesseract fas, page psm 3 | 20.5% | 23.2% | 64.7% |
+| + page binarisation / rule + speck removal, layout psm 4 | 17.6% | 23.2% | 58.8% |
+| + CNN digit reader replaces confirmed number tokens | 17.5% | 22.9% | 76.5% |
+| + VLM line proofreading of the Tesseract draft | 17.2% | 19.3% | 76.5% |
+| own line finder, psm 7→13, fas/eng per line | 15.0% | 20.8% | 83.1% |
+| **candidates from psm 3+4+6 and own lines, best per line** | **12.9%** | **11.7%** | **84.6%** |
+
+VLM proofreading was dropped: +12 s/page on the GPU for −0.3 pp on letters, and it dropped number placeholders in 72 of 160 lines; VLM reading of regions Tesseract could not read (letterheads) produced invented text (`چاپ سازنده` for a logo, digits for handwriting) and was dropped too. **No language model remains in the runtime.**
+
+**Dead ends measured on the way** (kept here so nobody repeats them): `-l fas+eng` corrupts Persian words with Latin fragments (read each line with `fas` and `eng` separately instead); `--psm 7` returns nothing for some clean lines that `--psm 13` reads perfectly; dropping large sparse components (to remove grids) deleted text a signature touched (remove rules pixel-wise with long kernels instead); a 1/15-page-width rule kernel deleted long Persian baselines (1/4); page-relative kernels deleted every «ا» on an image of a few large lines (kernels now also scale with text height, found by an end-to-end test on a rendered page); deskewing every page cost the digit reader more than it gained (only at ≥ 1°).
+
+**Final, frozen before test** (`ocr_service/transcribe.py`, provenance below), dev 51 / test 33, previous service = stored per-document predictions of E17/E18 on the same documents:
+
+| metric | dev previous | **dev E19** | test previous | **test E19** |
+|---|---:|---:|---:|---:|
+| coverage CER, all fields | 28.5% | **14.9%** | 24.7% | **18.9%** |
+| … body_text | 32.9% | **11.7%** | 26.8% | **18.5%** |
+| … receiver | 11.8% | **4.8%** | 8.0% | **5.2%** |
+| … contact_info | 21.0% | **16.5%** | 24.5% | **15.3%** |
+| … sender (letterhead) | **7.7%** | 53.3% | **12.4%** | 50.8% |
+| digit atom recall | 70.8% | **81.3%** | 52.0% | **78.6%** |
+| whole numbers exact | 54.8% | **66.9%** | 36.2% | **62.0%** |
+| transcript / GT length | 0.80 | **0.95** | 0.84 | **0.92** |
+| latency p50 / p95 | ~8.3 s GPU | **2.9 / 3.7 s CPU** | ~8.2 s GPU | **2.9 / 4.3 s CPU** |
+
+Letter fields cut from the transcript by rules (`letter_fields.py`), plain per-field CER (null prediction = 100%):
+
+| field | dev previous | dev E19 | test previous | test E19 |
+|---|---:|---:|---:|---:|
+| body_text | 37.2% | **21.5%** | **32.0%** | 32.3% |
+| receiver | 16.6% | **14.1%** | **12.0%** | 18.5% |
+| contact_info | 25.9% | **23.6%** | 26.0% | **24.4%** |
+| subject | 98.6% | 95.5% | 84.2% | 80.3% |
+| sender | **13.1%** | 99.7% | **20.8%** | 100% |
+| fields filled where GT is null | 3 | 1 | 2 | **0** |
+
+**Read this honestly.** The transcript is better than the previous service on every field but the letterhead, on both splits, at a third of the latency and without a GPU. The rule-cut `receiver` is **worse on test** (18.5% vs 12.0%) though better on dev. `subject` is not printed on most of these letters — the GT carries annotator-written summaries (`درخواست ارائه ضمانتنامه انجام تعهدات`) — so it stays null by design; the previous model's 80–99% there was invention. `sender` is a stylised font on a coloured banner that Tesseract cannot read (D67). **About one whole number in three still carries a wrong digit** (test 62.0% exact): not production-ready for money fields. `needs_review` fires on 50/51 dev and 33/33 test documents — not yet a useful triage signal; `numbers[].source` is.
+
+**Worst test documents** (diagnosis only, nothing tuned on them): `_53` page rotated > 10° and curved, two-column name lists; `_89` very small text (page photographed from afar); `_6` handwritten values on a form; `_41` rotated and cropped. Worst dev: `_68` handwritten letter (previous 43.9%, now 64.9%), `_51`/`_55` perspective distortion.
+
+**User samples** (HTTP, final code): the prose page — all four paragraphs, coverage CER 11.4%, 14/19 digit atoms, every letter field null (previously: one paragraph + invented sender/receiver); the table letter — every cell number right (`۳۲۱`, `۱۵۰۰`; previously `۲۳۱`, `۵۰۶`), rows right-to-left; the long letters — every paragraph, including the sentence with `۰۳/۰۸/۱۴۰۳ … ۰۳/۱۱/۱۴۰۳` the previous service dropped.
+
+**Method note.** Tuned on dev only. The test split was scored three times in this experiment: at the freeze; after the kernel/glyph-height bug fix found by the rendered-page test (18.93% → 18.88%); after three general fixes motivated by the user's samples (adaptive upscaling for small text, right-to-left ordering of table cells, `سلام`-only salutation lines) — identical numbers, those fixes do not touch these letters. With E17 and E18 it has now been looked at five times; the next tuning cycle needs a fresh split.
+
+**Provenance** `{"service_version": "1.0.0", "engine": "tesseract(fas,eng) + digit_cnn", "tesseract": "v5.4.0.20240606", "fas_sha256": "99e420969b5ddd2c", "eng_sha256": "7d4322bd2a774972", "digit_model_sha256": "e0e286aaf5595898", "layout_psms": "3,4,6", "deskew_min_deg": 1.0, "min_line_conf": 30.0, "number_min_prob": 0.6, "python": "3.12.10"}`
+
+**Artefacts** `ocr_eval/benchmarks/bench_fulltext_dev.json`, `bench_fulltext_test.json` (per-document transcript, fields, scores, previous-service scores); `ocr_eval/fulltext_score.py`; `ocr_eval/tools/bench_fulltext.py`; `tests/test_transcribe.py`.
+
+**Removed with this experiment** (git history keeps them): `main.py`, `engine.py`, `config.py`, `main_qwen.py`, `json_repair.py`, `ocr_pipeline/`, `ocr_service/backends/`, `ocr_service/benchmark.py`, `ocr_service/make_eval_set.py`, and the eval runners that drove the removed endpoints (`run_real.py`, `run_eval.py`, `run_experiment.py`, `run_pipeline_ab.py`, `ci_gate.py`, `analyze_fields.py`, `tools/regen_one.py`, `experiments/{orientation,repeat_stability,diagnostics_0913/novel_headers}`). The model weights under `D:\models` were not touched.
+
+### E19b — follow-up after the user's Postman test (same day)
+
+**Report:** on the prose page the first line ended «…رنگار شدند. سیم بحگاهی ک ۹» for «…رنگارنگ شدند. نسیم خنک صبحگاهی از میان»; the user suspected RTL maths in the junk filter, erased dots and tight crops.
+
+**Measured diagnosis of that line:** the cleaned binary image of the line is complete (the clean-up removed 157 of 13,152 ink pixels, all shadow specks at the right page edge — no dot inside the text); `_trim_edges` only drops whole one-character tokens a line-height away from the rest and is direction-agnostic; every line image already has a 30 px white frame. The loss was in **selection**: the page is tilted 0.9° (below the 1° deskew threshold), psm 3/4 read the line as two clean halves (scores 22.4 + 19.8) and psm 6 as one piece merged with the next line (33.7). Greedy selection kept the single highest-scoring piece. Registered as **D70**.
+
+**Changes:** (1) `_select` compares every chosen reading with all compatible combinations of the readings it displaced (exact search over ≤ 8 neighbours, bitmask) and swaps when the combination scores ≥ 5% more; (2) pieces of one row are junk-filtered separately and then joined right-to-left into one line (`_finish_rows`, `_join_row`) — joining before filtering glued a shadow speck «اس ی» onto a real line; (3) a word with ≥ 2 harakat has them removed — Tesseract invents them on bold text («بِمُدیرِیَت»), printed Persian carries at most one (**D71**); (4) the opening formula is found when OCR damaged it («اشه احترام بر مذاکرات»), never the closing «با احترام». Tried and rejected: line images built from whole connected components (to keep descenders of tilted lines) — prose page 10.6% → 14.8%, removed.
+
+| | dev before | **dev after** | test before | **test after** |
+|---|---:|---:|---:|---:|
+| coverage CER | 14.9% | **14.9%** | 18.9% | **18.5%** |
+| … body_text | 11.7% | **11.5%** | 18.5% | **17.8%** |
+| digit atoms | 81.3% | **81.6%** | 78.6% | **79.5%** |
+| whole numbers exact | 66.9% | **67.2%** | 62.0% | **62.4%** |
+| field body_text | 21.5% | **21.3%** | 32.3% | **30.2%** |
+| field contact_info | 23.6% | **23.8%** | 24.4% | **22.5%** |
+| field receiver | 14.1% | **13.9%** | 18.5% | **17.8%** |
+| prose page (hand GT) | 11.4% | **10.6%** | | |
+
+The line now reads «…رنگارنگ شدند. نسیم خنک صبخگاهی از میان» (one dot error left, Tesseract's). The test split was scored twice more here (seven looks in total); nothing was tuned on it. Guards: `test_two_clean_halves_of_a_tilted_line_beat_one_merged_reading`, `test_a_junk_piece_is_dropped_before_its_row_is_joined`, `test_invented_harakat_are_stripped_but_a_real_single_mark_stays`, `test_an_ocr_damaged_opening_is_still_found_but_the_closing_formula_is_not_an_opening`.

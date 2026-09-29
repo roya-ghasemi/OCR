@@ -8,6 +8,29 @@ Legend:  🟢 new code  ·  🟡 modified code  ·  ⚪ generated output (produc
 
 ---
 
+## 2026-09-27 — E19: full-text transcription of any image; the language-model path is removed
+
+| Status | File | What it is |
+|---|---|---|
+| 🟢 | `ocr_service/transcribe.py` | The recogniser: deskew, binarise, rule/speck removal, line candidates from Tesseract psm 3/4/6 + own line finder (psm 7→13, fas and eng), best reading per line, CNN digit reader replaces confirmed numbers, table cells right-to-left, junk filter. CPU only |
+| 🟢 | `ocr_service/letter_fields.py` | Letter fields cut from the transcript by rules — verbatim lines or null, never generated; non-letters get none |
+| 🟡 | `ocr_service/pipeline.py`, `api.py`, `schemas.py`, `config.py`, `tasks.py`, `__init__.py` | Service rewired: response is `text` + `lines` + `numbers` (+ `fields` for letters); settings for Tesseract, digit model, thresholds; `/health` reports the traineddata and digit-model hashes |
+| 🟢 | `ocr_eval/fulltext_score.py`, `ocr_eval/tools/bench_fulltext.py` | Full-page scoring (coverage CER, digit atoms, whole numbers) and the benchmark that runs the service in-process against the previous service's stored predictions |
+| 🟢 | `tests/test_transcribe.py` | Rules, line selection, rule removal, table order, and an end-to-end rendered page |
+| 🟡 | `ocr_eval/test_phase0_guards.py` | Guards moved to the new runtime: no language model, no lexicon stage, engine files pinned |
+| 🟡 | `tests/test_numeric_v2.py`, `tests/test_ocr_service.py` | VLM-path tests removed; contract test for the new response; digit model found from a worktree |
+| 🟡 | `deploy/Dockerfile`, `deploy/docker-compose.yml`, `requirements*.txt` | CPU-only stack; tessdata_best in the image; no llama.cpp services, no `openai` |
+| 🟡 | `README.md`, `RUNBOOK.md`, `ARCHITECTURE.md` | Rewritten for the new service; `README_SERVICE.md` folded into `README.md` |
+| 🟡 | `ocr_eval/experiments.md` (E19), `ocr_eval/error_register.md` (D64–D69) | Records |
+| ⚪ | `ocr_eval/benchmarks/bench_fulltext_{dev,test}.json` | Benchmark outputs |
+| 🔴 | `main.py`, `main_qwen.py`, `engine.py`, `config.py`, `json_repair.py`, `test_json_repair.py`, `test_ocr.py`, `_test_client.py`, `_dl_model.py`, `download_model.py`, `*.bak` | The coreOCR/LM Studio serving path |
+| 🔴 | `ocr_pipeline/`, `ocr_service/backends/`, `ocr_service/benchmark.py`, `ocr_service/make_eval_set.py`, `tests/test_ocr_pipeline.py` | The Qwen2.5-VL letter-JSON path (grammar, sampling, extraction) |
+| 🔴 | `ocr_eval/run_real.py`, `run_eval.py`, `run_experiment.py`, `run_pipeline_ab.py`, `ci_gate.py`, `analyze_fields.py`, `tools/regen_one.py`, `experiments/{orientation,repeat_stability}/run*.py`, `experiments/diagnostics_0913/novel_headers.py` | Runners of the removed endpoints |
+
+🔴 = removed (in git history). Model weights under `D:\models` were not touched.
+
+---
+
 ## 2026-09-22 — E15: numbers read from the page and corrected (Phase 4)
 
 | Status | File | What it is |
