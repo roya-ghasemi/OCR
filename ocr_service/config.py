@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     # --- recognition ------------------------------------------------------------
     tesseract_cmd: str | None = None       # None -> UB-Mannheim install, then PATH
     tessdata_dir: str | None = None        # None -> nearest <repo>/tessdata holding fas.traineddata
+    lang_fa: str = "fas"                   # Persian model: "fas", or "fas_custom" for the fine-tune (E29)
     digit_model: str | None = None         # None -> nearest <repo>/models/digit_cnn.npz
     layout_psms: str = "3,4,6"             # Tesseract layout passes whose lines compete (E19)
     crop_page: bool = True                 # cut the sheet out of the photo before reading (E26)
@@ -91,6 +92,11 @@ class Settings(BaseSettings):
             "service_version": __import__("ocr_service").__version__,
             "engine": "tesseract(fas,eng) + digit_cnn",
             "tesseract": {"cmd": cmd, "tessdata_dir": data,
+                          "lang_fa": self.lang_fa,
+                          # The model actually doing the reading. With a fine-tune selected
+                          # this is NOT fas.traineddata, and a results file that only stamped
+                          # the stock hash would describe a run that never happened.
+                          "lang_fa_sha256": sha(Path(data) / f"{self.lang_fa}.traineddata") if data else None,
                           "fas_sha256": sha(Path(data) / "fas.traineddata") if data else None,
                           "eng_sha256": sha(Path(data) / "eng.traineddata") if data else None},
             "digit_model": {"path": str(dm) if dm else None, "sha256": sha(dm)},
