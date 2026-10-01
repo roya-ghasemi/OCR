@@ -134,9 +134,22 @@ def best_checkpoint() -> Path | None:
     return latest if latest.is_file() else None
 
 
-def pack() -> Path:
+def latest_checkpoint() -> Path | None:
+    """The most recent checkpoint, regardless of its recorded error.
+
+    `best_checkpoint` compares the BCER in the filename, which is only meaningful **within
+    one data regime**. After the training set is changed — clean renders replaced by
+    degraded ones — the new run's numbers are legitimately higher than the old run's on
+    easier data, so "best" would reach back and pick a model trained on the corpus that has
+    just been replaced. Use this one after changing the data.
+    """
+    cands = list(config.WORK_DIR.glob(f"{config.LANG}*checkpoint"))
+    return max(cands, key=lambda p: p.stat().st_mtime) if cands else None
+
+
+def pack(latest: bool = False) -> Path:
     """Turn the best checkpoint into a traineddata the service can load."""
-    best = best_checkpoint()
+    best = latest_checkpoint() if latest else best_checkpoint()
     if best is None:
         raise RuntimeError(f"no checkpoint in {config.WORK_DIR} — did training run?")
     config.OUT_DIR.mkdir(parents=True, exist_ok=True)
