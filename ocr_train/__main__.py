@@ -66,6 +66,9 @@ def main() -> int:
     ap.add_argument("--n", type=int, default=6000, help="synthetic lines to render")
     ap.add_argument("--iters", type=int, default=None, help="max training iterations")
     ap.add_argument("--lr", type=float, default=None, help="learning rate")
+    ap.add_argument("--latest", action="store_true",
+                    help="pack the most recent checkpoint, not the lowest-error one "
+                         "(use after changing the training data)")
     ap.add_argument("--workers", type=int, default=12)
     a = ap.parse_args()
 
@@ -81,7 +84,7 @@ def main() -> int:
         "unicharset": lambda: unicharset.build(),
         "lstmf": lambda: lstmf.build(workers=a.workers),
         "train": lambda: train.run(max_iterations=a.iters, learning_rate=a.lr),
-        "pack": lambda: train.pack(),
+        "pack": lambda: train.pack(latest=a.latest),
         "install": lambda: train.install(),
         "eval": lambda: train.evaluate(),
     }
