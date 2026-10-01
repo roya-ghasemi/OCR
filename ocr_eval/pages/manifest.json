@@ -1,0 +1,29 @@
+{
+ "note": "Hand-typed whole-page ground truth. Every line printed on the page is in the .gt.txt, in reading order; handwritten values are represented by their printed label alone (the service must not transcribe handwriting into the body). Scored by ocr_eval/tools/bench_pages.py.",
+ "pages": [
+  {
+   "id": "letter_sabzgostar",
+   "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_1.JPG",
+   "gt": "letter_sabzgostar.gt.txt",
+   "tags": ["letter", "letterhead", "stamp", "handwriting", "punch-holes", "scan"],
+   "expect": {"tables": 0, "is_letter": true},
+   "notes": "Brief image 1. Green letterhead, blue stamp over the signature block, handwritten number/date, binder punch holes down the left margin. The page prints «سطانی», not «سلطانی» — GT follows the pixels."
+  },
+  {
+   "id": "tech_prose",
+   "image": "ocr_eval/pages/tech_prose.jpg",
+   "gt": "tech_prose.gt.txt",
+   "tags": ["prose", "phone-photo", "kashida", "shadow", "desk-background", "bold-run"],
+   "expect": {"lines": 11, "paragraphs": 1, "tables": 0, "is_letter": false},
+   "notes": "Brief image 2. Kashida-justified print photographed on a desk; the bottom two thirds of the frame are blank paper and grey desk."
+  },
+  {
+   "id": "spring_prose",
+   "image": "ocr_eval/pages/spring_prose.jpg",
+   "gt": "spring_prose.gt.txt",
+   "tags": ["prose", "phone-photo", "low-resolution", "amounts"],
+   "expect": {"paragraphs": 4, "tables": 0, "is_letter": false},
+   "notes": "Already in the repo as samples/prose_page.jpg. ~12 px text: the resolution floor (D76) and the grouped amounts live here."
+  }
+ ]
+}
