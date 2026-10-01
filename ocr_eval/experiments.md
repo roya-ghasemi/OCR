@@ -1449,3 +1449,69 @@ was never in question — it is what brings back «با تشکر / هادی جه
   printed labels mixed with handwritten values. «بسمه تعالی» reads as «تسمه تعالی».
 * Stray end-of-line tokens («سح», «سس», «۰») — line-level, next phase.
 * Image 2 CER 4.35% against a target of 2%; the remainder is kashida.
+
+
+## E27 — 2026-10-01 — a stretched space is not a column, and a missing word is not a wrong one
+
+Three changes, each measured on the three-page corpus and guarded on dev 51.
+
+### A table needs a column, not a gap
+
+`_cells` called any gap wider than 1.2 line heights a cell boundary. Justified Persian is
+stretched by **widening its spaces**, so one line of prose has gaps as wide as any table's:
+the brief's one-paragraph page reported **two tables**, the letter three, the prose photo
+one. A column is distinguished from a stretched space by being in the *same place on the
+next row*, so `_table_cuts` now keeps a gap only when the line above or below breaks within
+0.6 line heights of it.
+
+All six fabricated tables are gone, on all three pages, with CER and WER unchanged. The
+genuine table on `_12.JPG` (موضوع / مبلغ and its amount rows) is still found.
+
+### Two more kashida repairs, and the ordering that makes them safe
+
+E21 established that the typos are the capture. What it did not cover is the *other*
+kashida failure: a long connector read as a gap («استخراج» → «اس‌تخراج») or grown into a
+tooth («بسیاری» → «بسپیاری»). Two repairs added to `spellfix`, each under the existing
+discipline — the token is not itself a word, the reader was unsure, and **exactly one**
+lexicon word is the answer:
+
+* `unsplit` — close a ZWNJ, unless what follows it is a real Persian affix. Without that
+  exemption «نیازمندی‌های» became «نیازمندیهای», because the lexicon holds the joined form.
+* `undouble` — delete one character.
+
+**Both must run after the dot rule, and this is the whole result.** Run first, deletion took
+«آداره» → «داره», «نسیت» → «نیت» and «منایع» → «مایع» — three words the dot rule returns
+correctly as «اداره», «نسبت», «منابع», because a moved dot preserves length and skeleton and
+is far better evidenced than a deletion. Reordered, the same change costs the letter nothing
+and fixes seventeen words across the two photos.
+
+### The formulas were being corrected into other words
+
+«بسمه» is **not** in Tesseract's Persian list. «تسمه» is. So the opening formula of image 1
+was not merely misread — it was being *rewritten* at 83% confidence by the repair stage, in
+exactly the failure mode D77 warned about: not-in-lexicon does not mean not-a-word.
+`data/fas_admin.txt` adds 116 words that are on administrative letters as a matter of form.
+They protect themselves first and are repair candidates second.
+
+### Measured — pages
+
+| | CER | WER | tables (expected 0) |
+|---|---:|---:|---:|
+| letter | 10.55% → **10.55%** | 14.94% → **14.37%** | 2 → **0** |
+| prose photo | 4.35% → **3.90%** | 16.41% → **13.28%** | 0 → 0 |
+| low-resolution photo | 8.15% → **7.37%** | 26.15% → **22.15%** | 1 → **0** |
+
+### Measured — dev 51
+
+| | CER | atoms | whole numbers |
+|---|---:|---:|---:|
+| E26 | 13.74% | 83.89% | 77.13% |
+| **E27** | **13.72%** | 83.89% | 77.13% |
+
+### A guarded boundary was widened, deliberately
+
+`test_the_spell_fix_can_only_move_dots` pinned "length never changes". `unsplit` and
+`undouble` both change length, so the guard has been **rewritten rather than relaxed** and
+is now `test_the_spell_fix_only_ever_returns_a_word_from_the_list`. The invariant that
+matters is unchanged and is now stated directly: the output is always either the word as
+read or a word already in the list, so nothing can be assembled and no word invented.

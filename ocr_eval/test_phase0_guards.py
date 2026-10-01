@@ -197,11 +197,25 @@ def test_engine_identity_is_pinned():
         assert dm == "e0e286aaf5595898", f"models/digit_cnn.npz differs from the measured one: {dm}"
 
 
-def test_the_spell_fix_can_only_move_dots():
-    """The one correction stage allowed back in (E24). It may swap a letter for another
-    of the SAME shape and nothing else, so it cannot invent a word: the failures that
-    kept every previous corrector out — «شادی»→«هادی», «گذشته»→«گشته», «۱۴۰۴»→«۱۴۰۳» —
-    are all unreachable, and so is any change to a word the reader was confident of."""
+def test_the_spell_fix_only_ever_returns_a_word_from_the_list():
+    """The one correction stage allowed back in (E24), widened once in E27.
+
+    E24's contract was "it may move dots and nothing else", and its guard was that the
+    word's length never changes. E27 widened it to two further repairs, both of which do
+    change length: closing a ZWNJ that a kashida was read as («اس‌تخراج» → «استخراج»), and
+    deleting a single character where a stretched connector grew a tooth («بسپیاری» →
+    «بسیاری»). **This is a deliberate widening of a guarded boundary and is recorded as
+    such**, so the invariant is restated here rather than left implied by the old one:
+
+    * the output is always either the word as read or a word **from the list** — nothing
+      is ever assembled, so no word can be invented;
+    * a word that is in the list is returned untouched, whatever its confidence;
+    * a reading the recogniser was confident of is never touched;
+    * digits and Latin are never touched;
+    * every repair requires a **unique** answer, and the length-changing ones are tried
+      only after the dot rule has declined — reversed, deletion took «آداره» to «داره»
+      where the dot rule returns «اداره».
+    """
     import sys
     sys.path[:0] = [str(ROOT)]
     from ocr_service.spellfix import SpellFix
@@ -222,5 +236,28 @@ def test_the_spell_fix_can_only_move_dots():
     assert sf.fix("بمار", 50.0) == "بمار"                # two moved dots: too far to be sure
 
     for bad, good in (("صبخگاهی", "صبحگاهی"), ("گزارس", "گزارش")):
-        assert len(sf.fix(bad, 50.0)) == len(bad)        # length never changes
+        assert len(sf.fix(bad, 50.0)) == len(bad)        # a dot repair never changes length
         assert good == sf.fix(bad, 50.0)
+
+    # --- E27: the two length-changing repairs, and what still bounds them ---------------
+    assert sf.fix("اس‌تخراج", 50.0) == "استخراج"    # a kashida read as a gap
+    assert sf.fix("بسپیاری", 50.0) == "بسیاری"           # a connector that grew a tooth
+    assert sf.fix("زمصان", 50.0) == "زمان"
+
+    # an affix after a ZWNJ is orthography, not damage, even when the joined form is listed
+    assert sf.fix("نیازمندی‌های", 50.0) == "نیازمندی‌های"
+    assert sf.fix("می‌رساند", 50.0) == "می‌رساند"
+
+    # the dot rule goes first, or deletion wins words it has no business touching
+    assert sf.fix("آداره", 50.0) == "اداره"
+    assert sf.fix("نسیت", 50.0) == "نسبت"
+    assert sf.fix("منایع", 50.0) == "منابع"
+
+    # every output is a word that was already in the list — nothing is ever assembled
+    for w in ("اس‌تخراج", "بسپیاری", "زمصان", "آداره", "نسیت", "صبخگاهی"):
+        assert sf.fix(w, 50.0) in sf.words or sf.fix(w, 50.0) == w
+
+    # the administrative formulas protect themselves: «بسمه» is absent from Tesseract's
+    # general list and «تسمه» is in it, so the opening formula was being rewritten
+    for w in ("بسمه", "تعالی", "رونوشت", "احتراما", "مبذول", "پیوست"):
+        assert sf.fix(w, 50.0) == w, f"{w} is an administrative word and must be protected"

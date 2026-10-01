@@ -225,8 +225,30 @@ def test_one_number_read_in_two_pieces_is_rejoined_without_inventing_a_separator
 
 def test_a_table_row_is_split_into_cells_and_prose_is_not():
     row = [_w("مبلغ صورت وضعیت", 90, 1500, 1900), _w("۱۲۵,۰۰۰,۰۰۰", 90, 400, 700)]
-    assert [c["text"] for c in Transcriber._cells(row, 40, 1.0)] == ["مبلغ صورت وضعیت", "۱۲۵,۰۰۰,۰۰۰"]
-    assert Transcriber._cells([_w("با", 90, 560, 600), _w("توجه", 90, 470, 550)], 40, 1.0) == []
+    cuts = Transcriber._cut_positions(row, 40)
+    assert [c["text"] for c in Transcriber._cells(row, 40, 1.0, cuts)] == ["مبلغ صورت وضعیت", "۱۲۵,۰۰۰,۰۰۰"]
+    prose = [_w("با", 90, 560, 600), _w("توجه", 90, 470, 550)]
+    assert Transcriber._cells(prose, 40, 1.0, Transcriber._cut_positions(prose, 40)) == []
+
+
+def test_a_wide_gap_is_a_column_only_when_the_next_row_breaks_in_the_same_place():
+    """Justified Persian is stretched by widening its spaces, so one line of prose has gaps
+    as wide as any table's. A column is distinguished by being in the same place on the row
+    below — without that test the brief's one-paragraph page reported two tables."""
+    def line(words):
+        return Line(words, (min(w.box[0] for w in words), 10,
+                            max(w.box[2] for w in words), 50), "psm4")
+
+    # two rows breaking at the same x: a table
+    rows = [[_w("مبلغ", 90, 1500, 1900), _w("۱۲۵,۰۰۰", 90, 400, 700)],
+            [_w("بیمه", 90, 1500, 1900), _w("۹۸۴,۷۵۳", 90, 400, 700)]]
+    cuts = Transcriber._table_cuts([line(r) for r in rows], rows)
+    assert all(c for c in cuts)
+
+    # two justified lines whose wide gaps fall in different places: prose
+    pros = [[_w("شیوه", 90, 1600, 1900), _w("زندگی", 90, 900, 1200)],
+            [_w("ارتباط", 90, 1600, 1900), _w("انسان", 90, 300, 600)]]
+    assert Transcriber._table_cuts([line(r) for r in pros], pros) == [[], []]
 
 
 def test_a_stretched_connector_is_shortened_and_a_dash_is_left_alone():

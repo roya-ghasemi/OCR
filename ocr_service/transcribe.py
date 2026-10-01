@@ -68,6 +68,15 @@ _COMMA_LOOKALIKE = {"»", "«", "۰", "٠", "0", "+", ",", "ء", "٫"}
 # the full stop are NOT here — inside a token they belong to a number or a sentence.
 _COMMA_IN_WORD = "»«,٫ء"
 _PERSIAN_CHAR = re.compile(r"[ء-ی]")
+# Printed labels of a letter's form fields. What follows one of these on the page is
+# routinely handwritten, and a handwritten value must never be transcribed into the body.
+_FORM_LABEL = re.compile(r"^(شماره|تاریخ|پیوست|شماره\s*ثبت)\s*[:：]?$")
+# A token mixing Persian-Indic and ASCII digits — «۱7», «۱/2». No real page does this; it
+# is the recogniser reading a handwritten mark as whichever digit each stroke resembled.
+_MIXED_DIGITS = re.compile(r"(?=.*[۰-۹])(?=.*[0-9])")
+# Confidence under which a token that is not a known word is taken as unread rather than
+# read. Body text on the corpus runs 0.86-0.93; the handwritten header runs 0.49-0.68.
+UNREAD_CONF = 70.0
 
 
 def amount_grouping(tok: str) -> str:
@@ -838,12 +847,17 @@ class Transcriber:
         return out
 
     @staticmethod
-    def _cells(words: list[Word], line_h: float, scale: float) -> list[dict]:
-        """The line's table cells: the pieces `_order_segments` separates, split at the
-        same wide gap. A line of ordinary prose has none, and says so with an empty list."""
-        cuts = [i for i in range(1, len(words))
+    @staticmethod
+    def _cut_positions(words: list[Word], line_h: float) -> list[int]:
+        """Indices where the line has a gap wide enough to be a column boundary."""
+        return [i for i in range(1, len(words))
                 if max(words[i - 1].box[0] - words[i].box[2],
                        words[i].box[0] - words[i - 1].box[2]) > 1.2 * line_h]
+
+    @staticmethod
+    def _cells(words: list[Word], line_h: float, scale: float, cuts: list[int]) -> list[dict]:
+        """The line's table cells, split at the column boundaries `cuts` names. A line of
+        ordinary prose has none, and says so with an empty list."""
         if not cuts:
             return []
         out = []
@@ -856,26 +870,58 @@ class Transcriber:
                                  int(round(max(w.box[3] for w in seg) / scale))]})
         return out
 
+    @staticmethod
+    def _table_cuts(lines: list[Line], words_per_line: list[list[Word]]) -> list[list[int]]:
+        """Which of each line's wide gaps are really column boundaries.
+
+        A wide gap is evidence of a table only when the line above or below breaks in the
+        *same place*. Justified Persian is stretched by widening the spaces, so a single
+        line of prose has gaps as wide as any table's — which is why a per-line rule
+        reported «۲ جدول» on a page that is one paragraph, and 3 more on the letter. A
+        column, unlike a stretched space, is in the same position on the next row.
+        """
+        gaps: list[list[tuple[int, float]]] = []
+        for L, ws in zip(lines, words_per_line):
+            h = max(1.0, L.bbox[3] - L.bbox[1])
+            gaps.append([(i, (ws[i - 1].box[0] + ws[i].box[2]) / 2)
+                         for i in Transcriber._cut_positions(ws, h)])
+        out: list[list[int]] = []
+        for j, g in enumerate(gaps):
+            if not g:
+                out.append([])
+                continue
+            tol = 0.6 * max(1.0, lines[j].bbox[3] - lines[j].bbox[1])
+            near = [x for k in (j - 1, j + 1) if 0 <= k < len(gaps) for _, x in gaps[k]]
+            out.append([i for i, x in g if any(abs(x - y) <= tol for y in near)])
+        return out
+
     def _assemble(self, lines: list[Line], scale: float) -> tuple[list[LineOut], list[NumberOut]]:
         # paragraph breaks: a vertical gap clearly larger than the usual line pitch
         centers = [(L.bbox[1] + L.bbox[3]) / 2 for L in lines]
         gaps = [b - a for a, b in zip(centers, centers[1:]) if b - a > 0]
         pitch = float(np.median(gaps)) if gaps else 0.0
-        para, out, numbers = 0, [], []
-        for i, L in enumerate(lines):
-            if i and pitch and centers[i] - centers[i - 1] > 1.6 * pitch:
-                para += 1
+        # Clean every line first: whether a gap is a column can only be judged once the
+        # neighbouring lines' words are known.
+        cleaned: list[list[Word]] = []
+        for L in lines:
             latin = L.source == "line-eng"
             words = [Word(self._clean_word(w.text, latin), w.conf, w.box) for w in L.words]
             if self.spellfix and not latin:
                 sp = self.spellfix_stage()
                 words = [Word(sp.fix(w.text, w.conf), w.conf, w.box) for w in words]
-            words = [w for w in words if w.text]
+            cleaned.append([w for w in words if w.text])
+        table_cuts = self._table_cuts(lines, cleaned)
+
+        para, out, numbers = 0, [], []
+        for i, L in enumerate(lines):
+            if i and pitch and centers[i] - centers[i - 1] > 1.6 * pitch:
+                para += 1
+            words = cleaned[i]
             if not words:
                 continue
             bbox = [int(round(v / scale)) for v in L.bbox]
             conf = sum(min(w.conf, 100.0) for w in words) / len(words) / 100.0
-            cells = self._cells(words, L.bbox[3] - L.bbox[1], scale)
+            cells = self._cells(words, L.bbox[3] - L.bbox[1], scale, table_cuts[i])
             words = self._fix_marks(words, len(cells))
             out.append(LineOut(" ".join(w.text for w in words), bbox, round(conf, 3), L.source, para,
                                cells))
