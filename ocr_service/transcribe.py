@@ -156,6 +156,7 @@ class Transcript:
     image_size: tuple[int, int]
     glyph_px: float = 0.0                         # text height in the image as supplied
     timing: dict = field(default_factory=dict)
+    prep: dict = field(default_factory=dict)      # what page_prep did (crop / warp)
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -405,9 +406,11 @@ class Transcriber:
     def __init__(self, tesseract_cmd: str | None, tessdata_dir: str | None, digit_model: Path | None,
                  layout_psms: tuple[str, ...] = ("3", "4", "6"), deskew_min_deg: float = 1.0,
                  min_line_conf: float = 30.0, workers: int = 8, number_min_prob: float = 0.6,
-                 spellfix: bool = True):
+                 spellfix: bool = True, crop_page: bool = True, ink_separate: bool = True):
         self.cmd, self.tessdata = tesseract_cmd, tessdata_dir
         self.layout_psms = tuple(layout_psms)
+        self.crop_page = crop_page
+        self.ink_separate = ink_separate
         self.deskew_min_deg = deskew_min_deg
         self.min_line_conf = min_line_conf
         self.workers = workers
@@ -723,6 +726,24 @@ class Transcriber:
         t0 = time.perf_counter()
         timing: dict[str, float] = {}
         im = ImageOps.exif_transpose(im).convert("RGB")
+
+        # Cut the page out of the frame first. Everything that is not paper — desk,
+        # shadow, the edge of the next sheet — becomes ink under `flatten`, and by the
+        # time it reaches the line finder it is indistinguishable from faint text.
+        prep = None
+        if self.crop_page:
+            from .page_prep import crop_page
+            im, prep = crop_page(im)
+
+        # Then split the ink layers: erase the blue stamp that sits on the signature
+        # block, and turn a white-on-coloured letterhead the right way up. Both are
+        # invisible to a threshold on brightness alone (ink.py).
+        ink_info = None
+        if self.ink_separate:
+            from .ink import separate
+            im, ink_info = separate(im)
+        timing["prep_s"] = round(time.perf_counter() - t0, 3)
+
         skew = text_skew(im)
         if abs(skew) >= self.deskew_min_deg:
             im = im.rotate(skew, resample=Image.BICUBIC, expand=True, fillcolor=(255, 255, 255))
@@ -753,7 +774,9 @@ class Transcriber:
         text = self._join(out_lines)
         timing["total_s"] = round(time.perf_counter() - t0, 3)
         return Transcript(text=text, lines=out_lines, numbers=numbers, skew_deg=round(skew, 2),
-                          image_size=im.size, glyph_px=round(glyph_px, 1), timing=timing)
+                          image_size=im.size, glyph_px=round(glyph_px, 1), timing=timing,
+                          prep={**(prep.as_dict() if prep else {}),
+                                **(ink_info.as_dict() if ink_info else {})})
 
     @staticmethod
     def _clean_word(w: str, latin: bool) -> str:

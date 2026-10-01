@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     tessdata_dir: str | None = None        # None -> nearest <repo>/tessdata holding fas.traineddata
     digit_model: str | None = None         # None -> nearest <repo>/models/digit_cnn.npz
     layout_psms: str = "3,4,6"             # Tesseract layout passes whose lines compete (E19)
+    crop_page: bool = True                 # cut the sheet out of the photo before reading (E26)
+    ink_separate: bool = True              # erase coloured stamps, invert white-on-colour bands (E26)
     deskew_min_deg: float = 1.0            # rotate only pages tilted at least this much (E19)
     min_line_conf: float = 30.0            # a line below this mean confidence is dropped as noise
     number_min_prob: float = 0.6           # digit reader must be this sure to replace Tesseract's digits

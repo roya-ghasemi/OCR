@@ -29,7 +29,8 @@ class OcrPipeline:
         self.transcriber = Transcriber(cmd, data, self.cfg.resolved_digit_model(), layout_psms=self.cfg.psms(),
                                        deskew_min_deg=self.cfg.deskew_min_deg, min_line_conf=self.cfg.min_line_conf,
                                        workers=self.cfg.workers, number_min_prob=self.cfg.number_min_prob,
-                                       spellfix=self.cfg.spellfix)
+                                       spellfix=self.cfg.spellfix, crop_page=self.cfg.crop_page,
+                                       ink_separate=self.cfg.ink_separate)
         self._health: dict | None = None
 
     def health(self) -> dict:

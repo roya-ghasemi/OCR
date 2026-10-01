@@ -1350,3 +1350,102 @@ The comma alone is worth four times the spell fix, costs nothing in numbers or t
 length, and is what the reader actually notices. Across today: dev coverage CER
 14.65% → **14.46%**, test 18.05% → **17.85%**, with digit atoms, whole numbers and text
 length unchanged throughout. Tenth look at the test split.
+
+
+## E26 — 2026-10-01 — the page was never cut out of the photograph
+
+**Brief.** Two pages supplied by the user: a Sabz Gostar letter (scan, blue stamp over the
+signature block, handwritten number/date, binder rings down the left margin) and a phone
+photo of a kashida-justified printed page lying on a desk. Rule from the brief: *correct
+and incomplete beats complete and wrong* — nothing may be invented, least of all numbers.
+
+**Finding that framed everything else.** `preprocess.py` — `find_page`, `estimate_skew`,
+`prepare` — has been in the repo since Phase 4 and **is not called by the request path**.
+`OcrPipeline.run_sync` opens the upload and hands it straight to `Transcriber.transcribe`.
+Cropping, perspective correction and background removal have therefore never run on an
+incoming image. On the phone photo the empty desk below the sheet produced four lines of
+output, one of them a complete fabricated table row («18 8 تا دا که ۱8111353112»).
+
+### New instrument
+
+`ocr_eval/pages/` — three pages with a hand-typed transcript of **everything printed on
+them**, scored by `ocr_eval/tools/bench_pages.py`: CER, **WER**, *unsupported lines*
+(predicted lines matching nothing in the GT — the brief's "no nonsense text" criterion,
+which a page-wide CER barely registers), and structure (lines / paragraphs / tables).
+The corpus benchmark measures none of these.
+
+### Changed
+
+* `ocr_service/page_prep.py` (new) — find the sheet, perspective-correct or crop it.
+* `ocr_service/ink.py` (new) — erase blue stamp ink; optionally invert white-on-colour
+  bands and remove margin furniture (both measured, both **off**, see below).
+* Both wired into `Transcriber.transcribe` ahead of deskew, behind `OCRS_CROP_PAGE` and
+  `OCRS_INK_SEPARATE`.
+
+### Measured — pages
+
+| | CER | WER | unsupported lines |
+|---|---:|---:|---:|
+| letter (image 1) | 11.19% → **10.55%** | 17.82% → **14.94%** | 2 → 2 |
+| prose photo (image 2) | 20.09% → **4.35%** | 47.66% → **16.41%** | 4 → **0** |
+| low-resolution photo | 9.00% → **8.15%** | 25.23% → 26.15% | 0 → 0 |
+
+Image 2 now reports **11 lines, 1 paragraph, 0 tables** — exactly what the page has, and
+exactly the brief's structural acceptance criterion. The three fabricated tables and the
+Latin junk are gone because the desk no longer reaches the recogniser.
+
+### Measured — dev 51 (regression guard)
+
+| | CER | atoms | whole numbers | len_ratio |
+|---|---:|---:|---:|---:|
+| E25 | 14.46% | 83.60% | 75.76% | 0.948 |
+| **E26** | **13.74%** | **83.89%** | **77.13%** | 0.954 |
+
+Whole numbers **+1.37 pp** — the first movement on that metric since E20, and the reason
+the stage is kept.
+
+### Three things that look obviously right and are not
+
+**Inverting the coloured letterhead.** White-on-green text is not misread, it is *absent*:
+`flatten` divides by the local background, so text lighter than its background becomes
+paper. Inverting the band does put it back — and Tesseract reads «ام ٍ شرکت خدماتی 8۵ وی
+ی ده» off a multi-tone graphic. Letter CER 11.3% → 13.4%, WER 19.0% → 25.3%, one extra junk
+line. **Off.** Consequence: `sender` and the registration number are still not extracted
+from image 1. Reading a letterhead needs its own crop, its own binarisation and a
+confidence floor, not a flip in the page pass.
+
+**Erasing punch holes and binder rings.** Changed the letter's transcript *not at all* —
+the ring's «۰» lies inside the text block's own x-range — and cost the low-resolution page
+CER 9.0% → 10.8%. Two bugs found on the way, both instructive: a page-relative margin band
+deleted the first word of six lines (Persian runs right-to-left, so the right margin is
+where lines *begin*), and a plain median component height on a 12 px capture lands near
+3 px, which makes "taller than 2.5 glyphs" a description of ordinary text. **Off.** Stray
+end-of-line marks belong to line-level cleanup, where a token's neighbours are known.
+
+**Cropping anything that is not a full frame.** At 0.93 and 0.97 the crop fired on corpus
+scans and made **every one of the three documents it touched worse**. Five candidate ways
+to tell a scan from a photo-on-a-desk were measured on the 54 dev scans against the two
+photos — surround brightness, surround texture, bounding box, quad perspective offset,
+rectangularity — and **every one overlaps**: the least rectangular corpus scan is less
+rectangular than the photo, the darkest surround belongs to a scan. There is no cheap
+geometric signal separating these populations. The gate asks only what it can answer
+honestly — is a large part of this frame not page — at 0.90 of the convex hull.
+
+### Negative result worth keeping
+
+Blue ink was first removed with `cv2.inpaint`, which diffuses colour in from the mask
+boundary. Through a pipeline whose line selection is a global search that was enough to
+change readings far from any stamp: on the 18 dev pages that were *not cropped at all*,
+where erasing blue was the only change, whole numbers fell **5.0 pp**, and image 1 lost
+the hyphens in its phone line. A flat fill with the page's own paper level, which never
+overwrites a dark pixel, turns the same change into **+1.37 pp**. The stamp removal itself
+was never in question — it is what brings back «با تشکر / هادی جهان گشته / مدیر عامل»,
+«رونوشت:» and «میکائیل».
+
+### Open after E26
+
+* `sender` / registration number on image 1 (letterhead, above).
+* The header block still yields two junk lines («تاریخ: امه ۱/۲», «که تسمه تعالی …»):
+  printed labels mixed with handwritten values. «بسمه تعالی» reads as «تسمه تعالی».
+* Stray end-of-line tokens («سح», «سس», «۰») — line-level, next phase.
+* Image 2 CER 4.35% against a target of 2%; the remainder is kashida.
