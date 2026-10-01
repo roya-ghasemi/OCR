@@ -61,6 +61,17 @@ check only — it has been scored ten times in total (E17, E18, E19 ×5, E20, E2
 fresh split before the next tuning cycle.
 
 ```powershell
+.\venv312\Scripts\python.exe ocr_eval\tools\bench_pages.py --label after --compare before
+```
+Whole-page **CER and WER** against a hand-typed transcript of everything printed on the
+page, plus *unsupported lines* — lines the service printed that are not on the page — and
+the page's structure against what it actually has. Three pages in `ocr_eval/pages/`, seconds
+to run. This is the only instrument that sees word error, a page that is not a letter, or
+invented text; the corpus benchmark above sees none of the three. E28: letter 10.1% / 12.1%,
+prose photo 3.9% / 13.3%, low-resolution photo 7.4% / 22.2%, and **0 unsupported lines on
+all three**.
+
+```powershell
 .\venv312\Scripts\python.exe ocr_eval\tools\score_sample.py     # general documents, not letters
 .\venv312\Scripts\python.exe -m pytest -q
 ```
