@@ -11,7 +11,7 @@ CPU only. No GPU, no model server, no LM Studio.
 ## راه‌اندازی سریع (فارسی)
 
 ```powershell
-cd E:\ghasemi\ocr
+cd D:\OCR_ghasemi\ocr
 .\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000
 ```
 

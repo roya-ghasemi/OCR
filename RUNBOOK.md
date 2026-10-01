@@ -9,7 +9,7 @@ up cold. What the service is: `README.md`. Why it is built this way: E19 in
 ## 1. Start
 
 ```powershell
-cd E:\ghasemi\ocr
+cd D:\OCR_ghasemi\ocr
 .\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000
 ```
 
@@ -25,6 +25,20 @@ Ready in ~1 s (nothing to load). `GET http://127.0.0.1:8000/health` must say
 
 `degraded` = the digit reader is missing (numbers then come from Tesseract only).
 `down` = Tesseract or its Persian data is missing; `/ocr` returns 503.
+
+**`down` with `langs: []` after the project folder moved**: check
+`tesseract.tessdata_dir` in `/health`. `OCRS_TESSDATA_DIR` is a *persistent user*
+environment variable on this machine and still named the old path, so the service was
+looking for `fas.traineddata` in a directory that no longer exists. Left unset the service
+finds `<repo>/tessdata` itself, which is what every published number was measured with:
+
+```powershell
+[Environment]::SetEnvironmentVariable('OCRS_TESSDATA_DIR', $null, 'User')   # remove it for good
+$env:OCRS_TESSDATA_DIR = ""                                                 # or just this session
+```
+
+An explicitly configured directory is honoured even when it is wrong — the service will not
+quietly read a different model than it was told to. `/health` names the path it used.
 
 **Port already in use** (`WinError 10048`): another server holds 8000.
 ```powershell
