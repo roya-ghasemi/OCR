@@ -48,6 +48,24 @@ API's own form. Read `text`; check `review_reasons`.
 | 413 | larger than `OCRS_MAX_UPLOAD_MB` (25) |
 | 503 | Tesseract/Persian data unavailable |
 
+## 2b. Which Persian model is reading
+
+`OCRS_LANG_FA` selects it; the default is `fas`, the stock tessdata_best model.
+
+```powershell
+$env:OCRS_LANG_FA = "fas_custom"    # the E29 fine-tune, if it is installed
+```
+
+Both files live in `tessdata/`, so switching is a setting and rolling back is changing a
+string. `/health` reports `tesseract.lang_fa`, and `provenance()` stamps
+`lang_fa_sha256` — the hash of the model that actually did the reading, which is not
+`fas_sha256` when a fine-tune is selected. A results file that stamped only the stock hash
+would describe a run that never happened.
+
+The fine-tune is built by `ocr_train/` (see its README). It is **not** the default: it
+reads photographed pages better and scanned letters worse, and that trade has to be
+re-measured on `bench_pages.py` before anything changes.
+
 ## 3. Measure
 
 ```powershell
