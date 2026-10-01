@@ -42,7 +42,8 @@ class OcrPipeline:
                                        deskew_min_deg=self.cfg.deskew_min_deg, min_line_conf=self.cfg.min_line_conf,
                                        workers=self.cfg.workers, number_min_prob=self.cfg.number_min_prob,
                                        spellfix=self.cfg.spellfix, crop_page=self.cfg.crop_page,
-                                       ink_separate=self.cfg.ink_separate)
+                                       ink_separate=self.cfg.ink_separate,
+                                       lang_fa=self.cfg.lang_fa)
         self._health: dict | None = None
 
     def health(self) -> dict:

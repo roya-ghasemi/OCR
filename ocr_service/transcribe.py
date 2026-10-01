@@ -421,11 +421,16 @@ class Transcriber:
     def __init__(self, tesseract_cmd: str | None, tessdata_dir: str | None, digit_model: Path | None,
                  layout_psms: tuple[str, ...] = ("3", "4", "6"), deskew_min_deg: float = 1.0,
                  min_line_conf: float = 30.0, workers: int = 8, number_min_prob: float = 0.6,
-                 spellfix: bool = True, crop_page: bool = True, ink_separate: bool = True):
+                 spellfix: bool = True, crop_page: bool = True, ink_separate: bool = True,
+                 lang_fa: str = "fas"):
         self.cmd, self.tessdata = tesseract_cmd, tessdata_dir
         self.layout_psms = tuple(layout_psms)
         self.crop_page = crop_page
         self.ink_separate = ink_separate
+        # Which Persian model reads the page. `fas` is the stock one; a fine-tune
+        # (E29) ships as `fas_custom` and is selected here, so switching models is a
+        # setting and not an edit.
+        self.lang_fa = lang_fa
         self.deskew_min_deg = deskew_min_deg
         self.min_line_conf = min_line_conf
         self.workers = workers
@@ -465,13 +470,14 @@ class Transcriber:
                 args = [self.cmd, "--list-langs"] + (["--tessdata-dir", self.tessdata] if self.tessdata else [])
                 q = subprocess.run(args, capture_output=True, text=True, timeout=20)
                 langs = [l.strip() for l in q.stdout.splitlines()[1:] if l.strip()]
-                ok = "fas" in langs
+                ok = self.lang_fa in langs
             except Exception as exc:
                 version = f"error: {exc}"
         self.version = version
         g = self.glyph_reader()
         sp = self.spellfix_stage() if self.spellfix else None
         return {"tesseract": {"available": ok, "version": version, "langs": langs, "cmd": self.cmd,
+                              "lang_fa": self.lang_fa,
                               "tessdata_dir": self.tessdata},
                 "digit_reader": {"available": g is not None, "version": getattr(g, "version", None),
                                  "error": self._glyph_error},
@@ -504,7 +510,7 @@ class Transcriber:
 
     def _layout(self, page: Image.Image, psm: str) -> list[Line]:
         groups: dict[tuple, list[Word]] = {}
-        for r in self._run(page, psm, "fas"):
+        for r in self._run(page, psm, self.lang_fa):
             groups.setdefault(r["key"], []).append(Word(r["text"], r["conf"], r["box"]))
         lines = []
         for ws in groups.values():
@@ -604,10 +610,10 @@ class Transcriber:
         crops = [_crop(page, b) for b in boxes]
         offs = [(max(0, b[0] - 2), max(0, b[1] - 2)) for b in boxes]
         with ThreadPoolExecutor(self.workers) as ex:
-            fas = list(ex.map(lambda c: self._read_line(c, "fas"), crops))
+            fas = list(ex.map(lambda c: self._read_line(c, self.lang_fa), crops))
             eng = list(ex.map(lambda c: self._read_line(c, "eng"), crops))
         for b, (ox, oy), wf, we in zip(boxes, offs, fas, eng):
-            for ws, lang in ((wf, "fas"), (we, "eng")):
+            for ws, lang in ((wf, "fas"), (we, "eng")):   # tags, not model names
                 if not ws:
                     continue
                 if lang == "eng" and not any(_LATIN_WORD.search(w.text) and w.conf >= 70 for w in ws):

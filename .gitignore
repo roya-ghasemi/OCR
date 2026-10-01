@@ -41,3 +41,10 @@ debug_raw/
 Thumbs.db
 Desktop.ini
 .DS_Store
+
+# Fine-tuning (E29): artifacts are large and regenerable from ocr_train/
+train/
+# The benchmark corpus and the font files are inputs, not source: 2.2 GB and 820 KB of
+# third-party binaries that the training scripts read from disk.
+ocr_service/Persian-OCR-Double-Benchmark/
+ocr_service/fonts/
