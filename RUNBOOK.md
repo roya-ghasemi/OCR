@@ -54,7 +54,7 @@ API's own form. Read `text`; check `review_reasons`.
 .\venv312\Scripts\python.exe ocr_eval\tools\bench_fulltext.py --split dev
 ```
 ~3 min for 51 documents, CPU only. Compare `transcript.coverage_cer`,
-`atom_recall`, `number_exact_recall` with E25 (dev: 14.5%, 83.6%, 75.8%). Change one
+`atom_recall`, `number_exact_recall` with E28 (dev: **13.7%, 83.7%, 77.1%**). Change one
 thing at a time, tune on dev, log the run in `ocr_eval/experiments.md` with the
 `provenance` block the tool writes. The test split (`--split test`) is for a final
 check only — it has been scored ten times in total (E17, E18, E19 ×5, E20, E24, E25); make a
@@ -75,6 +75,13 @@ runtime path, frozen splits, pinned engine files.
 | a whole line missing | line candidates in `Transcriber._candidates`; try `OCRS_LAYOUT_PSMS` variants on dev |
 | junk tokens at line ends | `Transcriber._trim_edges`, `OCRS_MIN_LINE_CONF` |
 | words of a table row in the wrong order | `Transcriber._order_segments` (gap > 1.2 line heights) |
+| the desk, a shadow or the next sheet is being read as text | the page was not cut out of the frame: `page_prep.crop_page`. It only fires when under 90% of the frame is page (`FULL_FRAME_FRAC`), because cropping a scan was measured to make it worse |
+| a stamp is sitting on top of the signature block | `ink.drop_blue_ink` erases blue ink but never a dark pixel, so text under the stamp survives. `OCRS_INK_SEPARATE=0` turns it off |
+| a handwritten number or date is missing from `text` | by design (E28). It is in `unread[]` with its box and what the recogniser offered; the viewer shows it as a cut-out under «نیاز به بازبینی» |
+| a real word was dropped as unreadable | `Transcriber._unread`. A run is only dropped when nothing in it is a known word, the reader was unsure, and every token is short — raise the length bound before the confidence one |
+| boxes do not line up with the image | they are measured in the **prepared** page. Use the «تصویر بهبودیافته» toggle, or `POST /ocr?prepared=true` |
+| a paragraph is reported as a table | `Transcriber._table_cuts`: a wide gap only counts as a column when the row above or below breaks in the same place. Justified Persian is stretched by widening its spaces |
+| a correct word was changed | `ocr_service/spellfix.py`. It may move dots, close a ZWNJ, or delete one character, and only ever returns a word that is already in the list. Add missing administrative words to `ocr_service/data/fas_admin.txt`, not to the general list |
 | a number wrong | `numbers[]`: `source: tesseract` means the digit reader did not confirm it; reader: `ocr_service/digit_reader_v2.py` |
 | an amount has a group that is not three digits | it is already flagged: `numbers[].grouping == "broken"` and a `review_reasons` line. The service never repairs one — the missing digit would have to be invented. Check it against the page |
 | a spurious `۰` at the end of a number | `GlyphReaderV2._finish` — the end-trim wants P(zero) ≥ 0.4 and the run's own spacing (D72) |
