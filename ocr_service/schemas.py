@@ -46,6 +46,20 @@ class NumberOut(BaseModel):
                     "length, so a digit is missing or invented — check this amount; none = not an amount")
 
 
+class UnreadRegion(BaseModel):
+    """A place on the page the service declined to transcribe, and why.
+
+    A handwritten form value, or a mark that is not text. The region is reported with its
+    box so it can be shown to a human, never guessed at: these are exactly the places
+    where printing a reading would mean inventing one.
+    """
+    kind: Literal["handwritten", "illegible"]
+    bbox: list[int]
+    read_as: str = Field(description="what the recogniser offered, kept only so a reviewer "
+                                     "can see why it was rejected; never part of `text`")
+    confidence: float
+
+
 class OcrResponse(BaseModel):
     doc_id: str
     text: str = Field(description="every transcribed line in reading order; paragraphs separated by a blank line")
@@ -55,12 +69,25 @@ class OcrResponse(BaseModel):
     fields: LetterFields
     needs_review: bool
     review_reasons: list[str] = Field(default_factory=list)
+    unread: list[UnreadRegion] = Field(
+        default_factory=list,
+        description="regions left out of `text` because nobody read them: handwritten form "
+                    "values and marks that are not text. Each carries a box to display")
     skew_deg: float = Field(description="rotation applied before reading (degrees, counter-clockwise)")
     glyph_px: float = Field(
         default=0.0,
         description="text height in pixels in the image as supplied. Below ~20 the dots that "
                     "separate ب/ی/پ/ن and ح/خ/ج are not resolved and typos are unavoidable")
-    image_size: list[int]
+    image_size: list[int] = Field(
+        description="size of the PREPARED page — the image every bbox in this response is "
+                    "measured in, which is not the uploaded file when it was cropped")
+    prepared_image: str | None = Field(
+        default=None,
+        description="the page as the recogniser saw it (cropped, straightened, stamp removed), "
+                    "as a data URL. Returned only when the request asks for it; boxes line up "
+                    "with this image, not with the upload")
+    prep: dict = Field(default_factory=dict,
+                       description="what the preparation stage did: crop, perspective warp, ink")
     timing: dict
     service: dict
 

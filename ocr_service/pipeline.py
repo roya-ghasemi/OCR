@@ -5,6 +5,7 @@ fields cut from it by rules (letter_fields.py) -> response. CPU only, no model s
 from __future__ import annotations
 
 import asyncio
+import base64
 import io
 import time
 import uuid
@@ -14,8 +15,19 @@ from PIL import Image
 from . import __version__
 from .config import Settings, settings as default_settings
 from .letter_fields import extract as extract_fields
-from .schemas import LetterFields, LineOut, NumberOut, OcrResponse
+from .schemas import LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion
 from .transcribe import Transcriber
+
+def _data_url(im) -> str | None:
+    """The prepared page as a JPEG data URL, capped so a response stays sendable."""
+    if im is None:
+        return None
+    out = im.copy()
+    out.thumbnail((1600, 1600), Image.LANCZOS)
+    buf = io.BytesIO()
+    out.convert("RGB").save(buf, "JPEG", quality=82, optimize=True)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+
 
 REVIEW_LINE_CONF = 0.6      # a line below this mean confidence is worth a human look
 REVIEW_NUMBER_CONF = 0.7    # a number below this (or not confirmed by the digit reader) likewise
@@ -37,7 +49,8 @@ class OcrPipeline:
         self._health = self.transcriber.health()
         return self._health
 
-    def run_sync(self, image_bytes: bytes, doc_id: str | None = None) -> OcrResponse:
+    def run_sync(self, image_bytes: bytes, doc_id: str | None = None,
+                 want_prepared: bool = False) -> OcrResponse:
         doc_id = doc_id or uuid.uuid4().hex
         im = Image.open(io.BytesIO(image_bytes))
         tr = self.transcriber.transcribe(im)
@@ -62,6 +75,12 @@ class OcrPipeline:
         weak_nums = sum(1 for n in tr.numbers if n.source == "tesseract" or n.confidence < REVIEW_NUMBER_CONF)
         if weak_nums:
             reasons.append(f"{weak_nums} number(s) not confirmed by the digit reader")
+        hand = [r for r in tr.unread if r["kind"] == "handwritten"]
+        if hand:
+            reasons.append(f"{len(hand)} handwritten field(s) left blank — read them from the image")
+        marks = [r for r in tr.unread if r["kind"] == "illegible"]
+        if marks:
+            reasons.append(f"{len(marks)} region(s) could not be read and were left out")
         broken = [n.value for n in tr.numbers if n.grouping == "broken"]
         if broken:
             reasons.append(f"amount(s) with an incomplete group of three: {', '.join(broken)}")
@@ -72,10 +91,14 @@ class OcrPipeline:
             numbers=[NumberOut(**n.__dict__) for n in tr.numbers],
             is_letter=is_letter, fields=LetterFields(**fields),
             needs_review=bool(reasons), review_reasons=reasons,
-            skew_deg=tr.skew_deg, glyph_px=tr.glyph_px, image_size=list(tr.image_size), timing=tr.timing,
+            unread=[UnreadRegion(**r) for r in tr.unread],
+            skew_deg=tr.skew_deg, glyph_px=tr.glyph_px, image_size=list(tr.image_size),
+            prepared_image=_data_url(tr.prepared) if want_prepared else None,
+            prep=tr.prep, timing=tr.timing,
             service={"version": __version__, "engine": "tesseract(fas,eng) + digit_cnn",
                      "tesseract": (self._health or {}).get("tesseract", {}).get("version")})
 
-    async def run(self, image_bytes: bytes, doc_id: str | None = None) -> OcrResponse:
+    async def run(self, image_bytes: bytes, doc_id: str | None = None,
+                  want_prepared: bool = False) -> OcrResponse:
         # CPU-bound (Tesseract subprocesses + numpy): keep the event loop free
-        return await asyncio.to_thread(self.run_sync, image_bytes, doc_id)
+        return await asyncio.to_thread(self.run_sync, image_bytes, doc_id, want_prepared)

@@ -79,7 +79,9 @@ def _check_image(data: bytes) -> None:
 @app.post("/ocr", response_model=None)
 async def ocr(file: Optional[UploadFile] = File(None), image: Optional[UploadFile] = File(None),
               mode: Literal["sync", "async", "auto"] = Query("auto"),
-              doc_id: Optional[str] = Query(None)):
+              doc_id: Optional[str] = Query(None),
+              prepared: bool = Query(False, description="also return the prepared page, "
+                                     "which is the image every bbox is measured in")):
     up = file or image
     if up is None:
         raise HTTPException(400, "send the image as multipart field 'file' (or 'image')")
@@ -96,7 +98,7 @@ async def ocr(file: Optional[UploadFile] = File(None), image: Optional[UploadFil
     p = app.state.pipeline
     if not (p._health or p.health())["tesseract"]["available"]:
         raise HTTPException(503, "Tesseract with Persian (fas) data is not available on this server")
-    res: OcrResponse = await p.run(data, doc_id)
+    res: OcrResponse = await p.run(data, doc_id, want_prepared=prepared)
     return res
 
 
