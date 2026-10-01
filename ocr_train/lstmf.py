@@ -57,15 +57,48 @@ def _write_list(path: Path, items: list[Path]) -> None:
         fh.write("\n".join(str(p) for p in items) + "\n")
 
 
+ZWNJ = "‌"
+# A strong right-to-left letter that is not in the alphabet. The bidi algorithm classes ZWNJ
+# as boundary-neutral and *deletes* it, which would quietly strip every «می‌شود» and
+# «نیازمندی‌های» out of the targets; standing in a real letter for the reorder and swapping
+# it back afterwards keeps it.
+_BIDI_GUARD = "ٹ"
+
+
+def visual_order(text: str) -> str:
+    """The characters in the order they appear left-to-right on the page.
+
+    **This is the order the targets must be in, and getting it wrong is silent.** The box
+    file this module writes gives every character the *same* rectangle — the whole line —
+    because the real per-character geometry is not known. That is the documented line-box
+    form, but it means Tesseract has no x-coordinates to sort by, so the order of the file
+    *is* the order of the target sequence. The network scans the image left to right, so for
+    Persian that sequence is the visual one, not the logical one.
+
+    Measured, because the failure does not announce itself: feeding logical order to the
+    stock `fas` model scores BCER 10.9% / **BWER 100%** on a line it reads correctly — the
+    characters all match, every word is "wrong", because the model emits them in the
+    opposite order. The same line in visual order scores BCER 10.9% / **BWER 33%**. In
+    training the effect is worse than wrong: the model spends itself unlearning how to read
+    Persian and starts learning it backwards, which is what 95% BCER and a slow "recovery"
+    toward 94% actually was.
+
+    Naive reversal is not enough. A date, an amount and an e-mail address inside Persian
+    text are left-to-right runs within a right-to-left line, so «۱۴۰۲/۱۲/۲۷» and
+    «info@sabzgostar.ir» must come out forwards while everything around them comes out
+    backwards. That is the bidi algorithm, and this defers to it.
+    """
+    from bidi.algorithm import get_display
+    return get_display(text.replace(ZWNJ, _BIDI_GUARD), base_dir="R").replace(_BIDI_GUARD, ZWNJ)
+
+
 def write_line_box(img: Path, text: str) -> Path:
     """The box file `lstm.train` reads, in Tesseract's line-box form.
 
     This build will not take a bare `.gt.txt` — it asks for `<base>.box` and stops. The
-    line-box form is what tesstrain's own `generate_line_box` writes: **one entry per
-    character, every entry carrying the whole line's rectangle**, terminated by a tab entry.
-    The per-character geometry is deliberately meaningless; line training uses the text and
-    takes the geometry from the image, so the only thing that has to be right is the
-    character sequence and the terminator.
+    line-box form is one entry per character, every entry carrying the whole line's
+    rectangle, terminated by a tab entry. The characters go in **visual** order; see
+    `visual_order` for why, and for what it costs to get that wrong.
 
     Coordinates are Tesseract's: origin bottom-left, `left bottom right top page`.
     """
@@ -73,7 +106,7 @@ def write_line_box(img: Path, text: str) -> Path:
     with Image.open(img) as im:
         w, h = im.size
     box = img.with_suffix(".box")
-    rows = [f"{c} 0 0 {w} {h} 0" for c in text if c != "\n"]
+    rows = [f"{c} 0 0 {w} {h} 0" for c in visual_order(text) if c != "\n"]
     rows.append(f"\t 0 0 {w} {h} 0")
     box.write_text("\n".join(rows) + "\n", encoding="utf-8")
     return box
