@@ -1590,3 +1590,94 @@ the point of declining to guess: the value is not invented, it is put in front o
   date shapes is not implemented.
 * Image 2 CER 3.90% against the brief's 2% target; the remainder is kashida.
 * No cache (the brief's section 5) and no font training.
+
+## E29 — 2026-10-01 — the fine-tune reads photographs better and the letter worse
+
+Phase 5: stop repairing the output and retrain the recogniser. `ocr_train/` builds a
+fine-tune of `fas` with an extended alphabet, on 6,000 synthetic lines rendered from the
+project's own fonts plus 6,596 lines carved out of `Persian-OCR-Double-Benchmark`. Full
+architecture in `ocr_train/README.md`. **It is not shipped**; `OCRS_LANG_FA` still defaults
+to `fas`. This entry is why.
+
+### The premise was real and measurable
+
+The base `fas` alphabet has 95 output classes and **no Persian comma, no Latin letter, no
+`@`**. The runtime `_fix_marks` rule (E25) exists to restore a character the model
+physically cannot emit. Of 2,000 benchmark labels, **31.4% contain a character the base
+model cannot encode**, 717 of them the comma. The alphabet was extended to 153 classes, and
+the fine-tune emits «،» natively.
+
+### Three silent failures, each of which trains happily on the wrong thing
+
+* **Targets must be in visual order.** The line-box form gives every character the *whole
+  line's* rectangle, so Tesseract has no x-coordinates to sort by and file order **is**
+  target order — while the network scans left to right. Measured on the stock model, one
+  line it reads correctly: logical order BCER 10.9% / **BWER 100%**; visual order BCER 10.9%
+  / **BWER 33%**. In training the effect is not "worse", it is backwards: the model unlearns
+  Persian. Cost two full runs. `visual_order()` defers to the bidi algorithm, so dates,
+  amounts and e-mail addresses stay forwards inside right-to-left text.
+* **python-bidi deletes ZWNJ** as boundary-neutral, which would strip the joiner out of
+  every «می‌شود». It is swapped for a real letter across the reorder.
+* **A list file written by Python on Windows has CRLF endings**, so every path ended with a
+  carriage return and `lstmtraining` failed to open any of them — reporting "Deserialize
+  header failed" with a path that *looks* right in a terminal, because the `\r` only moves
+  the cursor.
+
+### Measured — pages, three fine-tune checkpoints against the shipped baseline
+
+| | letter CER | letter WER | tech CER | tech WER | spring CER | spring WER |
+|---|---:|---:|---:|---:|---:|---:|
+| `fas` (shipped, E28) | **10.12%** | **12.07%** | 3.90% | 13.28% | 7.37% | 22.15% |
+| ft @ 7,500 | 10.55% | 16.67% | **2.70%** | **7.03%** | 7.31% | 18.77% |
+| ft converged, clean synth | 11.09% | 16.09% | 3.15% | 8.59% | **5.98%** | **16.00%** |
+| ft, degraded synth | 11.84% | 17.82% | 3.45% | 8.59% | 6.34% | 19.08% |
+
+Junk lines stay **0 on every page for every model** — the fine-tune does not invent text.
+
+The pattern is consistent across three independently trained checkpoints and is not noise:
+**every fine-tune improves both photographed prose pages and degrades the scanned
+administrative letter**, and the letter gets monotonically worse the longer training runs
+(WER 12.07 → 16.67 → 16.09 → 17.82). Administrative letters are the product's subject, so
+this trade is the wrong way round and the model does not ship.
+
+Scan-realistic augmentation (`ocr_train/degrade.py` — rescale, blur, JPEG, noise, uneven
+light, paper grain, sub-degree tilt) was built specifically to close that gap and **did not**
+close it: it moved the letter a further 1.7 pp the wrong way. The likely reason is that the
+letter is not a soft noisy scan. It is a CamScanner export, already aggressively binarised
+and sharpened by the phone, and none of the transforms here produce that.
+
+### Held-out benchmark rows, and why they are not the arbiter
+
+On the 1,372 benchmark lines held out by content hash: `fas` 38.8% BCER / 53.8% BWER against
+the converged fine-tune, 33.6% / 45.7% for the last one. Those numbers look like a win and
+mean little — four fifths of that corpus was trained on, so this measures generalisation
+across rows of one corpus, not reading. An earlier comparison on 300 lines showed the
+iteration-4,300 model (31.6%) beating the converged one (35.0%): the run was **memorising
+benchmark rows**, which is exactly what a falling training loss hides.
+
+### The run diverged, and the pipeline let its own best result be overwritten
+
+The degraded-corpus run descended to BCER 5.85% / BWER 9.30% train at iteration **22,400**,
+then collapsed: 22.6% at 23,000, 36.9% and still climbing at 25,800, emitting memorised
+sentences unrelated to the input. It was stopped there.
+
+That minimum is **gone**, and the reason is a bug in this pipeline rather than in Tesseract.
+Tesseract writes a named `<lang>_<BCER>_<iter>.checkpoint` only on a **new best**, and the
+run was resumed from a checkpoint carrying a recorded best of 4.821 earned on the *clean*
+corpus. On the harder degraded corpus nothing ever beat 4.821, so the run wrote no named
+checkpoint at all — and the rolling `<lang>_checkpoint` had moved past the minimum by the
+time anyone looked. Resuming across a change of data regime silently disables best-keeping.
+
+Two consequences recorded for the next run: training must be driven in **bounded segments
+that are packed and evaluated as they complete**, so the best of a run is recoverable
+independently of Tesseract's own best-tracking; and `--reset_learning_rate` with a pinned
+rate is a suspect in the late divergence, which is a hypothesis — what is measured is that
+`delta` fell to 1.37 at the minimum and was back to 14.05 three thousand iterations later.
+
+### What is worth keeping
+
+Kashida handling is genuinely repaired by training rather than by rules: «شوه»→«شیوه»,
+«انس ان‌ها»→«انسان‌ها», «اراشه»→«ارائه», «مستن»→«متن». The comma is emitted natively instead
+of reconstructed. Both photo pages improve by 3–5 pp WER. If the letter regression is ever
+closed, there is a shippable model here; the instrument that decides it is `bench_pages.py`,
+not the training loss.
