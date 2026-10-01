@@ -55,11 +55,28 @@ def run(max_iterations: int | None = None, target_error: float | None = None,
         raise RuntimeError("starter traineddata missing — run the `unicharset` step first")
 
     config.WORK_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Resume from a checkpoint when one exists. A checkpoint already carries the new
+    # alphabet and the optimizer state, so `--old_traineddata` must NOT be passed — that
+    # flag exists to remap a model built against a *different* unicharset, and giving it a
+    # checkpoint that is already remapped would redo the mapping.
+    #
+    # Resuming matters more than it looks. This fine-tune spends roughly 5,000 iterations on
+    # a plateau near 35% BCER while the alignment is learned, and then breaks through: 35% →
+    # 21% in under 400 iterations. A run killed during the plateau looks like a failed
+    # experiment and is actually an unfinished one.
+    resume = best_checkpoint()
+    start = [
+        "--continue_from", str(resume if resume else config.BASE_LSTM),
+        "--traineddata", str(STARTER),
+    ]
+    if resume is None:
+        start += ["--old_traineddata", str(config.BASE_TRAINEDDATA)]
+    else:
+        print(f"resuming from {resume.name}")
     cmd = [
         config.tool("lstmtraining"),
-        "--continue_from", str(config.BASE_LSTM),
-        "--traineddata", str(STARTER),
-        "--old_traineddata", str(config.BASE_TRAINEDDATA),
+        *start,
         "--model_output", str(CHECKPOINT),
         "--train_listfile", str(train_list),
         "--eval_listfile", str(eval_list),
