@@ -20,6 +20,7 @@ Output is the tesstrain ground-truth convention: `<base>.png` beside `<base>.gt.
 """
 from __future__ import annotations
 
+import random
 import subprocess
 import tempfile
 from concurrent.futures import ThreadPoolExecutor
@@ -37,7 +38,7 @@ MARGIN = 6
 
 
 def _render_one(args) -> tuple[str, str] | None:
-    idx, render, label, font, pt, out_dir = args
+    idx, render, label, font, pt, out_dir, degrade_seed = args
     base = out_dir / f"{config.LANG}_{idx:06d}"
     png, gt = base.with_suffix(".png"), base.with_suffix(".gt.txt")
     if png.is_file() and gt.is_file():
@@ -68,6 +69,14 @@ def _render_one(args) -> tuple[str, str] | None:
         # label no longer describes the image.
         if im.height < 8 or im.width < 16 or im.height > im.width:
             return None
+        # Most lines are then photographed badly. A model trained only on clean renders
+        # learns features a scan does not have — measured: the first fine-tune improved the
+        # benchmark's domain and regressed the scanned letter.
+        if degrade_seed is not None:
+            from .degrade import apply as degrade
+            im = degrade(im, random.Random(degrade_seed))
+            if im.height < 8 or im.width < 16:
+                return None
         im.save(png)
     gt.write_text(label + "\n", encoding="utf-8")
     return (str(png), label)
@@ -91,7 +100,8 @@ def build(n: int = 6000, workers: int = 8, seed: int | None = None) -> int:
             font = config.FONTS_FA[fa_i % len(config.FONTS_FA)]
             fa_i += 1
         pt = config.PT_SIZES[(i // 7) % len(config.PT_SIZES)]
-        jobs.append((i, render, label, font, pt, config.SYNTH_DIR))
+        seed = None if (i % 10) < config.CLEAN_IN_TEN else config.SEED * 1000003 + i
+        jobs.append((i, render, label, font, pt, config.SYNTH_DIR, seed))
 
     made = 0
     with ThreadPoolExecutor(workers) as ex:

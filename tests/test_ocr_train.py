@@ -119,3 +119,31 @@ def test_the_base_alphabet_really_is_missing_the_persian_comma():
     chars = {l.split(" ")[0] for l in uc.splitlines()[1:] if l.strip()}
     assert "،" not in chars
     assert "a" not in chars
+
+
+def test_degradation_keeps_the_line_a_line(tmp_path):
+    """Augmentation may make a line hard to read. It may not make it something else: the
+    label still has to describe the image, so the strip stays a strip and stays legible
+    enough to have ink in it."""
+    import random
+
+    import numpy as np
+    from PIL import Image
+
+    from ocr_train.degrade import MAX_TEXT_PX, MIN_TEXT_PX, apply
+    rng = random.Random(0)
+    src = Image.new("L", (400, 48), 255)
+    src.paste(0, (20, 14, 380, 30))                 # a bar of "ink"
+    for _ in range(40):
+        out = apply(src, rng)
+        assert out.width > out.height, "a text line must stay wider than it is tall"
+        assert MIN_TEXT_PX - 2 <= out.height <= max(MAX_TEXT_PX + 4, src.height + 4)
+        a = np.asarray(out)
+        assert a.min() < 200, "the ink was degraded out of existence"
+        assert a.max() > 120, "the background was degraded into ink"
+
+
+def test_most_synthetic_lines_are_degraded():
+    """Clean renders alone do not transfer to a scan — that was measured, not assumed."""
+    from ocr_train import config
+    assert 0 <= config.CLEAN_IN_TEN <= 5

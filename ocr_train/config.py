@@ -122,6 +122,11 @@ FONTS = FONTS_FA + FONTS_DUAL
 # should see the range it will actually be given, not one clean size.
 PT_SIZES = [11, 13, 16, 20, 26]
 
+# How many synthetic lines in every ten are left as a clean render. The rest are put through
+# `degrade.apply` — blur, JPEG, grain, uneven light, a fraction of a degree of tilt, a
+# resample to anywhere between 14 and 58 px. Three in ten clean keeps a sharp signal for the
+# letterforms; seven in ten degraded is what makes the model transfer to a scan.
+
 # --- the alphabet extension --------------------------------------------------------------
 # Characters the base `fas` model cannot emit, added here because the pipeline has been
 # working around their absence:
@@ -142,6 +147,8 @@ EXTRA_CHARS = (
 )
 
 # --- training ----------------------------------------------------------------------------
+CLEAN_IN_TEN = 3
+
 MAX_ITERATIONS = 6000      # a fine-tune, not a retrain: the base is already good Persian
 # lstmtraining's default is 1e-3, which is a rate for training from scratch. Continuing from
 # a *recognition* model there is no optimizer state to inherit, so the first steps are large
