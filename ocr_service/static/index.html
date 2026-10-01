@@ -70,6 +70,12 @@ main{max-width:1500px;margin:0 auto;padding:22px}
 .notice.bad{background:var(--bad-soft);color:var(--bad)}
 .notice.mut{background:var(--accent-soft);color:var(--accent)}
 .notice ul{margin:6px 0 0;padding-inline-start:20px}
+.crops{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.crop{border:1px solid var(--line);border-radius:7px;background:#fff;padding:5px;cursor:pointer;
+  max-width:260px}
+.crop:hover{border-color:var(--accent)}
+.crop canvas{display:block;max-width:100%;height:auto;border-radius:4px}
+.crop .lbl{font-size:11.5px;color:var(--muted);margin-top:4px;text-align:center}
 table.nums{width:100%;border-collapse:collapse;font-size:13.5px}
 table.nums th,table.nums td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right}
 table.nums th{color:var(--muted);font-weight:600;font-size:12.5px}
@@ -105,6 +111,7 @@ pre.json{margin:0;white-space:pre;overflow:auto;max-height:600px;direction:ltr;t
       <button class="btn ghost" data-view="raw">متن خام</button>
       <button class="btn ghost" data-view="json">JSON</button>
       <span style="flex:1"></span>
+      <button class="btn ghost" id="prep">تصویر بهبودیافته</button>
       <button class="btn ghost" id="boxes">نمایش کادر خط‌ها</button>
       <button class="btn ghost" id="copy">کپی متن</button>
       <button class="btn ghost" id="save">ذخیره JSON</button>
@@ -165,7 +172,7 @@ async function send(file) {
   URL_ = URL.createObjectURL(file);
   const fd = new FormData(); fd.append('file', file);
   try {
-    let r = await fetch('ocr', { method: 'POST', body: fd });
+    let r = await fetch('ocr?prepared=true', { method: 'POST', body: fd });
     let d = await r.json().catch(() => ({}));
     if (r.status === 202 && d.job_id) d = await poll(d.job_id);
     else if (!r.ok) throw new Error(d.detail || ('خطای ' + r.status));
@@ -250,14 +257,18 @@ function fa(r) {
     return 'کیفیت تصویر پایین است: ارتفاع متن فقط ' + m[1] + ' پیکسل. زیر ۲۰ پیکسل نقطه‌های '
          + 'ب/ی/پ/ن و ح/خ/ج در خود تصویر ثبت نشده‌اند و غلط املایی اجتناب‌ناپذیر است — '
          + 'لطفاً با ۳۰۰ DPI دوباره اسکن کنید';
+  if ((m = r.match(/^(\d+) handwritten field\(s\) left blank/)))
+    return m[1] + ' فیلد دست‌نویس خالی گذاشته شد — از روی تصویر بخوانید';
+  if ((m = r.match(/^(\d+) region\(s\) could not be read/)))
+    return m[1] + ' ناحیه خوانده نشد و از متن کنار گذاشته شد';
   if (r === 'no text found') return 'متنی پیدا نشد';
   return r;
 }
 
 function render(d) {
   $('#out').classList.remove('hide');
-  $('#img').src = URL_;
-  $('#img').onload = () => overlay(d);
+  $('#prep').classList.toggle('hide', !d.prepared_image);
+  paintImage(d);
 
   /* rendered document */
   const doc = el('div', 'doc');
@@ -277,7 +288,9 @@ function render(d) {
     // the resolution problem already has its own banner above; don't say it twice
     d.review_reasons.filter(r => !/^image resolution too low/.test(r))
       .forEach(r => ul.appendChild(el('li', null, fa(r))));
-    n.appendChild(ul); doc.appendChild(n);
+    n.appendChild(ul);
+    if (d.unread && d.unread.length) n.appendChild(cropStrip(d));
+    doc.appendChild(n);
   }
   if (!d.is_letter && d.lines.length) {
     // a page that is not a letter is not a failure: the whole of it is in `text`.
@@ -355,6 +368,57 @@ function render(d) {
   nums.appendChild(m);
 }
 
+/* Each region the service declined to transcribe, cut out of the page so a human can read
+   it. This is the point of refusing to guess: the value is not invented, it is shown. */
+function cropStrip(d) {
+  const wrap = el('div', 'crops');
+  const src = new Image();
+  src.src = d.prepared_image || URL_;
+  src.onload = () => {
+    for (const u of d.unread) {
+      const [x0, y0, x1, y1] = u.bbox;
+      const pad = Math.round((y1 - y0) * 0.35);
+      const sx = Math.max(0, x0 - pad), sy = Math.max(0, y0 - pad);
+      const sw = Math.min(src.naturalWidth - sx, x1 - x0 + 2 * pad);
+      const sh = Math.min(src.naturalHeight - sy, y1 - y0 + 2 * pad);
+      if (sw <= 0 || sh <= 0) continue;
+      const fig = el('div', 'crop');
+      const c = el('canvas');
+      const k = Math.min(3, Math.max(1, 70 / sh));
+      c.width = Math.round(sw * k); c.height = Math.round(sh * k);
+      c.getContext('2d').drawImage(src, sx, sy, sw, sh, 0, 0, c.width, c.height);
+      fig.appendChild(c);
+      fig.appendChild(el('div', 'lbl',
+        u.kind === 'handwritten' ? 'دست‌نویس — نیاز به بازبینی' : 'ناخوانا'));
+      fig.title = 'خوانده شد به‌صورت: ' + u.read_as + ' (اطمینان ' + Math.round(u.confidence * 100) + '٪)';
+      fig.onclick = () => {
+        if (!showPrepared && d.prepared_image) $('#prep').click();
+        if (!showBoxes) $('#boxes').click();
+        $('#imgwrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+      wrap.appendChild(fig);
+    }
+  };
+  return wrap;
+}
+
+/* ---------- the image, and which one ----------
+   Every bbox in the response is measured in the PREPARED page — the one that was cropped,
+   straightened and had its stamp removed — so the overlay only lines up on that image.
+   Showing the upload instead is still the default because it is what the user recognises;
+   the toggle switches to the page as the recogniser actually saw it. */
+let showPrepared = false;
+function paintImage(d) {
+  const img = $('#img');
+  img.src = (showPrepared && d.prepared_image) ? d.prepared_image : URL_;
+  img.onload = () => overlay(d);
+}
+$('#prep').onclick = e => {
+  showPrepared = !showPrepared;
+  e.target.classList.toggle('on', showPrepared);
+  if (DATA) paintImage(DATA);
+};
+
 /* ---------- box overlay ---------- */
 let showBoxes = false;
 function overlay(d) {
@@ -363,6 +427,11 @@ function overlay(d) {
   svg.setAttribute('preserveAspectRatio', 'none');
   svg.replaceChildren();
   if (!showBoxes) return;
+  // on the uploaded image the boxes would sit in the wrong place whenever the page was
+  // cropped or straightened; say so rather than drawing a lie
+  if (!showPrepared && d.prepared_image && (d.prep.cropped || d.skew_deg)) {
+    status('<span class="pill warn">کادرها روی «تصویر بهبودیافته» دقیق‌اند</span>');
+  }
   const ns = 'http://www.w3.org/2000/svg';
   for (const L of d.lines) {
     const parts = L.cells && L.cells.length >= 2 ? L.cells.map(c => [c.bbox, 'cell']) : [[L.bbox, '']];

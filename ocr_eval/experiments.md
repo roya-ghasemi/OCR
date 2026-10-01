@@ -1515,3 +1515,78 @@ They protect themselves first and are repair candidates second.
 is now `test_the_spell_fix_only_ever_returns_a_word_from_the_list`. The invariant that
 matters is unchanged and is now stated directly: the output is always either the word as
 read or a word already in the list, so nothing can be assembled and no word invented.
+
+
+## E28 — 2026-10-01 — what nobody read is shown, not guessed
+
+The brief's first acceptance criterion is that no nonsense line appears in the output. Two
+sources remained after E27, and neither is a reading problem.
+
+### A handwritten form value is not text
+
+«شماره:» and «تاریخ:» are printed; what follows them is written by hand, and the recogniser
+answers with whichever letters each stroke resembled — «شماره: ۱7 یک», «تاریخ: امه ۱/2».
+`Transcriber._unread` keeps the printed label and reports the value as a region, with its
+box and what was offered, in a new `unread[]` on the response. The brief is explicit that a
+handwritten region must never reach the body text.
+
+A token counts as read when it is a word in the list, a clean number, or Latin, so this can
+only remove something the recogniser was itself unsure of AND that matches nothing known.
+Two further bounds were needed, both found by measurement:
+
+* **A token mixing Persian-Indic and ASCII digits** («۱7», «۱/2») is never a real page; it
+  is a pen stroke read digit by digit.
+* **Away from a form label, low confidence alone may not delete text.** On a 12 px capture
+  every word reads badly, and «برناسه‌ریزی انجام‌شده» is damaged text, not noise — deleting
+  runs like it cost that page CER 7.4% → 10.7%. What a speck or a binder ring produces is
+  always *short*, so a run is dropped only when no token in it is long enough to be a word.
+
+### One row read twice
+
+`_conflict` divides the overlap of two readings by the **narrower** box. Two readings of one
+row that start at opposite ends — psm 6 taking «که پسمه تعالی» from x 1028, psm 4 «بسمه
+تعالی پیوست: سا» from x 83 — share only 17% of the wider one, so both are selected and the
+joined row says «بسمه تعالی» twice. Geometry cannot separate these; the text can.
+`_drop_duplicates` keeps the better-scoring of two pieces that read the same words (longest
+common run ≥ 5 characters and ≥ half the shorter piece). The genuine two-column rows on
+`_12.JPG` are unaffected, and the same rule removes a duplication that was already there.
+
+### Measured — pages, against the original baseline
+
+| | CER | WER | junk lines |
+|---|---:|---:|---:|
+| letter (image 1) | 11.19% → **10.12%** | 17.82% → **12.07%** | 2 → **0** |
+| prose photo (image 2) | 20.09% → **3.90%** | 47.66% → **13.28%** | 4 → **0** |
+| low-resolution photo | 9.00% → **7.37%** | 25.23% → **22.15%** | 0 → 0 |
+
+**No page produces a line that is not on it.**
+
+### Measured — dev 51
+
+| | CER | atoms | whole numbers |
+|---|---:|---:|---:|
+| E25 | 14.46% | 83.60% | 75.76% |
+| E26 | 13.74% | 83.89% | 77.13% |
+| E27 | 13.72% | 83.89% | 77.13% |
+| **E28** | **13.66%** | 83.74% | **77.13%** |
+
+### Boxes were being drawn on the wrong image
+
+Every bbox is measured in the prepared page. The page showed them on the **upload**, so the
+overlay has been wrong by the crop and the deskew angle since deskew landed in E19 — a
+pre-existing defect that cropping made visible. `POST /ocr?prepared=true` now returns the
+prepared page as a data URL, the viewer has a «تصویر بهبودیافته» toggle, and asking for
+boxes on the upload says they are only exact on the prepared image.
+
+Each `unread` region is also cut out of that image and shown in the review list, which is
+the point of declining to guess: the value is not invented, it is put in front of a person.
+
+### Open
+
+* `sender` / registration number (letterhead) — see E26.
+* «با تشکر» is still lost above the signature; «پا سلام؛» for «با سلام؛» and «میکائبل» for
+  «میکائیل» are ambiguous dot repairs the lexicon cannot settle.
+* The letter's e-mail line still ends «govareshk ۱۲” ;» — validation of e-mail, phone and
+  date shapes is not implemented.
+* Image 2 CER 3.90% against the brief's 2% target; the remainder is kashida.
+* No cache (the brief's section 5) and no font training.

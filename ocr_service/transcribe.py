@@ -70,7 +70,11 @@ _COMMA_IN_WORD = "»«,٫ء"
 _PERSIAN_CHAR = re.compile(r"[ء-ی]")
 # Printed labels of a letter's form fields. What follows one of these on the page is
 # routinely handwritten, and a handwritten value must never be transcribed into the body.
-_FORM_LABEL = re.compile(r"^(شماره|تاریخ|پیوست|شماره\s*ثبت)\s*[:：]?$")
+_FORM_LABEL = re.compile(r"^(شماره|تاریخ|پیوست|رونوشت)\s*[:：]$")
+# Confidence a token must reach to stand as printed text where a handwritten value is
+# expected — after «شماره:» on the letter's own form. The body of these letters reads at
+# 0.86-0.93, so a printed «پیوست: ندارد» clears this and a pen stroke does not.
+PRINTED_AFTER_LABEL = 85.0
 # A token mixing Persian-Indic and ASCII digits — «۱7», «۱/2». No real page does this; it
 # is the recogniser reading a handwritten mark as whichever digit each stroke resembled.
 _MIXED_DIGITS = re.compile(r"(?=.*[۰-۹])(?=.*[0-9])")
@@ -166,6 +170,8 @@ class Transcript:
     glyph_px: float = 0.0                         # text height in the image as supplied
     timing: dict = field(default_factory=dict)
     prep: dict = field(default_factory=dict)      # what page_prep did (crop / warp)
+    unread: list = field(default_factory=list)    # regions nobody read: handwriting, marks
+    prepared: object = None                       # the page as it was read (PIL image)
 
     def as_dict(self) -> dict:
         return asdict(self)
@@ -571,7 +577,13 @@ class Transcriber:
         """Drop a lone 1-character token at either end of a line when it stands at
         least a line-height away from its neighbour: binder holes, margin ticks and
         page-edge specks read as «۰», «5», «ی». A real single-character word sits at
-        normal word spacing and is kept."""
+        normal word spacing and is kept.
+
+        Widening this to two characters was tried and reverted: the marks it was meant to
+        catch — «سا» after «پیوست:», «سر» before «آدرس:» — are both words in Tesseract's
+        own Persian list, so a lexicon test keeps them and a length test would also delete
+        «از», «به», «در» and «را». They are removed instead by `_unread`, which knows they
+        follow a printed form label."""
         h = max(1, line.bbox[3] - line.bbox[1])
 
         def gap(a: Word, b: Word) -> int:
@@ -674,10 +686,52 @@ class Transcriber:
         return [self._join_row(r) for r in rows if r]
 
     @staticmethod
+    def _drop_duplicates(pieces: list[Line]) -> list[Line]:
+        """Two readings of the same words, kept because they barely overlap in x.
+
+        `_conflict` divides the overlap by the *narrower* box, so two readings of one row
+        that start at opposite ends — psm 6 taking «که پسمه تعالی» from x 1028 and psm 4
+        «بسمه تعالی پیوست: سا» from x 83 — share only 17% of the wider one and are both
+        selected. Joined, the row says «بسمه تعالی» twice. Geometry cannot separate these;
+        the text can: pieces of one row that *read the same words* are one reading, and the
+        better-scoring one is kept.
+        """
+        def lcs(a: str, b: str) -> int:
+            if not a or not b:
+                return 0
+            prev = [0] * (len(b) + 1)
+            best = 0
+            for ca in a:
+                cur = [0] * (len(b) + 1)
+                for j, cb in enumerate(b, 1):
+                    if ca == cb:
+                        cur[j] = prev[j - 1] + 1
+                        best = max(best, cur[j])
+                prev = cur
+            return best
+
+        keys = [_key(p.text) for p in pieces]
+        order = sorted(range(len(pieces)), key=lambda i: -pieces[i].score)
+        kept: list[int] = []
+        for i in order:
+            dup = False
+            for j in kept:
+                short = min(len(keys[i]), len(keys[j]))
+                if short >= 5 and lcs(keys[i], keys[j]) >= max(5, 0.5 * short):
+                    dup = True
+                    break
+            if not dup:
+                kept.append(i)
+        return [pieces[i] for i in sorted(kept)]
+
+    @staticmethod
     def _join_row(pieces: list[Line]) -> Line:
         """Pieces of one physical row (halves of a tilted line, table cells read as
         separate lines) become one line, right to left — or left to right when every
         piece is an English read."""
+        if len(pieces) == 1:
+            return pieces[0]
+        pieces = Transcriber._drop_duplicates(pieces)
         if len(pieces) == 1:
             return pieces[0]
         if all(p.source == "line-eng" for p in pieces):
@@ -779,11 +833,12 @@ class Transcriber:
         timing["digits_s"] = round(time.perf_counter() - t, 3)
 
         lines = self._finish_rows(rows)
-        out_lines, numbers = self._assemble(lines, scale)
+        out_lines, numbers, unread = self._assemble(lines, scale)
         text = self._join(out_lines)
         timing["total_s"] = round(time.perf_counter() - t0, 3)
         return Transcript(text=text, lines=out_lines, numbers=numbers, skew_deg=round(skew, 2),
-                          image_size=im.size, glyph_px=round(glyph_px, 1), timing=timing,
+                          image_size=im.size, glyph_px=round(glyph_px, 1), timing=timing, unread=unread,
+                          prepared=im,
                           prep={**(prep.as_dict() if prep else {}),
                                 **(ink_info.as_dict() if ink_info else {})})
 
@@ -870,6 +925,85 @@ class Transcriber:
                                  int(round(max(w.box[3] for w in seg) / scale))]})
         return out
 
+    def _unread(self, words: list[Word], floor: float) -> tuple[list[Word], list[dict]]:
+        """Drop the tokens nobody actually read, and say where they were.
+
+        Two kinds, and neither belongs in a transcript:
+
+        * **A handwritten form value.** «شماره:» and «تاریخ:» are printed; what follows
+          them is written by hand, and the recogniser answers with whichever letters each
+          stroke resembled — «شماره: ۱7 یک», «تاریخ: امه ۱/2». The brief is explicit that a
+          handwritten region must never reach the body text, so the printed label is kept
+          and the value is reported as a region to look at.
+        * **A mark that is not text at all.** A speck or a binder ring that survived as
+          «زب». A run of tokens where nothing is a word and the reader was unsure of every
+          one of them is not a reading; it is the absence of one.
+
+        A token counts as read when it is a word in the list, a clean number, or Latin —
+        so this can only ever remove something the recogniser itself was unsure of AND
+        that matches nothing known. Where it removes something, the caller surfaces the
+        region for review rather than silently deleting it.
+        """
+        lex = self.spellfix_stage().words if self.spellfix else set()
+
+        def read(w: Word) -> bool:
+            t = w.text.strip("()[]{}«».,،؛:;\"'")
+            if not t:
+                return False
+            if _MIXED_DIGITS.search(t) and re.fullmatch(r"[0-9۰-۹٠-٩/.,:-]+", t):
+                return False                      # «۱7»: two digit systems in one token
+            if _NUMTOK.search(t):
+                return len(_NUMTOK.findall(t)) >= 2 or w.conf >= floor
+            if _LATIN_WORD.search(t):
+                return True
+            if t in lex or _key(t) in lex:
+                return True
+            return w.conf >= floor
+
+        # A form label counts only with its colon and only at the head of the line. Without
+        # both, the «شماره» in «به قرار داد منعقده به شماره ۲۹۰۶۳» is a form label and the
+        # contract number after it is a handwritten value.
+        label = next((i for i, w in enumerate(words) if _FORM_LABEL.match(w.text)), None)
+
+        flags = [not read(w) for w in words]
+        if label is not None:
+            # What follows the label on a form line is written by hand unless it is plainly
+            # printed: «شماره: یک» is a pen stroke the recogniser offered a word for.
+            for i in range(label + 1, len(words)):
+                if words[i].conf < PRINTED_AFTER_LABEL:
+                    flags[i] = True
+        if not any(flags):
+            return words, []
+        keep, regions = [], []
+        i = 0
+        while i < len(words):
+            if not flags[i]:
+                keep.append(words[i])
+                i += 1
+                continue
+            j = i
+            while j < len(words) and flags[j]:
+                j += 1
+            run = words[i:j]
+            # after a printed form label the value is handwritten, however short the run
+            handwritten = label is not None and i > label
+            # Away from a form label, low confidence alone is not enough to delete text.
+            # On a 12 px capture every word reads badly, and «برناسه‌ریزی انجام‌شده» is
+            # damaged text, not noise — removing it cost that page 3.3 pp of CER. What a
+            # speck or a binder ring produces is always SHORT: «زب», «سس», «۰». So a run is
+            # only dropped as unreadable when no token in it is long enough to be a word.
+            noise = all(len(_key(w.text)) <= 3 for w in run)
+            if handwritten or (noise and (len(run) >= 2 or len(words) == len(run))):
+                regions.append({"kind": "handwritten" if handwritten else "illegible",
+                                "bbox": [min(w.box[0] for w in run), min(w.box[1] for w in run),
+                                         max(w.box[2] for w in run), max(w.box[3] for w in run)],
+                                "read_as": " ".join(w.text for w in run),
+                                "confidence": round(min(w.conf for w in run) / 100.0, 3)})
+            else:
+                keep.extend(run)                  # a single stray token stays; it may be real
+            i = j
+        return keep, regions
+
     @staticmethod
     def _table_cuts(lines: list[Line], words_per_line: list[list[Word]]) -> list[list[int]]:
         """Which of each line's wide gaps are really column boundaries.
@@ -895,7 +1029,7 @@ class Transcriber:
             out.append([i for i, x in g if any(abs(x - y) <= tol for y in near)])
         return out
 
-    def _assemble(self, lines: list[Line], scale: float) -> tuple[list[LineOut], list[NumberOut]]:
+    def _assemble(self, lines: list[Line], scale: float) -> tuple[list[LineOut], list[NumberOut], list[dict]]:
         # paragraph breaks: a vertical gap clearly larger than the usual line pitch
         centers = [(L.bbox[1] + L.bbox[3]) / 2 for L in lines]
         gaps = [b - a for a, b in zip(centers, centers[1:]) if b - a > 0]
@@ -910,6 +1044,20 @@ class Transcriber:
                 sp = self.spellfix_stage()
                 words = [Word(sp.fix(w.text, w.conf), w.conf, w.box) for w in words]
             cleaned.append([w for w in words if w.text])
+
+        # Remove what was never read — a handwritten form value, a mark that is not text —
+        # before the columns are judged, so a dropped mark cannot define one.
+        # "Unread" is relative to how well THIS page reads, not an absolute score. A 12 px
+        # capture reads every word at low confidence, so an absolute floor called correct
+        # text unread and deleted 3% of that page (CER 7.4% -> 10.7%). The floor is the
+        # page's own typical confidence, well below it, and never above UNREAD_CONF.
+        confs = sorted(w.conf for ws in cleaned for w in ws)
+        typical = confs[len(confs) // 2] if confs else 0.0
+        floor = min(UNREAD_CONF, max(35.0, typical - 20.0))
+        unread: list[dict] = []
+        for i, ws in enumerate(cleaned):
+            cleaned[i], regions = self._unread(ws, floor)
+            unread += regions
         table_cuts = self._table_cuts(lines, cleaned)
 
         para, out, numbers = 0, [], []
@@ -934,7 +1082,9 @@ class Transcriber:
                         source="glyph" if glyph else "tesseract",
                         confidence=round((w.conf - 101.0) if glyph else w.conf / 100.0, 3),
                         grouping=amount_grouping(w.text)))
-        return out, numbers
+        for r in unread:
+            r["bbox"] = [int(round(v / scale)) for v in r["bbox"]]
+        return out, numbers, unread
 
     @staticmethod
     def _join(lines: list[LineOut]) -> str:
