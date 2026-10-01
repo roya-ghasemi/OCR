@@ -48,3 +48,6 @@ train/
 # third-party binaries that the training scripts read from disk.
 ocr_service/Persian-OCR-Double-Benchmark/
 ocr_service/fonts/
+
+# text2image drops this in the working directory
+fonts.conf
