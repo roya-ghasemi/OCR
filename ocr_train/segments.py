@@ -97,12 +97,25 @@ def _segment(target: int, lr: float | None, from_scratch: bool) -> tuple[int, st
         # base weights, then let the run keep its own.
         cmd += ["--reset_learning_rate", "true"]
 
-    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8",
-                       errors="replace")
-    out = (p.stdout or "") + (p.stderr or "")
+    # Streamed, not captured. A segment is two thousand iterations; buffering it means the
+    # log file is empty and nothing — not the terminal, not a `tail -f` — can see the run
+    # until it is already over. The flush per line is what makes the log watchable, and the
+    # log is also where `last_iteration` reads the counter back.
+    lines: list[str] = []
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                         text=True, encoding="utf-8", errors="replace", bufsize=1)
     with (config.WORK_DIR / "train.log").open("a", encoding="utf-8") as fh:
-        fh.write(out)
-    return p.returncode, out
+        for line in p.stdout:
+            fh.write(line)
+            fh.flush()
+            lines.append(line)
+            low = line.lower()
+            m = _ITER.search(line)
+            if m and int(m.group(1)) % 500 == 0:
+                print("    " + line.rstrip(), flush=True)
+            elif not m and ("error" in low[:14] or "failed" in low):
+                print("    " + line.rstrip(), flush=True)
+    return p.wait(), "".join(lines)
 
 
 def _pack_and_measure(tag: str) -> tuple[Path, float | None, float | None]:
@@ -146,12 +159,17 @@ def run(total: int = 30000, segment: int = 2000, lr: float | None = None,
         # A fresh fine-tune must not inherit the diverged rolling checkpoint, and the log is
         # the only record of where the iteration counter is.
         stale = list(config.WORK_DIR.glob(f"{config.LANG}*checkpoint"))
-        attic = config.WORK_DIR / "previous"
-        attic.mkdir(exist_ok=True)
-        for s in stale:
-            shutil.move(str(s), str(attic / s.name))
+        if stale:
+            # Its own folder per run. Checkpoint names repeat across runs — the early ones
+            # especially, since they are named by an error rate the model passes through
+            # every time — and moving onto an existing name fails on Windows, which would
+            # abort a run before it started for no reason worth having.
+            attic = config.WORK_DIR / "previous" / time.strftime("%Y%m%d-%H%M%S")
+            attic.mkdir(parents=True, exist_ok=True)
+            for s in stale:
+                shutil.move(str(s), str(attic / s.name))
+            print(f"moved {len(stale)} checkpoint(s) of the previous run to {attic}")
         (config.WORK_DIR / "train.log").write_text("", encoding="utf-8")
-        print(f"moved {len(stale)} checkpoint(s) of the previous run to {attic}")
 
     n_train = len((config.WORK_DIR / "train.txt").read_text(encoding="utf-8").split())
     n_eval = len((config.WORK_DIR / "eval.txt").read_text(encoding="utf-8").split())
