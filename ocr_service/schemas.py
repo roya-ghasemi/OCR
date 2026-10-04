@@ -10,6 +10,11 @@ from pydantic import BaseModel, Field
 class LetterFields(BaseModel):
     """Verbatim runs of transcribed lines, or null - never generated (letter_fields.py)."""
     sender: str | None = None
+    registration_number: str | None = Field(
+        default=None,
+        description="the company registration number printed in the letterhead, when it was "
+                    "read confidently. Null is the normal case: the letterhead is usually a "
+                    "stylised graphic and a guessed registration number is worse than none")
     receiver: str | None = None
     subject: str | None = Field(default=None, description="only the text after a printed «موضوع:» label")
     body_text: str | None = None
@@ -49,11 +54,12 @@ class NumberOut(BaseModel):
 class UnreadRegion(BaseModel):
     """A place on the page the service declined to transcribe, and why.
 
-    A handwritten form value, or a mark that is not text. The region is reported with its
-    box so it can be shown to a human, never guessed at: these are exactly the places
-    where printing a reading would mean inventing one.
+    A handwritten form value, a mark that is not text, or the letterhead band whose white
+    text on colour the recogniser cannot read. The region is reported with its box so it can
+    be shown to a human, never guessed at: these are exactly the places where printing a
+    reading would mean inventing one.
     """
-    kind: Literal["handwritten", "illegible"]
+    kind: Literal["handwritten", "illegible", "letterhead"]
     bbox: list[int]
     read_as: str = Field(description="what the recogniser offered, kept only so a reviewer "
                                      "can see why it was rejected; never part of `text`")

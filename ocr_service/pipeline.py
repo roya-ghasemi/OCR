@@ -12,9 +12,14 @@ import uuid
 
 from PIL import Image
 
+import logging
+
 from . import __version__
 from .config import Settings, settings as default_settings
 from .letter_fields import extract as extract_fields
+from . import letterhead as _letterhead
+
+log = logging.getLogger(__name__)
 from .schemas import LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion
 from .transcribe import Transcriber
 
@@ -92,12 +97,29 @@ class OcrPipeline:
         weak_nums = sum(1 for n in tr.numbers if n.source == "tesseract" or n.confidence < REVIEW_NUMBER_CONF)
         if weak_nums:
             reasons.append(f"{weak_nums} number(s) not confirmed by the digit reader")
+        # The letterhead, read on its own terms. It never touches `text` or `lines`:
+        # inverting the band inside the page was measured in E26 and cost the rest of the
+        # page 2.1 pp of CER, because the band's box also holds white paper carrying the
+        # form labels. This reads its own crop and contributes only fields and a region.
+        head = self._letterhead(tr)
+        if head.get("band"):
+            if is_letter and head.get("sender") and not fields.get("sender"):
+                fields["sender"] = head["sender"]
+            if is_letter and head.get("registration_number"):
+                fields["registration_number"] = head["registration_number"]
+            if not head.get("sender") and not head.get("registration_number"):
+                tr.unread.append({"kind": "letterhead", "bbox": head["band"],
+                                  "read_as": " ".join(head.get("lines") or [])[:120],
+                                  "confidence": head.get("confidence", 0.0)})
+
         hand = [r for r in tr.unread if r["kind"] == "handwritten"]
         if hand:
             reasons.append(f"{len(hand)} handwritten field(s) left blank — read them from the image")
         marks = [r for r in tr.unread if r["kind"] == "illegible"]
         if marks:
             reasons.append(f"{len(marks)} region(s) could not be read and were left out")
+        if any(r["kind"] == "letterhead" for r in tr.unread):
+            reasons.append("the letterhead could not be read — the sender is in the image")
         broken = [n.value for n in tr.numbers if n.grouping == "broken"]
         if broken:
             reasons.append(f"amount(s) with an incomplete group of three: {', '.join(broken)}")
@@ -115,6 +137,30 @@ class OcrPipeline:
             prep=tr.prep, timing=tr.timing,
             service={"version": __version__, "engine": "tesseract(fas,eng) + digit_cnn",
                      "tesseract": (self._health or {}).get("tesseract", {}).get("version")})
+
+    def _letterhead(self, tr) -> dict:
+        """Read the letterhead off the prepared page, never raising into the request.
+
+        The prepared page is used rather than the upload because its coordinates are the
+        ones every other box in the response is measured in — it is RGB and the same size,
+        and the colour the band is found by survives preparation (blue stamp removal does
+        not touch green). An upload-space box would be silently wrong wherever the page was
+        cropped or deskewed.
+        """
+        if getattr(tr, "prepared", None) is None:
+            return {}
+        try:
+            import cv2
+            import numpy as np
+            cmd, data = self.cfg.resolved_tesseract()
+            if not cmd:
+                return {}
+            rgb = np.asarray(tr.prepared.convert("RGB"))
+            return _letterhead.read(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR),
+                                    cmd, data, self.cfg.lang_fa)
+        except Exception:                       # a letterhead is a bonus, never a failure
+            log.exception("letterhead read failed")
+            return {}
 
     async def run(self, image_bytes: bytes, doc_id: str | None = None,
                   want_prepared: bool = False) -> OcrResponse:
