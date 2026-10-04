@@ -134,10 +134,14 @@ def test_degradation_keeps_the_line_a_line(tmp_path):
     rng = random.Random(0)
     src = Image.new("L", (400, 48), 255)
     src.paste(0, (20, 14, 380, 30))                 # a bar of "ink"
+    import math
     for _ in range(40):
         out = apply(src, rng)
         assert out.width > out.height, "a text line must stay wider than it is tall"
-        assert MIN_TEXT_PX - 2 <= out.height <= max(MAX_TEXT_PX + 4, src.height + 4)
+        # `tilt` rotates with expand=True, so a wide strip gains width*sin(angle) of height
+        # on top of whatever the resample asked for. That growth is real and bounded.
+        allow = math.ceil(out.width * math.sin(math.radians(0.9))) + 4
+        assert MIN_TEXT_PX - 2 <= out.height <= max(MAX_TEXT_PX, src.height) + allow
         a = np.asarray(out)
         assert a.min() < 200, "the ink was degraded out of existence"
         assert a.max() > 120, "the background was degraded into ink"
@@ -147,3 +151,43 @@ def test_most_synthetic_lines_are_degraded():
     """Clean renders alone do not transfer to a scan — that was measured, not assumed."""
     from ocr_train import config
     assert 0 <= config.CLEAN_IN_TEN <= 5
+
+
+def test_the_corpus_covers_the_scale_the_letter_is_actually_read_at():
+    """E29's corpus topped out at 58 px and the brief's letter reads at 73 px per line.
+
+    A model that has never seen type at the size it will be handed is being asked to
+    generalise across scale, which is exactly the generalisation CTC is worst at.
+    """
+    from ocr_train.degrade import MAX_TEXT_PX, REGIMES
+    scan = next(r for r in REGIMES if r[0] == "scan")
+    assert scan[2][0] <= 73 <= scan[2][1], "the scan regime must span the letter's line height"
+    assert MAX_TEXT_PX >= 73
+
+
+def test_the_capture_regimes_are_a_distribution():
+    """Each regime is a device, fixing tone *and* resolution together. Shares must sum to
+    one or some lines silently fall through to whichever branch is last."""
+    from ocr_train.degrade import REGIMES
+    assert abs(sum(share for _, share, _ in REGIMES) - 1.0) < 1e-9
+    for name, share, (lo, hi) in REGIMES:
+        assert 0 < share < 1 and 0 < lo < hi
+
+
+def test_a_degraded_line_still_has_ink_in_it():
+    """The failure this guards is a picture of blank paper carrying a label that describes a
+    sentence. Nothing downstream can detect that; it just teaches the model noise."""
+    import random
+
+    import numpy as np
+    from PIL import Image
+
+    from ocr_train.degrade import READABLE_INK, apply, bright_scan, faint
+    rng = random.Random(3)
+    src = Image.new("L", (500, 70), 255)
+    src.paste(90, (20, 22, 480, 46))            # already-grey ink, the hard case
+    for _ in range(60):
+        assert np.asarray(bright_scan(faint(src, rng), rng)).min() <= READABLE_INK
+    # and the invariant holds for every regime, not only the one that adapts
+    for _ in range(120):
+        assert np.asarray(apply(src, rng)).min() <= READABLE_INK
