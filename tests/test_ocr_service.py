@@ -189,3 +189,19 @@ def test_the_prepared_page_reports_the_scale_it_was_sent_at():
     assert scale == 1.0, "an uncapped page is sent at full size and must say so"
 
     assert _data_url(None) == (None, None)
+
+
+def test_the_persian_model_the_service_defaults_to():
+    """Which model reads the page is the single setting that moves every published number.
+
+    Pinned because a silent revert looks like nothing: the service still starts, /health
+    still says ok, and every metric quietly returns to the stock model's. E30 measured
+    `fas_custom` better on 84 documents neither model was tuned on.
+    """
+    from ocr_service.config import Settings
+    from ocr_service.transcribe import Transcriber
+    import inspect
+
+    assert Settings().lang_fa == "fas_custom"
+    # and the recogniser's own default must not disagree with the setting that feeds it
+    assert inspect.signature(Transcriber.__init__).parameters["lang_fa"].default == "fas_custom"

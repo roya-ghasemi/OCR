@@ -16,12 +16,14 @@ cd D:\OCR_ghasemi\ocr
 Ready in ~1 s (nothing to load). `GET http://127.0.0.1:8000/health` must say
 `"status": "ok"`:
 
-* `tesseract.available: true` and `langs` containing `fas` and `eng`
+* `tesseract.available: true` and `langs` containing `fas`, `fas_custom` and `eng`
+* `tesseract.lang_fa == "fas_custom"` — the model that will actually read the page
 * `digit_reader.available: true`
 * `spellfix.available: true` with ~13,892 words (`enabled: false` if `OCRS_SPELLFIX=0`)
-* `service.tesseract.fas_sha256 == "99e420969b5ddd2c"` and
+* `service.tesseract.lang_fa_sha256 == "d0e5099d3ea227ba"` and
   `service.digit_model.sha256 == "e0e286aaf5595898"` — the files every published
-  number was measured with.
+  number was measured with. `fas_sha256` stays `99e420969b5ddd2c`: the stock model is
+  still there as the way back, it is just not the one reading.
 
 `degraded` = the digit reader is missing (numbers then come from Tesseract only).
 `down` = Tesseract or its Persian data is missing; `/ocr` returns 503.
@@ -64,21 +66,40 @@ API's own form. Read `text`; check `review_reasons`.
 
 ## 2b. Which Persian model is reading
 
-`OCRS_LANG_FA` selects it; the default is `fas`, the stock tessdata_best model.
+`OCRS_LANG_FA` selects it. The default is **`fas_custom`**, the E30 fine-tune, whose
+`lang_fa_sha256` is `d0e5099d3ea227ba`. `fas` is the stock tessdata_best model and the way
+back:
 
 ```powershell
-$env:OCRS_LANG_FA = "fas_custom"    # the E29 fine-tune, if it is installed
+$env:OCRS_LANG_FA = "fas"           # roll back to the stock model
 ```
 
 Both files live in `tessdata/`, so switching is a setting and rolling back is changing a
-string. `/health` reports `tesseract.lang_fa`, and `provenance()` stamps
-`lang_fa_sha256` — the hash of the model that actually did the reading, which is not
-`fas_sha256` when a fine-tune is selected. A results file that stamped only the stock hash
-would describe a run that never happened.
+string. `/health` reports `tesseract.lang_fa`, and `provenance()` stamps `lang_fa_sha256` —
+the hash of the model that actually did the reading, which is not `fas_sha256`. A results
+file that stamped only the stock hash would describe a run that never happened.
 
-The fine-tune is built by `ocr_train/` (see its README). It is **not** the default: it
-reads photographed pages better and scanned letters worse, and that trade has to be
-re-measured on `bench_pages.py` before anything changes.
+Why it is the default, measured on 84 documents neither model was tuned on:
+
+| | `fas` | `fas_custom` | |
+|---|---:|---:|---|
+| dev 51 — CER / atoms / numbers | 13.66% / 83.74% / 77.13% | **12.86% / 86.07% / 78.79%** | all better |
+| test 33 — CER / atoms / numbers | 18.30% / 79.04% / 67.03% | **17.57% / 81.22% / 69.53%** | all better |
+
+Every field improves on the test split. Two things to know before trusting it blindly:
+
+* **The single hand-typed letter page is worse** (WER 12.07% → 16.09%), while 84 documents of
+  the same kind are better. The regression is four lines, one of which is a genuine fix
+  («میکائبل» → «میکائیل»); the numbers on the line that got worse are ones the digit reader
+  already refuses to confirm under either model. E30 in `ocr_eval/experiments.md` has the
+  alignment.
+* **`len_ratio` falls about two points** on both splits: it returns slightly less text. With
+  CER down and atom recall up, what it stops returning was wrong — but that is an inference,
+  not a measurement.
+
+The fine-tune is built by `ocr_train/` (see its README). Rebuild and reinstall with
+`python -m ocr_train segments` then `install`; `train/work/segments.jsonl` is the ledger of
+every segment and its measured page error.
 
 ## 3. Measure
 
@@ -86,7 +107,8 @@ re-measured on `bench_pages.py` before anything changes.
 .\venv312\Scripts\python.exe ocr_eval\tools\bench_fulltext.py --split dev
 ```
 ~3 min for 51 documents, CPU only. Compare `transcript.coverage_cer`,
-`atom_recall`, `number_exact_recall` with E28 (dev: **13.7%, 83.7%, 77.1%**). Change one
+`atom_recall`, `number_exact_recall` with E30 (dev: **12.86%, 86.07%, 78.79%**; the stock
+model on the same corpus is 13.66%, 83.74%, 77.13%). Change one
 thing at a time, tune on dev, log the run in `ocr_eval/experiments.md` with the
 `provenance` block the tool writes. The test split (`--split test`) is for a final
 check only — it has been scored ten times in total (E17, E18, E19 ×5, E20, E24, E25); make a
