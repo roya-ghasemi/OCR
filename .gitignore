@@ -51,3 +51,6 @@ ocr_service/fonts/
 
 # text2image drops this in the working directory
 fonts.conf
+
+# The 2.2 GB benchmark dataset, in either location. Data, not source.
+Persian-OCR-Double-Benchmark/

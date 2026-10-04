@@ -18,15 +18,31 @@ from .letter_fields import extract as extract_fields
 from .schemas import LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion
 from .transcribe import Transcriber
 
-def _data_url(im) -> str | None:
-    """The prepared page as a JPEG data URL, capped so a response stays sendable."""
+PREPARED_MAX_SIDE = 1600
+
+
+def _data_url(im) -> tuple[str | None, float | None]:
+    """The prepared page as a JPEG data URL, **and the scale it was sent at**.
+
+    The cap keeps a response sendable: a 2192×2996 page is 1171×1600 by the time it is
+    base64. Every bbox in the response is measured in the *uncapped* prepared page, so a
+    client drawing a crop straight from this image with those coordinates cuts the wrong
+    pixels — and silently drops any region that falls past the capped edge. That is what
+    happened to the review crops on the brief's letter: four cut from the wrong place, one
+    beyond the right-hand edge and not drawn at all.
+
+    Returning the factor is what makes the two agree. The boxes stay in one canonical space
+    (the prepared page) and anything working in sent-image pixels multiplies by this.
+    """
     if im is None:
-        return None
+        return None, None
     out = im.copy()
-    out.thumbnail((1600, 1600), Image.LANCZOS)
+    out.thumbnail((PREPARED_MAX_SIDE, PREPARED_MAX_SIDE), Image.LANCZOS)
+    scale = out.width / im.width if im.width else 1.0
     buf = io.BytesIO()
     out.convert("RGB").save(buf, "JPEG", quality=82, optimize=True)
-    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    return ("data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(),
+            round(scale, 6))
 
 
 REVIEW_LINE_CONF = 0.6      # a line below this mean confidence is worth a human look
@@ -86,6 +102,7 @@ class OcrPipeline:
         if broken:
             reasons.append(f"amount(s) with an incomplete group of three: {', '.join(broken)}")
 
+        prepared_url, prepared_scale = _data_url(tr.prepared) if want_prepared else (None, None)
         return OcrResponse(
             doc_id=doc_id, text=tr.text,
             lines=[LineOut(**L.__dict__) for L in tr.lines],
@@ -94,7 +111,7 @@ class OcrPipeline:
             needs_review=bool(reasons), review_reasons=reasons,
             unread=[UnreadRegion(**r) for r in tr.unread],
             skew_deg=tr.skew_deg, glyph_px=tr.glyph_px, image_size=list(tr.image_size),
-            prepared_image=_data_url(tr.prepared) if want_prepared else None,
+            prepared_image=prepared_url, prepared_scale=prepared_scale,
             prep=tr.prep, timing=tr.timing,
             service={"version": __version__, "engine": "tesseract(fas,eng) + digit_cnn",
                      "tesseract": (self._health or {}).get("tesseract", {}).get("version")})

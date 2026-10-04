@@ -152,3 +152,40 @@ def test_response_contract_is_text_first_with_line_and_number_provenance():
     assert r.text.startswith("با سلام") and r.numbers[0].source == "glyph"
     # a non-letter page carries no invented structure: every field is null
     assert all(v is None for v in r.fields.model_dump().values())
+
+
+def test_the_prepared_page_reports_the_scale_it_was_sent_at():
+    """The review crops depend on this and their failure is silent.
+
+    Every bbox is measured in the prepared page, but `prepared_image` is capped at 1600 px
+    so the response stays sendable. On the brief's letter that is a 0.534 factor: without it
+    the four «نیاز به بازبینی» crops were cut from the wrong pixels and the one at x=1843
+    fell past the capped edge and was never drawn at all.
+    """
+    from PIL import Image
+
+    from ocr_service.pipeline import PREPARED_MAX_SIDE, _data_url
+
+    big = Image.new("RGB", (2192, 2996), "white")
+    url, scale = _data_url(big)
+    assert url and url.startswith("data:image/jpeg;base64,")
+    assert scale is not None and 0 < scale < 1, "a page past the cap must report a scale"
+    # the factor has to be the one that actually maps a bbox onto the sent pixels, so
+    # decode what was sent and check the width it claims
+    import base64
+    import io
+
+    from PIL import Image as _I
+    sent = _I.open(io.BytesIO(base64.b64decode(url.split(",", 1)[1])))
+    assert max(sent.size) <= PREPARED_MAX_SIDE
+    # One scalar cannot describe both dimensions exactly — the thumbnail's sides are
+    # integers, so the aspect ratio shifts by a fraction of a pixel. Within a pixel is the
+    # honest contract, and a pixel does not matter to a crop.
+    assert abs(big.width * scale - sent.width) <= 1
+    assert abs(big.height * scale - sent.height) <= 1
+
+    small = Image.new("RGB", (400, 300), "white")
+    url, scale = _data_url(small)
+    assert scale == 1.0, "an uncapped page is sent at full size and must say so"
+
+    assert _data_url(None) == (None, None)

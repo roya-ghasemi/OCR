@@ -86,6 +86,11 @@ class OcrResponse(BaseModel):
         description="the page as the recogniser saw it (cropped, straightened, stamp removed), "
                     "as a data URL. Returned only when the request asks for it; boxes line up "
                     "with this image, not with the upload")
+    prepared_scale: float | None = Field(
+        default=None,
+        description="multiply a bbox by this to reach pixel coordinates in `prepared_image`, "
+                    "which is capped in size so the response stays sendable. 1.0 means it was "
+                    "sent at full size. Ignoring it cuts review crops from the wrong pixels")
     prep: dict = Field(default_factory=dict,
                        description="what the preparation stage did: crop, perspective warp, ink")
     timing: dict
