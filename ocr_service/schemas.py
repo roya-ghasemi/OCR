@@ -135,5 +135,9 @@ class Health(BaseModel):
     digit_reader: dict
     spellfix: dict = Field(default_factory=dict,
                            description="dot-confusion repair: enabled, available, word-list size")
+    cache: dict = Field(default_factory=dict,
+                        description="transcript cache: enabled, entries, hits, misses, dir. "
+                                    "Keyed on the engine and settings as well as the image, so "
+                                    "a model change needs no clearing")
     queue: dict
     service: dict
