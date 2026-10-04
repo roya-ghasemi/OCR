@@ -18,9 +18,11 @@ from . import __version__
 from .config import Settings, settings as default_settings
 from .letter_fields import extract as extract_fields
 from . import letterhead as _letterhead
+from . import validate as _validate
 
 log = logging.getLogger(__name__)
-from .schemas import LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion
+from .schemas import (LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion,
+                      Validation)
 from .transcribe import Transcriber
 
 PREPARED_MAX_SIDE = 1600
@@ -120,6 +122,12 @@ class OcrPipeline:
             reasons.append(f"{len(marks)} region(s) could not be read and were left out")
         if any(r["kind"] == "letterhead" for r in tr.unread):
             reasons.append("the letterhead could not be read — the sender is in the image")
+        checks = _validate.scan(tr.text or "")
+        bad = [f for f in checks if not f.valid]
+        if bad:
+            kinds = sorted({f.kind for f in bad})
+            reasons.append(f"{len(bad)} value(s) do not have the shape they should "
+                           f"({', '.join(kinds)}) — check them against the image")
         broken = [n.value for n in tr.numbers if n.grouping == "broken"]
         if broken:
             reasons.append(f"amount(s) with an incomplete group of three: {', '.join(broken)}")
@@ -132,6 +140,7 @@ class OcrPipeline:
             is_letter=is_letter, fields=LetterFields(**fields),
             needs_review=bool(reasons), review_reasons=reasons,
             unread=[UnreadRegion(**r) for r in tr.unread],
+            validations=[Validation(**f.as_dict()) for f in checks],
             skew_deg=tr.skew_deg, glyph_px=tr.glyph_px, image_size=list(tr.image_size),
             prepared_image=prepared_url, prepared_scale=prepared_scale,
             prep=tr.prep, timing=tr.timing,
