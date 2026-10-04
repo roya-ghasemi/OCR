@@ -5,9 +5,17 @@ venv312/
 # Model files & cache
 hf_cache/
 models/
-tessdata/
 *.whl
 *.gguf
+
+# Tesseract models. The stock ones (fas, eng, ara, osd) are redistributable downloads and
+# stay out. `fas_custom` does not exist anywhere else — it is the E30 fine-tune built by
+# `ocr_train/`, and it is what `OCRS_LANG_FA` defaults to, so a checkout without it would
+# default to a model it does not have.
+# A file inside an ignored *directory* can never be un-ignored, because git does not look
+# inside one. The directory has to stay visible and its contents excluded instead.
+tessdata/*
+!tessdata/fas_custom.traineddata
 
 # Graft index (regenerable)
 graft/
