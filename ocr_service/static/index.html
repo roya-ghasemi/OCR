@@ -375,8 +375,14 @@ function cropStrip(d) {
   const src = new Image();
   src.src = d.prepared_image || URL_;
   src.onload = () => {
+    /* The boxes are in prepared-page coordinates; `prepared_image` is capped in size, so
+       its pixels are a fraction of that. Without this factor every crop is cut from the
+       wrong place and anything past the capped edge is dropped without a word. */
+    const k0 = d.prepared_image
+      ? (d.prepared_scale || src.naturalWidth / d.image_size[0])
+      : src.naturalWidth / d.image_size[0];
     for (const u of d.unread) {
-      const [x0, y0, x1, y1] = u.bbox;
+      const [x0, y0, x1, y1] = u.bbox.map(v => v * k0);
       const pad = Math.round((y1 - y0) * 0.35);
       const sx = Math.max(0, x0 - pad), sy = Math.max(0, y0 - pad);
       const sw = Math.min(src.naturalWidth - sx, x1 - x0 + 2 * pad);
