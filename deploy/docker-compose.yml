@@ -10,6 +10,7 @@ x-service-env: &service-env
   OCRS_ASYNC_MODE: "1"
   OCRS_REDIS_URL: redis://redis:6379/0
   OCRS_WORKERS: "4"
+  OCRS_CACHE_DIR: /var/cache/ocr
 
 services:
   nginx:
@@ -22,6 +23,7 @@ services:
     build: { context: .., dockerfile: deploy/Dockerfile }
     command: uvicorn ocr_service.api:app --host 0.0.0.0 --port 8000 --workers 2
     environment: *service-env
+    volumes: ["ocr-cache:/var/cache/ocr"]
     depends_on: [redis]
     deploy: { replicas: 2 }
 
@@ -29,8 +31,15 @@ services:
     build: { context: .., dockerfile: deploy/Dockerfile }
     command: celery -A ocr_service.tasks worker -l info --concurrency=1 --prefetch-multiplier=1
     environment: *service-env
+    volumes: ["ocr-cache:/var/cache/ocr"]
     depends_on: [redis]
 
   redis:
     image: redis:7-alpine
     command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru"]
+
+# One cache shared by every api and worker replica. Entries are content-addressed and
+# written beside-then-replaced, so concurrent readers and writers are safe, and the key
+# folds in the model hashes — a model change needs no clearing, old entries simply age out.
+volumes:
+  ocr-cache:

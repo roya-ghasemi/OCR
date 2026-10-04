@@ -184,3 +184,148 @@ runtime path, frozen splits, pinned engine files.
 | a non-letter page looks "empty" | it is not: `fields` are null by design on a non-letter (D65), the whole page is in `text` and `lines` |
 | a letter field null or wrong | `ocr_service/letter_fields.py` rules; fields are never generated, only cut from `text` |
 | everything worse after a machine move | `/health` hashes: a distro `fas.traineddata` is a different, weaker model |
+
+---
+
+## 5. Deploying to a server
+
+### 5.1 What to copy
+
+Everything the service needs, and nothing it does not. Sizes are the deciding factor only
+for the two that are large.
+
+```
+ocr_service/                 the package (~190 KB of .py)
+  data/fas_words.txt         the spell-fixer's lexicon      168 KB
+  data/fas_admin.txt         administrative vocabulary        2 KB
+  static/index.html          the viewer                      24 KB
+models/digit_cnn.npz         the CNN digit reader           621 KB
+models/digit_cnn.json        its architecture — a provenance record, not loaded at
+                             runtime; the reader builds from the .npz alone   3 KB
+tessdata/fas_custom.traineddata   the E30 fine-tune, the default model   3.2 MB
+requirements-service.txt     pinned dependencies
+requirements.txt             points at the above
+deploy/                      Dockerfile, docker-compose.yml, nginx.conf, ocr-service.service
+RUNBOOK.md                   this file
+```
+
+Plus two stock Tesseract models that are **downloads, not repository files** — the Dockerfile
+fetches them; a bare-metal install needs them beside `fas_custom.traineddata`:
+
+```
+fas.traineddata   tessdata_best   the rollback target, and nothing else reads Persian if the fine-tune is removed
+eng.traineddata   tessdata_fast   Latin runs inside Persian text
+```
+
+**Leave behind.** None of this is read at runtime; it is measured, not guessed:
+
+| | why |
+|---|---|
+| `models/digits_hog_svm.joblib` | **120 MB**, the v1 reader. `joblib` and `sklearn` are never imported during a request — v2 superseded it, and only its `_fonts` helper is still used |
+| `models/digit_glyphs.npz` | 14 MB of digit training data |
+| `ocr_service/fonts/` | 816 KB, for rendering synthetic training lines. No font file is opened during a request |
+| `ocr_service/digit_cnn_train.py` | needs torch, which is not a service dependency |
+| `ocr_train/`, `train/` | the fine-tuning pipeline and its working files |
+| `ocr_eval/`, `tests/` | benchmarks, ground truth, the test suite |
+| `Persian-OCR-Double-Benchmark/` | 2.2 GB dataset (and there is a second copy at the repo root) |
+| `Dehkhoda-SQL-master/`, `dehkhoda/` | dictionary build inputs |
+| `control/`, `debug_raw/`, `graft/`, `hf_cache/`, `install_log.txt` | scratch, index, logs |
+| `venv/`, `venv312/` | build these on the target, do not copy them |
+
+`ocr_service/numeric_reconcile.py` and `ocr_service/preprocess.py` are not imported by
+anything either. They are 25 KB and shipping the package whole is simpler than pruning it
+file by file; both are listed here so the list is honest, not because they cost anything.
+
+### 5.2 System dependencies
+
+* **Python 3.12** (3.12.10 is what every published number was measured on).
+* **Tesseract 5** — `apt-get install tesseract-ocr`, or `deploy/install_tesseract.ps1` on
+  Windows. The distro's own `fas` package is a **different, weaker model**; use the
+  tessdata_best file instead, which is what the Dockerfile fetches.
+* `libgl1` and `libglib2.0-0` for OpenCV on a slim image.
+* **Redis**, only for `OCRS_ASYNC_MODE=1`. The default synchronous mode needs none.
+
+```bash
+python3.12 -m venv /srv/ocr/venv && /srv/ocr/venv/bin/pip install -r requirements-service.txt
+```
+
+### 5.3 Environment
+
+| variable | default | when to set it |
+|---|---|---|
+| `OCRS_LANG_FA` | `fas_custom` | `fas` rolls back to the stock model |
+| `OCRS_TESSDATA_DIR` | *(found)* | only when the models are outside the checkout. **It is the directory itself, not its parent** |
+| `OCRS_TESSERACT_CMD` | *(found)* | when the binary is not on `PATH` or in the usual place |
+| `OCRS_CACHE_DIR` | `<repo>/.cache/ocr` | point it outside the checkout so a redeploy keeps the cache |
+| `OCRS_CACHE` | `1` | `0` disables it |
+| `OCRS_WORKERS` | `8` | parallel Tesseract processes **per request** |
+| `OCRS_MAX_UPLOAD_MB` | `25` | |
+| `OCRS_ASYNC_MODE` | `0` | `1` returns a `job_id` and needs Redis and a Celery worker |
+| `OCRS_REDIS_URL` | `redis://127.0.0.1:6379/0` | with async mode |
+| `OCRS_SPELLFIX` | `1` | `0` turns off dot-confusion repair |
+
+A stale `OCRS_TESSDATA_DIR` is the failure that looks like a broken install: `/health` says
+`down` with `langs: []`, naming a directory that does not exist. See section 1.
+
+### 5.4 Running it
+
+```bash
+/srv/ocr/venv/bin/uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000 --workers 2 \
+    --proxy-headers --forwarded-allow-ips='*'
+```
+
+**On worker count.** Each request already fans out to `OCRS_WORKERS` (8) parallel Tesseract
+processes, so uvicorn workers multiply that: 4 × 8 is 32 processes contending for the same
+cores and is *slower* than 2 × 8 on most hosts. Start at one uvicorn worker per 2–3 cores and
+measure. Gunicorn adds nothing here — uvicorn's own worker manager is the same mechanism
+without the extra layer.
+
+Behind nginx, raise the proxy timeout: a large scan legitimately takes 30 s, and the default
+60 s read timeout is closer than it looks when several arrive at once. `deploy/nginx.conf`
+has a working configuration.
+
+### 5.5 Managing it
+
+**systemd** — `deploy/ocr-service.service` is a complete unit; edit `User`,
+`WorkingDirectory` and the venv path.
+
+```bash
+sudo cp deploy/ocr-service.service /etc/systemd/system/
+sudo systemctl daemon-reload && sudo systemctl enable --now ocr-service
+journalctl -u ocr-service -f
+```
+
+Its `ProtectSystem=strict` means **`ReadWritePaths` must include the cache directory**, or
+every write fails and every page is read twice with nothing in the log to say why.
+
+**Docker** — the image carries `fas_custom` from the repository and downloads the two stock
+models:
+
+```bash
+docker compose -f deploy/docker-compose.yml up --build --scale api=2 --scale worker=2
+```
+
+The api and worker replicas share one cache volume. Entries are content-addressed and
+written beside-then-replaced, so concurrent access is safe.
+
+### 5.6 Verifying a deployment
+
+```bash
+curl -s localhost:8000/health
+```
+
+Four things decide whether it is really working, not just answering:
+
+1. `status` is `ok` — `degraded` means the digit reader is missing, so numbers come from
+   Tesseract alone and the measured number accuracy does not apply.
+2. `tesseract.lang_fa` is `fas_custom` and `service.tesseract.lang_fa_sha256` is
+   **`d0e5099d3ea227ba`**. A different hash is a different model and every published number
+   stops describing it.
+3. `tesseract.langs` contains `fas_custom`, `fas` and `eng`.
+4. `spellfix.words` is about 13,808.
+
+Then read a page end to end and check the transcript is not empty:
+
+```bash
+curl -s -F "file=@page.jpg" localhost:8000/ocr | head -c 400
+```

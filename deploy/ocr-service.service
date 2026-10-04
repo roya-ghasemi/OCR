@@ -1,0 +1,62 @@
+# Persian OCR transcription service — systemd unit.
+#
+#   sudo cp deploy/ocr-service.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now ocr-service
+#   systemctl status ocr-service && journalctl -u ocr-service -f
+#
+# Edit User, WorkingDirectory and the two paths below to match the host. Everything else
+# is deliberate; the comments say why.
+
+[Unit]
+Description=Persian OCR transcription service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=ocr
+Group=ocr
+WorkingDirectory=/srv/ocr
+
+# Which Persian model reads the page. The default is already fas_custom; stating it here
+# means the unit file says what is running rather than deferring to a code default that can
+# change under it. Roll back by editing this one line to `fas`.
+Environment=OCRS_LANG_FA=fas_custom
+# Left unset, the service finds <repo>/tessdata itself. Set it only when the models live
+# outside the checkout — and if you set it, it must be the directory, not its parent.
+# Environment=OCRS_TESSDATA_DIR=/srv/ocr/tessdata
+Environment=OCRS_TESSERACT_CMD=/usr/bin/tesseract
+# Outside the checkout, so a redeploy does not throw the cache away.
+Environment=OCRS_CACHE_DIR=/var/cache/ocr
+Environment=PYTHONUNBUFFERED=1
+
+# One worker per 2-3 cores. A page costs ~3 s of CPU and each request already fans out to
+# OCRS_WORKERS parallel Tesseract processes (default 8), so uvicorn workers multiply that:
+# 4 uvicorn workers x 8 is 32 processes competing for the same cores, which is slower than
+# 2 x 8 on most hosts. Measure before raising it.
+ExecStart=/srv/ocr/venv/bin/uvicorn ocr_service.api:app \
+    --host 127.0.0.1 --port 8000 \
+    --workers 2 \
+    --timeout-keep-alive 65 \
+    --proxy-headers --forwarded-allow-ips='*'
+
+Restart=on-failure
+RestartSec=5
+# A page can legitimately take 30 s on a large scan; do not let a slow request look like a
+# hang. The service has no startup work to speak of — it is ready in about a second.
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+# Hardening. ReadWritePaths has to include the cache directory or every write fails
+# silently and every page is read twice.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/cache/ocr
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target
