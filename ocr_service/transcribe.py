@@ -422,7 +422,7 @@ class Transcriber:
                  layout_psms: tuple[str, ...] = ("3", "4", "6"), deskew_min_deg: float = 1.0,
                  min_line_conf: float = 30.0, workers: int = 8, number_min_prob: float = 0.6,
                  spellfix: bool = True, crop_page: bool = True, ink_separate: bool = True,
-                 lang_fa: str = "fas"):
+                 lang_fa: str = "fas_custom"):
         self.cmd, self.tessdata = tesseract_cmd, tessdata_dir
         self.layout_psms = tuple(layout_psms)
         self.crop_page = crop_page
