@@ -1779,3 +1779,49 @@ under a private `_probe` name now and removes it afterwards.
 And the final line of a run printed `best held-out BCER 0.12%` for a model whose page WER is
 12.17%: the old label with the old scale on a number that was now a fraction. Wrong twice, in
 the one line somebody would quote.
+
+### Measured — 33 held-back test documents
+
+The dev split is what the service was tuned on, so it cannot settle a ship decision. This is
+the test split's eleventh scoring; a fresh split is owed before the next tuning cycle.
+
+| | `fas` | `fas_custom` (E30) | |
+|---|---:|---:|---|
+| coverage CER | 18.30% | **17.57%** | −0.73 |
+| atom recall | 79.04% | **81.22%** | +2.18 |
+| whole numbers | 67.03% | **69.53%** | +2.50 |
+| len ratio | 88.60% | 86.40% | −2.20 |
+| spurious fields | 0 | 0 | — |
+
+**Every field improves**, including `sender`, which had regressed slightly on dev. Across
+both corpora — 84 documents — all three headline metrics move the same way.
+
+The len ratio falls by about two points on both splits: the model returns slightly less text.
+With CER down and atom recall up, what it stops returning was wrong, which is the direction
+the brief asks for. It is still a real difference and is recorded rather than explained.
+
+### The letter page regression, and what it is not
+
+On the one hand-typed page the model is worse (WER 12.07% → 16.09%). Aligned to ground truth
+line by line, the difference is four lines, not a general decay:
+
+* «میکائبل» → **«میکائیل»** — the recipient's name, now correct. A dot confusion training
+  fixed and no rule could.
+* «گشته .» → «گشته.» — correct.
+* «تاریخ:» read as «شماره:» — a printed label misread. A real regression.
+* the contact line: `۳۸۳۸۸۵۷۵ - ۳۸۳۸۸۴۸۱ - ۳۸۳۸۸۲۶۱` came back reordered, with a fourth
+  number that is not on the page.
+
+That last one looked conclusive. The order it produced is **exactly** the reversal that
+`visual_order` applies when building training targets, which would mean the targets had
+taught the model to emit digit runs backwards and Tesseract's own RTL pass was reordering
+them a second time. It is not that. Matching lines by content across the 51 dev letters finds
+**62 multi-number lines and all 62 in identical order** — a systematic reversal would show up
+in every one of them. One line matching a predicted pattern is one line; reversing three
+items by chance is one in six.
+
+What stands is narrower and still matters: on that line the model reorders and invents a
+number. The service already declines to vouch for those particular digits — the digit reader
+returns confidence 0.268 and 0.000 for two of them under *either* model, and they are counted
+in «۵ عدد تأیید نشده». The brief's rule is doing its job: the number is shown and flagged,
+not asserted.
