@@ -70,7 +70,13 @@ class Settings(BaseSettings):
                     break
         data = self.tessdata_dir
         if not data:
-            p = _find_up("tessdata/fas.traineddata")
+            # Look for the model that will actually be used, and only then for the stock one.
+            # Searching for `fas.traineddata` alone was right while that was the default; now
+            # that it is `fas_custom`, a checkout carrying the fine-tune but not the stock
+            # model found no tessdata directory at all, fell back to the Tesseract install's,
+            # and failed there because the fine-tune is not in it — a default that cannot
+            # load, reported as a missing language rather than a missing directory.
+            p = _find_up(f"tessdata/{self.lang_fa}.traineddata") or _find_up("tessdata/fas.traineddata")
             data = str(p.parent) if p else None
         return cmd, data
 
