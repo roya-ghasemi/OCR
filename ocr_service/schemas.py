@@ -21,6 +21,21 @@ class LetterFields(BaseModel):
     contact_info: str | None = None
 
 
+class Validation(BaseModel):
+    """A value whose shape was checked, and the verdict.
+
+    Nothing here is ever repaired. A reader cannot tell a correctly-read address from a
+    damaged one — both are just text — so the verdict says which, and a human checks the
+    two that are doubtful instead of re-reading all nine.
+    """
+    kind: Literal["email", "phone", "date"]
+    value: str = Field(description="exactly as it was read; never normalised or corrected")
+    valid: bool
+    reason: str = Field(default="", description="why not, when it is not")
+    normalized: str | None = Field(default=None,
+                                   description="a comparable form, for a valid value only")
+
+
 class Cell(BaseModel):
     text: str
     bbox: list[int]
@@ -92,6 +107,10 @@ class OcrResponse(BaseModel):
         description="the page as the recogniser saw it (cropped, straightened, stamp removed), "
                     "as a data URL. Returned only when the request asks for it; boxes line up "
                     "with this image, not with the upload")
+    validations: list[Validation] = Field(
+        default_factory=list,
+        description="e-mail addresses, telephone numbers and dates found in the transcript, "
+                    "each with a verdict on its shape. A malformed value is reported, not fixed")
     prepared_scale: float | None = Field(
         default=None,
         description="multiply a bbox by this to reach pixel coordinates in `prepared_image`, "
