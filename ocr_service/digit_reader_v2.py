@@ -24,7 +24,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from .digit_cnn_data import CLASSES, G, PERSIAN, LATIN, REJECT, binarize, line_context, normalize_glyph, scalars
+from .digit_cnn_data import CLASSES, REJECT, binarize, line_context, normalize_glyph, scalars
 
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[1]
