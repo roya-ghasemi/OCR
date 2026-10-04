@@ -62,6 +62,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="ocr_train", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("step", choices=["fonts", "synth", "benchmark", "unicharset",
+                                     "segments",
                                      "lstmf", "train", "pack", "install", "eval", "all"])
     ap.add_argument("--n", type=int, default=6000, help="synthetic lines to render")
     ap.add_argument("--iters", type=int, default=None, help="max training iterations")
@@ -70,13 +71,21 @@ def main() -> int:
                     help="pack the most recent checkpoint, not the lowest-error one "
                          "(use after changing the training data)")
     ap.add_argument("--workers", type=int, default=12)
+    ap.add_argument("--segment", type=int, default=2000,
+                    help="iterations per segment; each one is packed and measured on the "
+                         "held-out lines, so a run's best model survives whatever follows")
+    ap.add_argument("--patience", type=int, default=3,
+                    help="stop after this many segments without a new best held-out error")
+    ap.add_argument("--from-scratch", action="store_true",
+                    help="start from the base weights, setting the previous run's "
+                         "checkpoints aside instead of resuming them")
     a = ap.parse_args()
 
     if a.step == "fonts":
         _fonts()
         return 0
 
-    from . import benchmark, lstmf, synth, train, unicharset
+    from . import benchmark, lstmf, segments, synth, train, unicharset
 
     steps = {
         "synth": lambda: synth.build(n=a.n, workers=a.workers),
@@ -84,6 +93,9 @@ def main() -> int:
         "unicharset": lambda: unicharset.build(),
         "lstmf": lambda: lstmf.build(workers=a.workers),
         "train": lambda: train.run(max_iterations=a.iters, learning_rate=a.lr),
+        "segments": lambda: segments.run(total=a.iters or 30000, segment=a.segment,
+                                         lr=a.lr, patience=a.patience,
+                                         from_scratch=a.from_scratch),
         "pack": lambda: train.pack(latest=a.latest),
         "install": lambda: train.install(),
         "eval": lambda: train.evaluate(),
