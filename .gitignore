@@ -4,9 +4,17 @@ venv312/
 
 # Model files & cache
 hf_cache/
-models/
 *.whl
 *.gguf
+
+# Model weights. The digit reader's CNN is 621 KB, is required at runtime, and cannot be
+# rebuilt from a checkout — training it needs torch (not a service dependency) and
+# models/digit_glyphs.npz, which is 14 MB of training data that stays out. The v1 SVM is
+# 120 MB and nothing loads it: digit_reader_v2 superseded it and only `_fonts` is still
+# imported from the v1 module.
+models/*
+!models/digit_cnn.npz
+!models/digit_cnn.json
 
 # Tesseract models. The stock ones (fas, eng, ara, osd) are redistributable downloads and
 # stay out. `fas_custom` does not exist anywhere else — it is the E30 fine-tune built by
