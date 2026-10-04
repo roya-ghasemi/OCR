@@ -54,3 +54,6 @@ fonts.conf
 
 # The 2.2 GB benchmark dataset, in either location. Data, not source.
 Persian-OCR-Double-Benchmark/
+
+# Cached transcripts. Derived, bounded, and keyed on the engine that produced them.
+.cache/

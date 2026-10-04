@@ -47,6 +47,11 @@ class Settings(BaseSettings):
     spellfix: bool = True                  # repair dot confusions against the Persian word list
     max_upload_mb: float = 25.0
 
+    # --- cache --------------------------------------------------------------------
+    cache: bool = True                     # reuse a transcript for a page already read
+    cache_dir: str | None = None           # None -> <repo>/.cache/ocr
+    cache_max_entries: int = 2000
+
     # --- service ------------------------------------------------------------------
     redis_url: str = "redis://127.0.0.1:6379/0"
     async_mode: bool = False               # POST /ocr returns a job_id instead of a result

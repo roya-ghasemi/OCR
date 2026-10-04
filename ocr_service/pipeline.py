@@ -13,12 +13,14 @@ import uuid
 from PIL import Image
 
 import logging
+from pathlib import Path
 
 from . import __version__
 from .config import Settings, settings as default_settings
 from .letter_fields import extract as extract_fields
 from . import letterhead as _letterhead
 from . import validate as _validate
+from .cache import ResultCache, key as cache_key
 
 log = logging.getLogger(__name__)
 from .schemas import (LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion,
@@ -67,15 +69,33 @@ class OcrPipeline:
                                        spellfix=self.cfg.spellfix, crop_page=self.cfg.crop_page,
                                        ink_separate=self.cfg.ink_separate,
                                        lang_fa=self.cfg.lang_fa)
+        self.cache = ResultCache(
+            self.cfg.cache_dir or (Path(__file__).resolve().parent.parent / ".cache" / "ocr"),
+            max_entries=self.cfg.cache_max_entries, enabled=self.cfg.cache)
         self._health: dict | None = None
 
     def health(self) -> dict:
         self._health = self.transcriber.health()
+        self._health["cache"] = self.cache.stats()
         return self._health
 
     def run_sync(self, image_bytes: bytes, doc_id: str | None = None,
                  want_prepared: bool = False) -> OcrResponse:
         doc_id = doc_id or uuid.uuid4().hex
+        # A cached transcript carries no prepared image — it is megabytes of base64 that only
+        # the viewer wants — so a request asking for one is read properly instead.
+        ck = None
+        if self.cache.enabled and not want_prepared:
+            try:
+                ck = cache_key(image_bytes, self.cfg)
+            except Exception:
+                ck = None
+            if ck:
+                hit = self.cache.get(ck)
+                if hit is not None:
+                    hit["doc_id"] = doc_id      # the result is shared; this request is not
+                    hit.setdefault("timing", {})["cached"] = True
+                    return OcrResponse(**hit)
         im = Image.open(io.BytesIO(image_bytes))
         tr = self.transcriber.transcribe(im)
         t = time.perf_counter()
@@ -133,7 +153,7 @@ class OcrPipeline:
             reasons.append(f"amount(s) with an incomplete group of three: {', '.join(broken)}")
 
         prepared_url, prepared_scale = _data_url(tr.prepared) if want_prepared else (None, None)
-        return OcrResponse(
+        res = OcrResponse(
             doc_id=doc_id, text=tr.text,
             lines=[LineOut(**L.__dict__) for L in tr.lines],
             numbers=[NumberOut(**n.__dict__) for n in tr.numbers],
@@ -146,6 +166,9 @@ class OcrPipeline:
             prep=tr.prep, timing=tr.timing,
             service={"version": __version__, "engine": "tesseract(fas,eng) + digit_cnn",
                      "tesseract": (self._health or {}).get("tesseract", {}).get("version")})
+        if ck:
+            self.cache.put(ck, res.model_dump(mode="json"))
+        return res
 
     def _letterhead(self, tr) -> dict:
         """Read the letterhead off the prepared page, never raising into the request.
