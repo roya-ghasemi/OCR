@@ -23,7 +23,6 @@ import hashlib
 import io
 import re
 import unicodedata
-from pathlib import Path
 
 from PIL import Image
 

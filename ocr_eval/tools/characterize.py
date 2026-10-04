@@ -1,7 +1,7 @@
 """Characterize the real-scan corpus: dimensions, DPI, colour, EXIF, quality proxies."""
-import hashlib, json, sys
+import hashlib, json
 from pathlib import Path
-from PIL import Image, ExifTags
+from PIL import Image
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,7 +68,6 @@ print(f"images={len(recs)} readable={len(ok)} errors={len(recs)-len(ok)}")
 def dist(key):
     v = sorted(r[key] for r in ok if r.get(key) is not None)
     if not v: return "n/a"
-    import statistics as st
     q = lambda p: v[min(len(v)-1, int(p*len(v)))]
     return f"min={v[0]} p10={q(.1)} p50={q(.5)} p90={q(.9)} max={v[-1]}"
 for k in ["width","height","megapixels","mean_lum","std_lum","p5_p95_spread","lap_var","max_channel_delta_mean","dark_pixel_frac","bytes"]:

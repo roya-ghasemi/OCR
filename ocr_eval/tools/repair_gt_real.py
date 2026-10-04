@@ -44,7 +44,6 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import sys
 import unicodedata
 from pathlib import Path
 
