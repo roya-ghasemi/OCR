@@ -144,16 +144,27 @@ def page_score(model: Path) -> dict | None:
     tessdata = config.ROOT / "tessdata"
     if not tessdata.is_dir():
         return None
-    shutil.copy2(model, tessdata / f"{config.LANG}.traineddata")
 
-    env = dict(os.environ, OCRS_TESSDATA_DIR="", OCRS_LANG_FA=config.LANG)
+    # Scored under a name of its own. Installing each candidate as `fas_custom` left
+    # whichever segment happened to be tested last sitting in the service's tessdata —
+    # after one run that was iteration 24,000, the model the run had just rejected, while
+    # the selected model was iteration 12,000. Anyone setting OCRS_LANG_FA=fas_custom would
+    # have been reading the loser, and nothing would have said so.
+    probe = tessdata / f"{config.LANG}_probe.traineddata"
+    shutil.copy2(model, probe)
     label = f"_seg_{model.stem}"
-    p = subprocess.run([sys.executable, str(config.ROOT / "ocr_eval" / "tools" / "bench_pages.py"),
-                        "--label", label],
-                       cwd=str(config.ROOT), env=env, capture_output=True, text=True,
-                       encoding="utf-8", errors="replace")
     out = config.ROOT / "ocr_eval" / "pages" / "runs" / f"{label}.json"
+    try:
+        env = dict(os.environ, OCRS_TESSDATA_DIR="", OCRS_LANG_FA=probe.stem)
+        p = subprocess.run([sys.executable,
+                            str(config.ROOT / "ocr_eval" / "tools" / "bench_pages.py"),
+                            "--label", label],
+                           cwd=str(config.ROOT), env=env, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+    finally:
+        probe.unlink(missing_ok=True)
     if p.returncode != 0 or not out.is_file():
+        out.unlink(missing_ok=True)
         return None
     data = json.loads(out.read_text(encoding="utf-8"))
     out.unlink(missing_ok=True)          # a per-segment scratch run, not a published result
@@ -274,7 +285,7 @@ def run(total: int = 30000, segment: int = 2000, lr: float | None = None,
             print("  lstmtraining reached the target error rate — stopping")
             break
         if worse_runs >= patience:
-            print(f"  held-out error has not improved for {patience} segments — "
+            print(f"  page error has not improved for {patience} segments — "
                   f"stopping before it diverges further")
             break
 
@@ -283,12 +294,18 @@ def run(total: int = 30000, segment: int = 2000, lr: float | None = None,
         print(f"\nbest held-out BCER {best[0]:.2f}% -> {train.OUT_TRAINEDDATA.name} "
               f"(from {best[1].name})")
     print(f"{len(rows)} segment(s) in {time.time() - t0:.0f}s; ledger at {LEDGER}")
-    return {"segments": rows, "best_bcer": best[0],
+    return {"segments": rows, "best_score": best[0],
             "best_model": str(best[1]) if best[1] else None}
 
 
 def best_from_ledger() -> tuple[float, Path] | None:
-    """The lowest held-out error any segment of any run reached, from the ledger alone."""
+    """The lowest mean page WER any segment of any run reached, from the ledger alone.
+
+    Segments recorded before the criterion was corrected carry no page scores. They are
+    skipped rather than compared on the held-out number, because the two are different
+    quantities on different scales and the whole point of the correction is that ranking by
+    the held-out one picks the wrong model.
+    """
     if not LEDGER.is_file():
         return None
     best = None
@@ -296,8 +313,9 @@ def best_from_ledger() -> tuple[float, Path] | None:
         if not line.strip():
             continue
         r = json.loads(line)
-        if r.get("bcer_held") is None:
+        score = (r.get("pages") or {}).get("mean_wer")
+        if score is None:
             continue
-        if best is None or r["bcer_held"] < best[0]:
-            best = (r["bcer_held"], Path(r["model"]))
+        if best is None or score < best[0]:
+            best = (score, Path(r["model"]))
     return best

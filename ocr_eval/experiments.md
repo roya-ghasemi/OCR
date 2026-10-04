@@ -1681,3 +1681,101 @@ Kashida handling is genuinely repaired by training rather than by rules: «شو�
 of reconstructed. Both photo pages improve by 3–5 pp WER. If the letter regression is ever
 closed, there is a shippable model here; the instrument that decides it is `bench_pages.py`,
 not the training loss.
+
+## E30 — 2026-10-04 — the corpus matched no real domain, and the instrument was wrong
+
+E29 ended with a fine-tune that read photographs better and the scanned letter worse, the
+longer it trained. E30 is the same pipeline with two things corrected, and it produces a
+model that is better than the shipped one on 51 real letters.
+
+### The corpus sat between three domains and matched none
+
+Measured per text line, on the page the recogniser is actually handed:
+
+| | line height | >240 | <40 | 60–200 |
+|---|---:|---:|---:|---:|
+| E29 degraded synthetic | 53 px | 0.539 | 0.115 | 0.086 |
+| the brief's letter (CamScanner) | **73 px** | **0.817** | 0.068 | 0.056 |
+| tech_prose (phone photo) | 26 px | 0.000 | 0.000 | **0.639** |
+| spring_prose (phone photo) | 31 px | 0.000 | 0.001 | **0.842** |
+
+Three domains. The photos contain **no** saturated paper and **no** solid ink at all — a
+camera on automatic exposure never reaches either end of the range. The letter is the
+opposite: paper blown to white, thin ink, almost nothing between. The corpus sat in the
+middle, and its resample capped at 58 px so it could not reach the letter's line height at
+all. That is why E29's augmentation moved the letter 1.7 pp the *wrong* way: it pushed the
+corpus toward midtones, away from the one domain the product exists for.
+
+A regime in `degrade.py` is now a **device**, fixing tone and resolution together because in
+reality those are not independent. `bright_scan` (flat-field correction, hard white point,
+unsharp) reproduces the letter's histogram; `photo_tone` reproduces the photos'. The scan
+regime takes half the corpus.
+
+Flat-field correction is the step that matters and the one a contrast curve cannot replace:
+without it the uneven lighting survives and holds a fifth of the background below
+saturation.
+
+### The selection criterion was measuring the wrong thing
+
+Between iteration 4,000 and 10,000 the two instruments disagreed flatly:
+
+| | 4,000 | 10,000 |
+|---|---:|---:|
+| held-out BCER (benchmark rows) | 35.78% | 38.36% |
+| letter WER | 20.11% | **16.67%** |
+| tech WER | 23.44% | **7.81%** |
+| spring WER | 32.00% | **16.00%** |
+
+Four fifths of those benchmark rows were trained on, so `lstmeval` on the remaining fifth
+asks whether the model generalises across rows of one corpus. That is not the question.
+
+This was not academic. Selecting on the held-out number picked the iteration-4,000 model —
+worse on all three pages — and the patience guard **stopped a run that was still improving
+on every page**. `segments.py` now scores each segment through the whole service on the real
+pages and selects on mean page WER.
+
+Training error was worthless throughout, as expected: at iteration 10,000 it read 7.75%
+against a held-out 38.36%, a thirty-point gap.
+
+### Measured — 51 real letters, dev split
+
+Both rows measured in the same session on the same machine, because the recorded E28 numbers
+predate the move to `D:`. They reproduce it (13.7 / 83.7 / 77.1), which is itself worth
+knowing.
+
+| | `fas` | `fas_custom` (E30) | |
+|---|---:|---:|---|
+| coverage CER | 13.66% | **12.86%** | −0.80 |
+| atom recall | 83.74% | **86.07%** | +2.33 |
+| whole numbers | 77.13% | **78.79%** | +1.66 |
+| len ratio | 94.40% | 92.70% | −1.70 |
+
+Per field, every one improves or holds except `sender` (+0.29 pp, already the worst field at
+53% — the letterhead, D67). The lower len ratio says the model returns slightly *less* text;
+with CER down, it is being more conservative, which is the direction the brief asks for, but
+it is a real difference and not a rounding artefact.
+
+### Measured — three pages
+
+| | `fas` | E30 | |
+|---|---:|---:|---|
+| letter CER / WER | **10.12% / 12.07%** | 12.06% / 16.09% | **worse** |
+| tech CER / WER | 3.90% / 13.28% | **3.00% / 7.81%** | better |
+| spring CER / WER | 7.37% / 22.15% | **5.37% / 12.62%** | better |
+| junk lines | 0 / 0 / 0 | 0 / 0 / 0 | unchanged |
+
+The single letter page still regresses, and the 51-letter corpus — the same kind of document,
+fifty times the sample — says the opposite. Fifty-one documents outweigh one, but the
+disagreement is real and is not explained here.
+
+### Two traps this run set and sprang
+
+`page_score` installed each candidate as `fas_custom` to score it, leaving **whichever segment
+was tested last** in the service's tessdata. After the run that was iteration 24,000 — the
+model the run had just rejected — while the selected model was iteration 12,000. Anyone
+setting `OCRS_LANG_FA=fas_custom` would have read the loser with nothing to say so. It scores
+under a private `_probe` name now and removes it afterwards.
+
+And the final line of a run printed `best held-out BCER 0.12%` for a model whose page WER is
+12.17%: the old label with the old scale on a number that was now a fraction. Wrong twice, in
+the one line somebody would quote.
