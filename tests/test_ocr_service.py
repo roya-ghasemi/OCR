@@ -205,3 +205,22 @@ def test_the_persian_model_the_service_defaults_to():
     assert Settings().lang_fa == "fas_custom"
     # and the recogniser's own default must not disagree with the setting that feeds it
     assert inspect.signature(Transcriber.__init__).parameters["lang_fa"].default == "fas_custom"
+
+
+def test_the_default_model_is_findable_in_a_checkout():
+    """The default must be a model the checkout actually has.
+
+    Two ways this broke in one day. `tessdata/` was ignored wholesale, so a fresh clone
+    defaulted to a fine-tune it did not carry; and `resolved_tesseract` located the directory
+    by searching for `fas.traineddata`, which stopped being the default — a checkout with the
+    fine-tune and not the stock model resolved to no directory at all and failed in the
+    Tesseract install, reported as a missing language rather than a missing directory.
+    """
+    import os
+
+    from ocr_service.config import Settings
+    s = Settings(tessdata_dir=None)
+    _, data = s.resolved_tesseract()
+    assert data, "no tessdata directory resolved"
+    assert os.path.isfile(os.path.join(data, f"{s.lang_fa}.traineddata")), (
+        f"the default model {s.lang_fa!r} is not in the resolved tessdata directory {data!r}")
