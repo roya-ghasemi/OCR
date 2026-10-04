@@ -101,6 +101,30 @@ The fine-tune is built by `ocr_train/` (see its README). Rebuild and reinstall w
 `python -m ocr_train segments` then `install`; `train/work/segments.jsonl` is the ledger of
 every segment and its measured page error.
 
+## 2c. The transcript cache
+
+A page already read is served from `.cache/ocr` instead of being read again — about 4 s of
+CPU down to 10 ms. `/health` reports `cache` with its hit and miss counts.
+
+```powershell
+$env:OCRS_CACHE = "0"          # off
+$env:OCRS_CACHE_DIR = "D:\scratch\ocr-cache"
+$env:OCRS_CACHE_MAX_ENTRIES = "500"
+```
+
+**The key is not the image.** It folds in the model hashes, the service version and every
+setting that changes the output (`cache.KEYED_SETTINGS`), because a transcript is a function
+of the image *and* of what read it. Keyed on the image alone, the first thing that happens
+after a model change is that the service serves a transcript the current engine would never
+produce — carrying the new model's hash, because `provenance()` is stamped at response time.
+
+So **changing a model or a setting needs no cache clearing**: the old entries stop being
+looked up and age out, and rolling the change back finds its work still there. Deleting
+`.cache/` is always safe.
+
+A request asking for `prepared=true` is read properly rather than served from here: the
+prepared image is megabytes of base64 that only the viewer wants, so it is not stored.
+
 ## 3. Measure
 
 ```powershell
