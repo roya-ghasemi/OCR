@@ -116,9 +116,14 @@ def test_a_junk_piece_is_dropped_before_its_row_is_joined():
 
 
 def test_invented_harakat_are_stripped_but_a_real_single_mark_stays():
-    assert Transcriber._clean_word("بِمُدیرِیَت", latin=False) == "بمدیریت"
-    assert Transcriber._clean_word("احتراماً", latin=False) == "احتراماً"
-    assert Transcriber._clean_word("بهارِ", latin=False) == "بهارِ"
+    # `_clean_word` became language-aware when Arabic reading was added (E34): ي/ك folding
+    # and harakat stripping are right for Persian and destructive for Arabic. The Persian
+    # path must be unchanged, which is what this asserts.
+    fa = Transcriber.__new__(Transcriber)
+    fa.arabic_script = False
+    assert fa._clean_word("بِمُدیرِیَت", latin=False) == "بمدیریت"
+    assert fa._clean_word("احتراماً", latin=False) == "احتراماً"
+    assert fa._clean_word("بهارِ", latin=False) == "بهارِ"
 
 
 def test_a_lone_far_character_at_a_line_end_is_trimmed_but_a_real_short_word_is_kept():
