@@ -431,6 +431,11 @@ class Transcriber:
         # (E29) ships as `fas_custom` and is selected here, so switching models is a
         # setting and not an edit.
         self.lang_fa = lang_fa
+        # Both normalisations below are right for Persian and destructive for Arabic: ي and
+        # ك are the correct letters there, not misspellings of ی and ک, and a vocalised page
+        # carries harakat on nearly every word rather than inventing them. Reading Arabic
+        # with the Persian folding on produces «الولمه» for «الْعِلْمِ».
+        self.arabic_script = lang_fa.startswith("ara")
         self.deskew_min_deg = deskew_min_deg
         self.min_line_conf = min_line_conf
         self.workers = workers
@@ -848,10 +853,9 @@ class Transcriber:
                           prep={**(prep.as_dict() if prep else {}),
                                 **(ink_info.as_dict() if ink_info else {})})
 
-    @staticmethod
-    def _clean_word(w: str, latin: bool) -> str:
+    def _clean_word(self, w: str, latin: bool) -> str:
         w = _BIDI.sub("", w)
-        if not latin:
+        if not latin and not self.arabic_script:
             w = w.replace("ي", "ی").replace("ك", "ک")
             # Tesseract invents harakat on bold letterhead-style text («بِمُدیرِیَت»);
             # printed Persian carries at most one per word («احتراماً», «بهارِ»).

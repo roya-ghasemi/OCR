@@ -20,6 +20,7 @@ from .config import Settings, settings as default_settings
 from .letter_fields import extract as extract_fields
 from . import letterhead as _letterhead
 from . import legible as _legible
+from . import script_id as _script
 from . import validate as _validate
 from .cache import ResultCache, key as cache_key
 
@@ -55,6 +56,19 @@ def _data_url(im) -> tuple[str | None, float | None]:
             round(scale, 6))
 
 
+def _mean_conf(tr) -> float:
+    """Mean line confidence, weighted by how much text each line carries.
+
+    Unweighted, a page of one correct word outscores a page of forty good lines and one bad
+    one, which is the opposite of what is being asked.
+    """
+    lines = getattr(tr, "lines", None) or []
+    total = sum(len(L.text) for L in lines)
+    if not total:
+        return 0.0
+    return sum(L.confidence * len(L.text) for L in lines) / total
+
+
 REVIEW_LINE_CONF = 0.6      # a line below this mean confidence is worth a human look
 REVIEW_NUMBER_CONF = 0.7    # a number below this (or not confirmed by the digit reader) likewise
 REVIEW_MIN_GLYPH_PX = 20.0  # below this the dots of ب/ی/پ/ن and ح/خ/ج are not in the image at all
@@ -73,6 +87,7 @@ class OcrPipeline:
         self.cache = ResultCache(
             self.cfg.cache_dir or (Path(__file__).resolve().parent.parent / ".cache" / "ocr"),
             max_entries=self.cfg.cache_max_entries, enabled=self.cfg.cache)
+        self._arabic = None
         self._health: dict | None = None
 
     def health(self) -> dict:
@@ -99,6 +114,16 @@ class OcrPipeline:
                     return OcrResponse(**hit)
         im = Image.open(io.BytesIO(image_bytes))
         tr = self.transcriber.transcribe(im)
+
+        # An Arabic page read by the Persian model comes back damaged: ي and ك folded to ی
+        # and ک, harakat stripped, «الْعِلْمِ» as «الیلم». When the transcript looks Arabic,
+        # read it again with the Arabic model and keep whichever the recogniser was surer
+        # of. The gate decides only whether to spend the pass; the comparison decides the
+        # answer, so a false positive costs a second and nothing else.
+        if self.cfg.lang_ar and _script.looks_arabic(tr.text):
+            alt = self._arabic_read(image_bytes)
+            if alt is not None and _mean_conf(alt) > _mean_conf(tr):
+                tr = alt
         t = time.perf_counter()
         fields, is_letter = (extract_fields(tr.lines, tr.image_size[1]) if self.cfg.letter_fields
                              else ({}, False))
@@ -185,6 +210,23 @@ class OcrPipeline:
         if ck:
             self.cache.put(ck, res.model_dump(mode="json"))
         return res
+
+    def _arabic_read(self, image_bytes: bytes):
+        """The same page through the Arabic model, or None if it cannot be had."""
+        try:
+            if self._arabic is None:
+                cmd, data = self.cfg.resolved_tesseract()
+                self._arabic = Transcriber(
+                    cmd, data, self.cfg.resolved_digit_model(), layout_psms=self.cfg.psms(),
+                    deskew_min_deg=self.cfg.deskew_min_deg, min_line_conf=self.cfg.min_line_conf,
+                    workers=self.cfg.workers, number_min_prob=self.cfg.number_min_prob,
+                    spellfix=False,          # the Persian lexicon has no opinion about Arabic
+                    crop_page=self.cfg.crop_page, ink_separate=self.cfg.ink_separate,
+                    lang_fa=self.cfg.lang_ar)
+            return self._arabic.transcribe(Image.open(io.BytesIO(image_bytes)))
+        except Exception:
+            log.exception("arabic re-read failed")
+            return None
 
     def _letterhead(self, tr) -> dict:
         """Read the letterhead off the prepared page, never raising into the request.

@@ -34,7 +34,8 @@ class Settings(BaseSettings):
     # --- recognition ------------------------------------------------------------
     tesseract_cmd: str | None = None       # None -> UB-Mannheim install, then PATH
     tessdata_dir: str | None = None        # None -> nearest <repo>/tessdata holding fas.traineddata
-    lang_fa: str = "fas_custom"            # the E30 fine-tune; "fas" is the stock model (E30)
+    lang_fa: str = "fas_custom"
+    lang_ar: str = "ara"                   # re-read a page that looks Arabic; "" disables it            # the E30 fine-tune; "fas" is the stock model (E30)
     digit_model: str | None = None         # None -> nearest <repo>/models/digit_cnn.npz
     layout_psms: str = "3,4,6"             # Tesseract layout passes whose lines compete (E19)
     crop_page: bool = True                 # cut the sheet out of the photo before reading (E26)
