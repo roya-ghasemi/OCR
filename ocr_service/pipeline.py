@@ -19,6 +19,7 @@ from . import __version__
 from .config import Settings, settings as default_settings
 from .letter_fields import extract as extract_fields
 from . import letterhead as _letterhead
+from . import legible as _legible
 from . import validate as _validate
 from .cache import ResultCache, key as cache_key
 
@@ -103,8 +104,22 @@ class OcrPipeline:
                              else ({}, False))
         tr.timing["fields_s"] = round(time.perf_counter() - t, 3)
 
+        # Is this a transcript, or the shapes the strokes resembled? Handwriting and
+        # nastaliq do not make the recogniser fail, they make it answer — «ee aa ay» for a
+        # page of calligraphy. Withholding that is the brief's first rule; printing it is
+        # the one failure a reader cannot detect for themselves.
+        verdict = _legible.judge(tr.text)
+        if not verdict.legible:
+            for L in tr.lines:
+                tr.unread.append({"kind": "illegible", "bbox": list(L.bbox),
+                                  "read_as": L.text, "confidence": L.confidence})
+            tr.lines, tr.text = [], ""
+
         reasons = []
-        if not tr.lines:
+        if not verdict.legible:
+            reasons.append(f"this page could not be read — {verdict.reason}. "
+                           f"What the recogniser offered is in `unread`, not in `text`")
+        elif not tr.lines:
             reasons.append("no text found")
         # The commonest cause of Persian typos is not the reader: below ~20 px the dots
         # that tell ب/ی/پ/ن and ح/خ/ج apart are not in the image, so no amount of
@@ -163,6 +178,7 @@ class OcrPipeline:
             validations=[Validation(**f.as_dict()) for f in checks],
             skew_deg=tr.skew_deg, glyph_px=tr.glyph_px, image_size=list(tr.image_size),
             prepared_image=prepared_url, prepared_scale=prepared_scale,
+            legibility=verdict.as_dict(),
             prep=tr.prep, timing=tr.timing,
             service={"version": __version__, "engine": "tesseract(fas,eng) + digit_cnn",
                      "tesseract": (self._health or {}).get("tesseract", {}).get("version")})

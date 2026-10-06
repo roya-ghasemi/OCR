@@ -111,6 +111,11 @@ class OcrResponse(BaseModel):
         default_factory=list,
         description="e-mail addresses, telephone numbers and dates found in the transcript, "
                     "each with a verdict on its shape. A malformed value is reported, not fixed")
+    legibility: dict = Field(
+        default_factory=dict,
+        description="whether the transcript is Persian text or the shapes the strokes "
+                    "resembled: legible, fa_fraction, chars, latin_words, reason. When "
+                    "`legible` is false, `text` is empty and the readings are in `unread`")
     prepared_scale: float | None = Field(
         default=None,
         description="multiply a bbox by this to reach pixel coordinates in `prepared_image`, "
