@@ -206,12 +206,10 @@ def _pack_and_measure(tag: str) -> tuple[Path, float | None, float | None]:
     if p.returncode != 0 or not out.is_file():
         raise RuntimeError(f"packing {tag} failed:\n{p.stdout}\n{p.stderr}")
 
-    e = subprocess.run([config.tool("lstmeval"), "--model", str(out),
-                        "--traineddata", str(STARTER),
-                        "--eval_listfile", str(config.WORK_DIR / "eval.txt")],
-                       capture_output=True, text=True, encoding="utf-8", errors="replace")
-    m = _EVAL.search((e.stdout or "") + (e.stderr or ""))
-    return out, (float(m.group(1)) if m else None), (float(m.group(2)) if m else None)
+    # The combined held-out list is not measured here any more: `run` measures the printed
+    # and handwritten halves separately, and a third pass over the union of the two costs a
+    # couple of minutes a segment to produce a number that hides exactly what it averages.
+    return out, None, None
 
 
 def run(total: int = 30000, segment: int = 2000, lr: float | None = None,

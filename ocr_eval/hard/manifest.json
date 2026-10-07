@@ -1,5 +1,5 @@
 {
- "note": "Pages the service could not read, kept as the regression set for refusal. For the handwriting and calligraphy the correct behaviour is NOT a transcript -- it is withholding one and reporting the regions. `expect.legible: false` means the page must come back with empty `text`; a transcript appearing here is the failure.",
+ "note": "Pages the service could not read, kept as the regression set for refusal. For the handwriting and calligraphy the correct behaviour is NOT a transcript -- it is withholding one and reporting the regions. `expect.legible: false` means the page must come back with empty `text`; a transcript appearing here is the failure. NOTE (E37): `expect.legible: false` encodes what the service could do *before* handwriting training. If a run reports LEAKED A TRANSCRIPT for hand_poem, hand_blue or the nastaliq pages, read it before treating it as a regression — a real transcript there is the goal, and the expectation is what needs updating.",
  "pages": [
   {
    "id": "arabic_lisan",
