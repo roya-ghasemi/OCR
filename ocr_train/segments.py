@@ -179,6 +179,18 @@ def page_score(model: Path) -> dict | None:
             "junk": sum(v["junk"] for v in pages.values())}
 
 
+def _eval_list(model: Path, list_name: str) -> float | None:
+    """BCER of `model` on one held-out list, or None if it could not be measured."""
+    lst = config.WORK_DIR / list_name
+    if not lst.is_file() or not lst.read_text(encoding="utf-8").strip():
+        return None
+    p = subprocess.run([config.tool("lstmeval"), "--model", str(model),
+                        "--traineddata", str(STARTER), "--eval_listfile", str(lst)],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    m = _EVAL.search((p.stdout or "") + (p.stderr or ""))
+    return float(m.group(1)) if m else None
+
+
 def _pack_and_measure(tag: str) -> tuple[Path, float | None, float | None]:
     """Pack the current state to its own file and measure it on the held-out lines."""
     SEG_DIR.mkdir(parents=True, exist_ok=True)
@@ -237,7 +249,7 @@ def run(total: int = 30000, segment: int = 2000, lr: float | None = None,
     print(f"training on {n_train} lines, held-out {n_eval}; "
           f"{total} iterations in segments of {segment}", flush=True)
     print(f"{'iter':>8} {'letter WER':>11} {'tech WER':>9} {'spring WER':>11} "
-          f"{'mean WER':>9} {'BCER held':>10} {'best':>5}", flush=True)
+          f"{'mean WER':>9} {'print BCER':>10} {'hand BCER':>10} {'best':>5}", flush=True)
 
     rows: list[dict] = []
     best = (None, None)          # (bcer, path)
@@ -265,7 +277,10 @@ def run(total: int = 30000, segment: int = 2000, lr: float | None = None,
             worse_runs = 0
         else:
             worse_runs += 1
+        bcer_print = _eval_list(path, "eval_print.txt")
+        bcer_hand = _eval_list(path, "eval_hand.txt")
         rows.append({"iteration": here, "bcer_held": bcer, "bwer_held": bwer,
+                     "bcer_print": bcer_print, "bcer_hand": bcer_hand,
                      "pages": pg, "selected_on": "mean_wer" if pg else "bcer_held",
                      "model": str(path), "best": is_best,
                      "elapsed_s": round(time.time() - t0)})
@@ -275,10 +290,12 @@ def run(total: int = 30000, segment: int = 2000, lr: float | None = None,
         def _w(pid: str) -> str:
             v = (pg or {}).get("pages", {}).get(pid)
             return f"{v['wer'] * 100:8.2f}%" if v else f"{'-':>9}"
+        def _p(v):
+            return f"{v:8.2f}%" if v is not None else f"{'-':>9}"
         print(f"{here:>8} {_w('letter_sabzgostar'):>11} {_w('tech_prose'):>9} "
               f"{_w('spring_prose'):>11} "
               f"{(f'{score * 100:8.2f}%' if pg and score is not None else '        -'):>9} "
-              f"{(f'{bcer:9.2f}%' if bcer is not None else '        -'):>10} "
+              f"{_p(bcer_print):>10} {_p(bcer_hand):>10} "
               f"{'<==' if is_best else '':>5}", flush=True)
 
         if "target error rate" in log.lower():

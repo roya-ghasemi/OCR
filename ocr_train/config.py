@@ -17,6 +17,7 @@ TRAIN = ROOT / "train"
 BASE_DIR = TRAIN / "base"          # the float model we fine-tune from, unpacked
 SYNTH_DIR = TRAIN / "synth"        # line images rendered from the project's fonts
 REAL_DIR = TRAIN / "real"          # line images carved out of the benchmark
+HAND_DIR = TRAIN / "hand"          # line images cut out of the handwriting split
 LSTMF_DIR = TRAIN / "lstmf"        # Tesseract's own training format
 WORK_DIR = TRAIN / "work"          # checkpoints
 OUT_DIR = TRAIN / "out"            # fas_custom.traineddata

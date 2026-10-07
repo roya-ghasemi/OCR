@@ -62,7 +62,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(prog="ocr_train", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("step", choices=["fonts", "synth", "benchmark", "unicharset",
-                                     "segments",
+                                     "segments", "handwriting",
                                      "lstmf", "train", "pack", "install", "eval", "all"])
     ap.add_argument("--n", type=int, default=6000, help="synthetic lines to render")
     ap.add_argument("--iters", type=int, default=None, help="max training iterations")
@@ -85,11 +85,12 @@ def main() -> int:
         _fonts()
         return 0
 
-    from . import benchmark, lstmf, segments, synth, train, unicharset
+    from . import benchmark, handwriting, lstmf, segments, synth, train, unicharset
 
     steps = {
         "synth": lambda: synth.build(n=a.n, workers=a.workers),
         "benchmark": lambda: benchmark.build(),
+        "handwriting": lambda: handwriting.build(),
         "unicharset": lambda: unicharset.build(),
         "lstmf": lambda: lstmf.build(workers=a.workers),
         "train": lambda: train.run(max_iterations=a.iters, learning_rate=a.lr),
@@ -100,7 +101,8 @@ def main() -> int:
         "install": lambda: train.install(),
         "eval": lambda: train.evaluate(),
     }
-    order = ["synth", "benchmark", "unicharset", "lstmf", "train", "pack", "install", "eval"]
+    order = ["synth", "benchmark", "handwriting", "unicharset", "lstmf", "train",
+             "pack", "install", "eval"]
     for name in (order if a.step == "all" else [a.step]):
         print(f"\n=== {name} ===", flush=True)
         steps[name]()

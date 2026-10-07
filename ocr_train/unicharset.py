@@ -39,7 +39,9 @@ def _run(cmd: list[str], what: str) -> None:
 
 
 def gt_files() -> list[Path]:
-    return sorted(config.REAL_DIR.glob("*.gt.txt")) + sorted(config.SYNTH_DIR.glob("*.gt.txt"))
+    return (sorted(config.REAL_DIR.glob("*.gt.txt"))
+            + sorted(config.SYNTH_DIR.glob("*.gt.txt"))
+            + sorted(config.HAND_DIR.glob("*.gt.txt")))
 
 
 def build() -> Path:

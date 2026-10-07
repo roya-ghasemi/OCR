@@ -141,7 +141,9 @@ def build(workers: int = 12) -> dict:
     """
     _stage_starter()
     if True:
-        images = sorted(config.REAL_DIR.glob("*.png")) + sorted(config.SYNTH_DIR.glob("*.png"))
+        images = (sorted(config.REAL_DIR.glob("*.png"))
+                  + sorted(config.SYNTH_DIR.glob("*.png"))
+                  + sorted(config.HAND_DIR.glob("*.png")))
         images = [p for p in images if p.with_suffix(".gt.txt").is_file()]
         if not images:
             raise RuntimeError("no image/ground-truth pairs found")
@@ -156,8 +158,11 @@ def build(workers: int = 12) -> dict:
                 if i % 1000 == 0:
                     print(f"  {i}/{len(images)} ({failed} empty)", flush=True)
 
-        train = [p for p in made if "bench_eval" not in p.name]
-        held = [p for p in made if "bench_eval" in p.name]
+        # Held out: the benchmark's printed fifth and the handwriting fifth, both chosen by
+        # content hash so a line lands on the same side on every machine and every re-run.
+        held_tags = ("bench_eval", "hand_eval")
+        train = [p for p in made if not any(h in p.name for h in held_tags)]
+        held = [p for p in made if any(h in p.name for h in held_tags)]
         config.WORK_DIR.mkdir(parents=True, exist_ok=True)
         # newline="\n" is load-bearing on Windows. Python's default translates "\n" to
         # "\r\n", every path in the list then ends with a carriage return, and lstmtraining
@@ -165,9 +170,19 @@ def build(workers: int = 12) -> dict:
         # *looks* correct in a terminal, because the \r just moves the cursor back.
         _write_list(config.WORK_DIR / "train.txt", train)
         _write_list(config.WORK_DIR / "eval.txt", held)
+        # ...and the two halves of the held-out set separately. One number over both would
+        # hide the trade this experiment exists to measure: handwriting can only be learned
+        # at some cost to print, and a single average lets a model that has forgotten print
+        # look like a model that has learned handwriting.
+        held_print = [p for p in held if "bench_eval" in p.name]
+        held_hand = [p for p in held if "hand_eval" in p.name]
+        _write_list(config.WORK_DIR / "eval_print.txt", held_print)
+        _write_list(config.WORK_DIR / "eval_hand.txt", held_hand)
 
         stats = {"pairs": len(images), "lstmf": len(made), "empty": failed,
-                 "train": len(train), "eval": len(held)}
+                 "train": len(train), "eval": len(held),
+                 "eval_print": len(held_print), "eval_hand": len(held_hand)}
         print(f"lstmf: {len(made)} of {len(images)} pairs "
               f"({len(train)} train / {len(held)} held out), {failed} empty")
+        print(f"  held out: {len(held_print)} printed, {len(held_hand)} handwritten")
         return stats
