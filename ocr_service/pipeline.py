@@ -27,7 +27,7 @@ from .cache import ResultCache, key as cache_key
 log = logging.getLogger(__name__)
 from .schemas import (LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion,
                       Validation)
-from .transcribe import Transcriber
+from .transcribe import Transcriber, is_line_crop as _is_line_crop
 
 PREPARED_MAX_SIDE = 1600
 
@@ -113,7 +113,10 @@ class OcrPipeline:
                     hit.setdefault("timing", {})["cached"] = True
                     return OcrResponse(**hit)
         im = Image.open(io.BytesIO(image_bytes))
-        tr = self.transcriber.transcribe(im)
+        # A cropped line goes down its own route: native size, one single-line read, none of
+        # the page machinery. See `Transcriber.transcribe_line_crop` and D82.
+        tr = (self.transcriber.transcribe_line_crop(im) if _is_line_crop(im)
+              else self.transcriber.transcribe(im))
 
         # An Arabic page read by the Persian model comes back damaged: ي and ك folded to ی
         # and ک, harakat stripped, «الْعِلْمِ» as «الیلم». When the transcript looks Arabic,

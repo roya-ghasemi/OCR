@@ -352,3 +352,31 @@ def test_the_persian_comma_is_put_back_but_quotations_and_numbers_are_not_touche
     assert run(["«زندگی,", "است.»"]) == "«زندگی، است.»"               # an open quotation
     assert run(["ردیف", "۰", "نام"], cells=3) == "ردیف ۰ نام"         # a table cell
     assert run(["۰", "نام"]) == "۰ نام"                               # nothing to its left
+
+
+def test_a_line_crop_is_told_from_a_page():
+    """Both bounds matter: a wide banner scan is not a line crop, and a tall narrow column
+    is not one either."""
+    from PIL import Image
+
+    from ocr_service.transcribe import is_line_crop
+    assert is_line_crop(Image.new("RGB", (640, 48)))        # the benchmark line shape
+    assert is_line_crop(Image.new("RGB", (1200, 90)))
+    assert not is_line_crop(Image.new("RGB", (2192, 2996)))  # the brief's letter
+    assert not is_line_crop(Image.new("RGB", (1600, 900)))   # a wide page is still a page
+    assert not is_line_crop(Image.new("RGB", (3000, 300)))   # wide, but far too tall
+    assert not is_line_crop(Image.new("RGB", (100, 48)))     # not wide enough
+
+
+def test_the_line_route_does_not_pad_the_crop():
+    """The page path frames a line it cut out, which is right for a tight crop and wrong for
+    a strip that already has its own margin: on a line whose text is 9 px tall inside 48,
+    the extra 30 px border leaves too little of the frame for psm 7 and it returns nothing.
+    Pinned by reading the source, because the symptom is an empty transcript that looks like
+    an unreadable image."""
+    import inspect
+
+    from ocr_service.transcribe import Transcriber
+    src = inspect.getsource(Transcriber.transcribe_line_crop)
+    assert "self._read_line(" not in src, "the line route must not call the padding helper"
+    assert "ImageOps.expand" not in src

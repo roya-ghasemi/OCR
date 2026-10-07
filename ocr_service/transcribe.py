@@ -190,6 +190,19 @@ def flatten(im: Image.Image, scale: float = 1.0, thr: int = 200, radius: int = 4
     return Image.fromarray(np.where(a / np.maximum(bg, 1) * 255 < thr, 0, 255).astype(np.uint8))
 
 
+# A crop that is one line of text rather than a page: far wider than it is tall, and short
+# in absolute terms. Both bounds are needed — a wide banner scan is not a line crop, and a
+# tall narrow column is not one either.
+LINE_CROP_RATIO = 6.0
+LINE_CROP_MAX_H = 200
+
+
+def is_line_crop(im: Image.Image) -> bool:
+    """Is this image one cropped text line rather than a page?"""
+    w, h = im.size
+    return h > 0 and h <= LINE_CROP_MAX_H and (w / h) >= LINE_CROP_RATIO
+
+
 def working_scale(im: Image.Image, glyph_h: float = 0.0) -> float:
     """Tesseract reads best with glyphs ~30-40 px tall: upsample phone photos and small
     screenshots (Lanczos, in `flatten`), cap huge scans. `glyph_h` is the text height
@@ -796,6 +809,45 @@ class Transcriber:
                 L.words[i] = Word(pre + core.replace(",", "،") + suf, 101.0 + min(r.mean_prob for r in rs), w.box)
 
     # -- main ---------------------------------------------------------------------------
+    def transcribe_line_crop(self, im: Image.Image) -> Transcript:
+        """One cropped line, read as one line at the size it arrived.
+
+        A deliberate bypass of the page pipeline, not a variant of it. Everything that path
+        does is for a page — cut the sheet out of the frame, straighten it, find the lines,
+        read each layout mode and pick between them — and a 640x48 strip has no frame, no
+        skew worth measuring and exactly one line. Running it anyway cost measurable
+        accuracy (D82): `working_scale` upsampled these 2.5x and 3.3x on glyph heights of 12
+        and 9 px, and Tesseract fed the upsampled image at psm 7 returns **nothing at all**.
+        The fine-tune was trained on degraded lines at native scale.
+
+        So: native size, no crop, no deskew, one `_read_line`. That is the same call the
+        page path uses on a line it has already found, and it is what reads these correctly.
+        """
+        t0 = time.perf_counter()
+        im = ImageOps.exif_transpose(im).convert("RGB")
+        # Read bare, **not** through `_read_line`. That helper pads a line with a 30 px white
+        # border, which is right for a tight crop cut out of a page and wrong here: this
+        # image is already a strip with its own margin, and on a line whose text is 9 px tall
+        # inside 48 the extra border leaves the text too small a fraction of the frame for
+        # psm 7 to find. Measured — bare reads it correctly, framed returns nothing at all.
+        words = [Word(r["text"], r["conf"], r["box"])
+                 for r in self._run(im, "7", self.lang_fa) if r["text"].strip()]
+        if not words:
+            # psm 7 returns nothing for some clean lines that the raw-line mode reads.
+            words = [Word(r["text"], r["conf"], r["box"])
+                     for r in self._run(im, "13", self.lang_fa) if r["text"].strip()]
+        # `_assemble` does the cleaning and the spell-fix, keyed off the line's source, so
+        # the words go in raw exactly as they do on the page path.
+        line = Line(words, (0, 0, im.width, im.height), "psm7")
+        self._trim_edges(line)
+        out_lines, numbers, unread = self._assemble([line], 1.0)
+        return Transcript(text=self._join(out_lines), lines=out_lines, numbers=numbers,
+                          skew_deg=0.0, image_size=im.size,
+                          glyph_px=round(measure_glyph_height(im), 1),
+                          timing={"total_s": round(time.perf_counter() - t0, 3),
+                                  "route": "line_crop"},
+                          unread=unread, prepared=im, prep={"line_crop": True})
+
     def transcribe(self, im: Image.Image) -> Transcript:
         t0 = time.perf_counter()
         timing: dict[str, float] = {}
