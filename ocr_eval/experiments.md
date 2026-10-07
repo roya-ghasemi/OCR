@@ -1825,3 +1825,78 @@ number. The service already declines to vouch for those particular digits — th
 returns confidence 0.268 and 0.000 for two of them under *either* model, and they are counted
 in «۵ عدد تأیید نشده». The brief's rule is doing its job: the number is shown and flagged,
 not asserted.
+
+## E37 — 2026-10-07 — one model cannot hold print and handwriting at once
+
+The handwriting split was carved into line pairs and mixed with the existing corpus, as
+asked. The extraction works; the training does not, and the measurement is unambiguous
+enough to stop rather than tune.
+
+### The corpus
+
+10,556 line pairs from 628 of 6,669 pages. The split is **page** images with labels running
+to 94 lines, so lines had to be cut and matched, and a page is used only when its ink rows
+and label lines agree in number exactly. That refuses 90% of the split on purpose: a form's
+label lists cell contents — «ردیف», «فروردین», «۱», «قرآن», forty-three across four visible
+rows — and pairing those produces image/text pairs that are confidently wrong. A wrong pair
+is not ignored by training, it is learned.
+
+One failure got past the count test and was caught by eye in a sample of six: a dotted leader
+counts as an ink row and shifts every label after it, while the count still matches. Writing
+and rules separate on how tall the ink is in a typical inked column — across 301 crops, rules
+sit at a median of 1 px and writing between 7 and 17 — so rule-like bands are dropped before
+the count test, which makes such a page fail it rather than misalign.
+
+Final corpus: 14,000 synthetic + 6,596 printed + 10,556 handwritten = 27,577 training lines,
+with 1,372 printed and 2,203 handwritten held out by content hash.
+
+### Measured — the trade is total
+
+| iteration | letter WER | tech WER | spring WER | mean page WER | printed BCER | handwritten BCER |
+|---|---:|---:|---:|---:|---:|---:|
+| baseline (E30) | 16.09% | 7.81% | 12.62% | **12.17%** | 37.69% | 57.27% |
+| 2,000 | 19.54% | 19.53% | 32.00% | 23.69% | 36.62% | 52.42% |
+| 5,800 | 16.67% | 13.28% | 24.00% | 17.98% | 37.20% | **50.28%** |
+| 7,800 | 14.94% | 10.16% | 21.54% | 15.55% | 38.45% | 53.20% |
+| 9,800 | 17.24% | 7.81% | 13.85% | 12.97% | 38.40% | 56.20% |
+| 15,800 | 16.09% | 7.03% | 14.46% | **12.53%** | 39.45% | 56.17% |
+| 17,800 | 14.37% | 10.16% | 14.77% | 13.10% | 39.67% | 56.21% |
+
+The two columns move against each other at every point. Best handwriting (50.28%) costs 5.8
+pp of page WER; best page WER (12.53%) gives the handwriting back entirely, to 56.17% against
+a 57.27% baseline. Handwriting is 38% of the corpus and still loses — the network reduces
+total loss more by perfecting print than by half-learning handwriting.
+
+### And the best handwriting model still cannot read handwriting
+
+This is what settles it. 50.28% BCER is half the characters wrong. Run against the three real
+handwriting photographs the model returns **nothing at all** — zero Persian characters, the
+same as the baseline:
+
+    iteration 5,800 on 14.jpg, 16.jpg, 19.jpg:   fa_fraction 0.00, no text
+
+So the trade is not even a trade. The print cost buys a held-out number that does not become
+readable text on a photographed page, because the held-out lines are clean crops from the
+same dataset and the real images are phone photographs of lined paper — the same domain gap
+E30 hit with CamScanner, one layer further out.
+
+**Nothing shipped.** `tessdata/fas_custom.traineddata` is still d0e5099d3ea227ba.
+
+### The run also crashed
+
+lstmtraining exited 3221225477 — an access violation — at iteration 19,800 of a requested
+30,000, after 9 segments. The ledger has every segment, so the analysis is unaffected, but
+the run did not finish and that is not the same as converging.
+
+### What this says to do instead
+
+Not more mixing. A separate handwriting model and content routing, the way E34 routes an
+Arabic page to the Arabic model: the gate decides only whether to spend a second pass, and
+confidence decides which transcript to keep. That keeps print exactly where it is, which
+mixed training cannot do.
+
+And nastaliq is not in this data at all. The handwriting split is everyday cursive — upright,
+separated words, naskh-like forms. Images 15 and 17 are nastaliq calligraphy: steeply sloped,
+heavily ligatured, a different letterform geometry. Training on the former cannot teach the
+latter. A nastaliq face (`IranNastaliq`) is now in `ocr_service/fonts/` and visible to Pango,
+so the synthetic route that fixed kashida in E29 is open for it.
