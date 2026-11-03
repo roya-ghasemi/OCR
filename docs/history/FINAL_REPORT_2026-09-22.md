@@ -1,6 +1,6 @@
 # Persian / Bilingual OCR service — remediation status
 
-Updated **2026-09-22**. Scope `E:\ghasemi\ocr`. Endpoint under evaluation: the
+Updated **2026-09-22**. Scope `.`. Endpoint under evaluation: the
 `ocr_service` pipeline (Qwen2.5-VL primary). The previous edition of this file
 (2026-09-03, kept as `FINAL_REPORT.2026-09-03.md`) predates the ground truth, the
 model bake-off and the numeric work, and its headline numbers are superseded.

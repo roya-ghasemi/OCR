@@ -1,6 +1,6 @@
 # Root-cause diagnosis — numeric hallucination, body CER, "memorisation"
 
-Date 2026-09-13. Scope `E:\ghasemi\ocr`. Every number below was measured in this
+Date 2026-09-13. Scope `.`. Every number below was measured in this
 session against the live engine; scripts and raw outputs are in
 `ocr_eval/experiments/diagnostics_0913/`. Nothing here is inferred from the model's
 name or from the requirements.
@@ -27,7 +27,7 @@ Read from `engine.py`, `config.py`, `engine.log` and the live process table — 
                    --mmproj <mmproj-f16.gguf> --image-min-tokens 1024
   ```
   Vendor CUDA DLLs are put on `PATH` from `...\backends\vendor\win-llama-cuda12-vendor-v2`.
-- **Weights:** `D:\models\models\mradermacher\coreOCR-7B-050325-preview-GGUF\coreOCR-7B-050325-preview.Q4_K_S.gguf` (4,457,769,440 B) + `coreOCR-7B-050325-preview.mmproj-f16.gguf` (sha256 `34933952…`). `engine.log` confirms: `loaded multimodal model ... mmproj-f16.gguf`, `n_slots = 4`, `kv_unified = 'true'`.
+- **Weights:** `coreOCR-7B-050325-preview.Q4_K_S.gguf` (4,457,769,440 B) + `coreOCR-7B-050325-preview.mmproj-f16.gguf` (sha256 `34933952…`). `engine.log` confirms: `loaded multimodal model ... mmproj-f16.gguf`, `n_slots = 4`, `kv_unified = 'true'`.
 - **Client path:** `main.py` → `AsyncOpenAI` → `POST http://127.0.0.1:18234/v1/chat/completions` with the image as a base64 data-URI, no preprocessing. The `ocr_pipeline` package hits the same endpoint with a GBNF `grammar`.
 - **Build pin:** `ENGINE_BUILD_PIN=2.28.2` (D48). A newer 2.33.0 backend exists on disk and is deliberately not used.
 

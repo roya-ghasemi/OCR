@@ -371,7 +371,7 @@
       "longest_char_run": 2,
       "raw": null,
       "failure_body": {
-        "detail": "Model returned unparseable JSON: Expecting property name enclosed in double quotes: line 1 column 117 (char 116). raw_len=798 finish_reason=stop attempts=2 debug_dump=E:\\ghasemi\\ocr\\debug_raw\\CamScanner__7-1-25_10.26__48.JPG.1788353478.json"
+        "detail": "Model returned unparseable JSON: Expecting property name enclosed in double quotes: line 1 column 117 (char 116). raw_len=798 finish_reason=stop attempts=2 debug_dump=debug_raw/CamScanner__7-1-25_10.26__48.JPG.1788353478.json"
       }
     },
     {

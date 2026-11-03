@@ -101,7 +101,7 @@ points of whole-number accuracy** across dev (75.8% → 74.1%).
 | 🔴 | `ocr_pipeline/`, `ocr_service/backends/`, `ocr_service/benchmark.py`, `ocr_service/make_eval_set.py`, `tests/test_ocr_pipeline.py` | The Qwen2.5-VL letter-JSON path (grammar, sampling, extraction) |
 | 🔴 | `ocr_eval/run_real.py`, `run_eval.py`, `run_experiment.py`, `run_pipeline_ab.py`, `ci_gate.py`, `analyze_fields.py`, `tools/regen_one.py`, `experiments/{orientation,repeat_stability}/run*.py`, `experiments/diagnostics_0913/novel_headers.py` | Runners of the removed endpoints |
 
-🔴 = removed (in git history). Model weights under `D:\models` were not touched.
+🔴 = removed (in git history). Model weights outside the repository were not touched.
 
 ---
 

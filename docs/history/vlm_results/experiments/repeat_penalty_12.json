@@ -131,7 +131,7 @@
       "longest_char_run": 2,
       "raw": null,
       "failure_body": {
-        "detail": "Model returned unparseable JSON: Expecting property name enclosed in double quotes: line 1 column 52 (char 51). raw_len=2973 finish_reason=length attempts=1 debug_dump=E:\\ghasemi\\ocr\\debug_raw\\CamScanner__7-1-25_10.26__18.JPG.1788351809.json"
+        "detail": "Model returned unparseable JSON: Expecting property name enclosed in double quotes: line 1 column 52 (char 51). raw_len=2973 finish_reason=length attempts=1 debug_dump=debug_raw/CamScanner__7-1-25_10.26__18.JPG.1788351809.json"
       }
     },
     {
@@ -365,7 +365,7 @@
       "longest_char_run": 2,
       "raw": null,
       "failure_body": {
-        "detail": "Model returned unparseable JSON: Unterminated string starting at: line 1 column 12 (char 11). raw_len=3490 finish_reason=length attempts=1 debug_dump=E:\\ghasemi\\ocr\\debug_raw\\CamScanner__7-1-25_10.26__40.JPG.1788351897.json"
+        "detail": "Model returned unparseable JSON: Unterminated string starting at: line 1 column 12 (char 11). raw_len=3490 finish_reason=length attempts=1 debug_dump=debug_raw/CamScanner__7-1-25_10.26__40.JPG.1788351897.json"
       }
     },
     {

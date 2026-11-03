@@ -953,7 +953,7 @@ Letter fields cut from the transcript by rules (`letter_fields.py`), plain per-f
 
 **Artefacts** `ocr_eval/benchmarks/bench_fulltext_dev.json`, `bench_fulltext_test.json` (per-document transcript, fields, scores, previous-service scores); `ocr_eval/fulltext_score.py`; `ocr_eval/tools/bench_fulltext.py`; `tests/test_transcribe.py`.
 
-**Removed with this experiment** (git history keeps them): `main.py`, `engine.py`, `config.py`, `main_qwen.py`, `json_repair.py`, `ocr_pipeline/`, `ocr_service/backends/`, `ocr_service/benchmark.py`, `ocr_service/make_eval_set.py`, and the eval runners that drove the removed endpoints (`run_real.py`, `run_eval.py`, `run_experiment.py`, `run_pipeline_ab.py`, `ci_gate.py`, `analyze_fields.py`, `tools/regen_one.py`, `experiments/{orientation,repeat_stability,diagnostics_0913/novel_headers}`). The model weights under `D:\models` were not touched.
+**Removed with this experiment** (git history keeps them): `main.py`, `engine.py`, `config.py`, `main_qwen.py`, `json_repair.py`, `ocr_pipeline/`, `ocr_service/backends/`, `ocr_service/benchmark.py`, `ocr_service/make_eval_set.py`, and the eval runners that drove the removed endpoints (`run_real.py`, `run_eval.py`, `run_experiment.py`, `run_pipeline_ab.py`, `ci_gate.py`, `analyze_fields.py`, `tools/regen_one.py`, `experiments/{orientation,repeat_stability,diagnostics_0913/novel_headers}`). The model weights outside the repository were not touched.
 
 ### E19b — follow-up after the user's Postman test (same day)
 

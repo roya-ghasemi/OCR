@@ -45,14 +45,14 @@
     "backend": "llamacpp",
     "primary": {
       "name": "Qwen2.5-VL-7B-Instruct-Q4_K_M",
-      "gguf": "D:\\models\\models\\lmstudio-community\\Qwen2.5-VL-7B-Instruct-GGUF\\Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
-      "mmproj": "D:\\models\\models\\lmstudio-community\\Qwen2.5-VL-7B-Instruct-GGUF\\mmproj-model-f16.gguf",
+      "gguf": "Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf",
+      "mmproj": "mmproj-model-f16.gguf",
       "grammar": true
     },
     "secondary": {
       "name": "coreOCR-7B-050325-preview-Q4_K_S",
       "enabled": false,
-      "gguf": "D:\\models\\models\\mradermacher\\coreOCR-7B-050325-preview-GGUF\\coreOCR-7B-050325-preview.Q4_K_S.gguf"
+      "gguf": "coreOCR-7B-050325-preview.Q4_K_S.gguf"
     },
     "temperature": 0.0,
     "cache_prompt": false,
@@ -72,7 +72,7 @@
     "tesseract": {
       "langs": "fas+eng",
       "cmd": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
-      "tessdata_dir": "E:\\ghasemi\\ocr\\tessdata"
+      "tessdata_dir": "tessdata"
     },
     "preprocess": {
       "enabled": true,
@@ -87,7 +87,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_12.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_12.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_12.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -313,7 +313,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_13.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_13.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_13.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -496,7 +496,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_14.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_14.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_14.JPG",
       "numeric_fields": [
         {
           "field": "subject",
@@ -650,7 +650,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_15.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_15.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_15.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -747,7 +747,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_19.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_19.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_19.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -885,7 +885,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_22.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_22.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_22.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -1019,7 +1019,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_24.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_24.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_24.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -1115,7 +1115,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_26.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_26.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_26.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -1255,7 +1255,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_27.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_27.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_27.JPG",
       "numeric_fields": [
         {
           "field": "subject",
@@ -1428,7 +1428,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_28.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_28.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_28.JPG",
       "numeric_fields": [
         {
           "field": "subject",
@@ -1607,7 +1607,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_29.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_29.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_29.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -1747,7 +1747,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_3.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_3.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_3.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -1908,7 +1908,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_31.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_31.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_31.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -2027,7 +2027,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_34.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_34.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_34.JPG",
       "numeric_fields": [
         {
           "field": "subject",
@@ -2226,7 +2226,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_41.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_41.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_41.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -2365,7 +2365,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_44.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_44.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_44.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -2528,7 +2528,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_45.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_45.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_45.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -2668,7 +2668,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_46.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_46.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_46.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -2825,7 +2825,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_47.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_47.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_47.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -2965,7 +2965,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_48.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_48.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_48.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -3061,7 +3061,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_49.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_49.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_49.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -3233,7 +3233,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_5.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_5.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_5.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -3383,7 +3383,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_52.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_52.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_52.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -3523,7 +3523,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_53.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_53.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_53.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -3646,7 +3646,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_57.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_57.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_57.JPG",
       "numeric_fields": [
         {
           "field": "subject",
@@ -3894,7 +3894,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_58.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_58.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_58.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -4012,7 +4012,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_6.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_6.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_6.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -4183,7 +4183,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_66.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_66.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_66.JPG",
       "numeric_fields": [
         {
           "field": "contact_info",
@@ -4322,7 +4322,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_71.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_71.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_71.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -4549,7 +4549,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_78.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_78.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_78.JPG",
       "numeric_fields": [
         {
           "field": "subject",
@@ -4688,7 +4688,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_83.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_83.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_83.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -4866,7 +4866,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_84.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_84.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_84.JPG",
       "numeric_fields": [
         {
           "field": "body_text",
@@ -4984,7 +4984,7 @@
       "doc_id": "CamScanner ⁨7-1-25 10.26⁩_89.JPG",
       "split": "test",
       "ok": true,
-      "image": "E:\\ghasemi\\ocr\\ocr_eval\\dataset_ex\\CamScanner ⁨7-1-25 10.26⁩_89.JPG",
+      "image": "ocr_eval/dataset_ex/CamScanner ⁨7-1-25 10.26⁩_89.JPG",
       "numeric_fields": [
         {
           "field": "body_text",

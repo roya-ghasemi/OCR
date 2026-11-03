@@ -6,14 +6,14 @@
   "engine": "tesseract(fas,eng) + digit_cnn",
   "tesseract": {
    "cmd": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
-   "tessdata_dir": "D:\\OCR_ghasemi\\ocr\\tessdata",
+   "tessdata_dir": "tessdata",
    "lang_fa": "fas",
    "lang_fa_sha256": "99e420969b5ddd2c",
    "fas_sha256": "99e420969b5ddd2c",
    "eng_sha256": "7d4322bd2a774972"
   },
   "digit_model": {
-   "path": "D:\\OCR_ghasemi\\ocr\\models\\digit_cnn.npz",
+   "path": "models/digit_cnn.npz",
    "sha256": "e0e286aaf5595898"
   },
   "layout_psms": "3,4,6",

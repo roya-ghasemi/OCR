@@ -10,7 +10,7 @@ and the 36 synthetic images in `ocr_eval/images`.
 The handover said GT for the 90 real documents was available at
 `ocr_eval/dataset_ex`. It is not. That directory contains exactly 90 `.JPG` files
 and nothing else — no subdirectory, no `.json`/`.jsonl`/`.csv`/`.txt`/`.xlsx`, and
-no archive anywhere under `E:\ghasemi`. Every image is byte-identical to the
+no archive anywhere in the project folder. Every image is byte-identical to the
 2026-09-01 manifest lock, and all 90 manifest records still read
 `"gt_exists": false`. Registered as **D35**.
 

@@ -10,7 +10,7 @@ CPU only. Runtime models total about 24 MB (see [Models](#models)).
 ## راه‌اندازی سریع
 
 ```powershell
-cd D:\OCR_ghasemi\ocr
+cd <project folder>
 .\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000
 ```
 

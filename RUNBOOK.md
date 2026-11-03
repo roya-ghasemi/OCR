@@ -9,7 +9,7 @@ up cold. What the service is: `README.md`. Why it is built this way: E19 in
 ## 1. Start
 
 ```powershell
-cd D:\OCR_ghasemi\ocr
+cd <project folder>
 .\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000
 ```
 

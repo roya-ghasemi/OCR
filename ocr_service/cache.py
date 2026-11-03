@@ -32,6 +32,8 @@ import json
 import os
 from pathlib import Path
 
+from .config import repo_relative
+
 # The settings that change what the transcript says. A setting absent from this list is one
 # whose value cannot alter the output; adding a setting that *can* and forgetting it here is
 # how a cache starts lying, so the list is explicit rather than "everything on Settings".
@@ -148,4 +150,4 @@ class ResultCache:
                 n = -1
         return {"enabled": self.enabled, "entries": n, "max_entries": self.max_entries,
                 "hits": self.hits, "misses": self.misses,
-                "dir": str(self.dir) if self.enabled else None}
+                "dir": repo_relative(self.dir) if self.enabled else None}

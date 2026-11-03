@@ -10,7 +10,7 @@ CPU only; no language model anywhere in the path, so nothing can be invented: ev
 character in the output was recognised from pixels by Tesseract or the digit CNN.
 
 Why this design (E19, ocr_eval/experiments.md), all on the 51-letter dev split vs the
-previous Qwen2.5-VL letter-JSON path:
+previous vision-language-model letter-JSON path:
 
   * The VLM path capped `body_text` at 1,400 characters (GBNF grammar) and dropped
     whole paragraphs of longer pages; its letter-only prompt made it invent a sender
@@ -52,6 +52,7 @@ from PIL import Image, ImageOps
 from .imaging import (_crop, _xov, _yov, clean_ink, flatten, glyph_height, is_line_crop,  # noqa: F401
                       is_screen_image, measure_glyph_height, screen_ink, squeeze_kashida, text_lines,
                       text_skew, working_scale)
+from .config import repo_relative
 from .tesseract import Tesseract
 
 log = logging.getLogger(__name__)
@@ -246,7 +247,7 @@ class Transcriber:
         sp = self.spellfix_stage() if self.spellfix else None
         return {"tesseract": {"available": ok, "version": version, "langs": langs, "cmd": self.cmd,
                               "lang_fa": self.lang_fa,
-                              "tessdata_dir": self.tessdata},
+                              "tessdata_dir": repo_relative(self.tessdata)},
                 "digit_reader": {"available": g is not None, "version": getattr(g, "version", None),
                                  "error": self._glyph_error},
                 "spellfix": {"enabled": bool(self.spellfix),

@@ -51,6 +51,17 @@ def file_sha(p: Path | None) -> str | None:
     return _sha_cached(str(p), st.st_mtime_ns, st.st_size)
 
 
+def repo_relative(path: str | os.PathLike | None) -> str | None:
+    """A path inside the repository as repository-relative, so records and responses do
+    not carry one machine's directory layout; anything else unchanged."""
+    if not path:
+        return None
+    try:
+        return Path(path).resolve().relative_to(REPO_DIR).as_posix()
+    except ValueError:
+        return str(path)
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="OCRS_", env_file=(REPO_DIR / ".env", ".env"),
                                       env_file_encoding="utf-8", extra="ignore")
@@ -130,7 +141,7 @@ class Settings(BaseSettings):
         return {
             "service_version": __version__,
             "engine": "tesseract(fas,eng) + digit_cnn",
-            "tesseract": {"cmd": cmd, "tessdata_dir": data,
+            "tesseract": {"cmd": cmd, "tessdata_dir": repo_relative(data),
                           "lang_fa": self.lang_fa,
                           # The model actually doing the reading. With a fine-tune selected
                           # this is NOT fas.traineddata, and a results file that only stamped
@@ -138,7 +149,7 @@ class Settings(BaseSettings):
                           "lang_fa_sha256": sha(Path(data) / f"{self.lang_fa}.traineddata") if data else None,
                           "fas_sha256": sha(Path(data) / "fas.traineddata") if data else None,
                           "eng_sha256": sha(Path(data) / "eng.traineddata") if data else None},
-            "digit_model": {"path": str(dm) if dm else None, "sha256": sha(dm)},
+            "digit_model": {"path": repo_relative(dm), "sha256": sha(dm)},
             "layout_psms": self.layout_psms, "text_psms": self.text_psms, "deskew_min_deg": self.deskew_min_deg,
             "min_line_conf": self.min_line_conf, "number_min_prob": self.number_min_prob,
             "letter_fields": self.letter_fields,

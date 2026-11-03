@@ -1,6 +1,6 @@
 # Persian / Bilingual OCR service — remediation status
 
-Updated 2026-09-03. Scope: `E:\ghasemi\ocr`. Endpoint under evaluation: `POST /ocr`
+Updated 2026-09-03. Scope: `.`. Endpoint under evaluation: `POST /ocr`
 on `main.py` — the shipped path, per the endpoint-parity resolution in Phase 0.
 
 ---
@@ -11,7 +11,7 @@ on `main.py` — the shipped path, per the endpoint-parity resolution in Phase 0
 
 The handover said it was at `ocr_eval/dataset_ex`. That directory contains
 exactly 90 `.JPG` files and nothing else — no subdirectory, no
-`.json`/`.jsonl`/`.csv`/`.txt`, no archive anywhere under `E:\ghasemi`. All 90
+`.json`/`.jsonl`/`.csv`/`.txt`, no archive anywhere in the project folder. All 90
 images are byte-identical to the 2026-09-01 manifest lock and all 90 manifest
 records read `"gt_exists": false`. Registered as **D35**.
 

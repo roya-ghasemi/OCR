@@ -18,7 +18,7 @@
     "engine_build": "llama.cpp llama-server version 1 (fe2adf0), Clang 19.1.1, win-x86_64-nvidia-cuda12-avx2-2.28.2",
     "engine_build_pin": "2.28.2",
     "model_id": "coreOCR-7B-050325-preview.Q4_K_S.gguf",
-    "models_dir": "D:\\models\\models",
+    "models_dir": "models",
     "mmproj_sha256": "34933952a9ae2f1ac7af7a908189b3fc22106d3999fd3fae43b520ac4d308a78",
     "temperature": 0.0,
     "top_p": 1.0,
@@ -128,7 +128,7 @@
         "contact_info": null
       },
       "error": null,
-      "model": "D:\\models\\models\\mradermacher\\coreOCR-7B-050325-preview-GGUF\\coreOCR-7B-050325-preview.Q4_K_S.gguf"
+      "model": "coreOCR-7B-050325-preview.Q4_K_S.gguf"
     },
     "armA_sideways_corpus": {
       "sender": "شرکت خدمات سرمایه",
