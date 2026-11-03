@@ -58,8 +58,10 @@ def hog(glyph: np.ndarray, cell: int = 7, bins: int = 9) -> np.ndarray:
         for j in range(n):
             a = ang[i * cell:(i + 1) * cell, j * cell:(j + 1) * cell].ravel()
             m = mag[i * cell:(i + 1) * cell, j * cell:(j + 1) * cell].ravel()
-            lo = np.floor(a).astype(int) % bins; frac = a - np.floor(a)
-            np.add.at(out[i, j], lo, m * (1 - frac)); np.add.at(out[i, j], (lo + 1) % bins, m * frac)
+            lo = np.floor(a).astype(int) % bins
+            frac = a - np.floor(a)
+            np.add.at(out[i, j], lo, m * (1 - frac))
+            np.add.at(out[i, j], (lo + 1) % bins, m * frac)
     # block-normalise 2x2 cells
     feats = []
     for i in range(n - 1):
@@ -113,7 +115,8 @@ def _fonts() -> list[str]:
         for f in glob.glob(pat):
             k = os.path.basename(f).lower()
             if k not in seen:
-                seen.add(k); out.append(f)
+                seen.add(k)
+                out.append(f)
     # Decorative faces never appear in an administrative letter and only add noise.
     skip = ("outline", "shade", "freehand", "kidnap", "fantezy", "bomba", "digital", "liner",
             "ghalam", "sayeh", "nastaliq", "takhteh", "granada", "cordoba", "promoter", "typographer")
@@ -221,8 +224,10 @@ def train(n_per_font: int = 10, seed: int = 17, model_path: Path = MODEL_PATH) -
                 if r is None:
                     continue
                 g, rel = r
-                X.append(features(g, rel)); y.append(ci)
-    X = np.array(X, np.float32); y = np.array(y, np.int32)
+                X.append(features(g, rel))
+                y.append(ci)
+    X = np.array(X, np.float32)
+    y = np.array(y, np.int32)
     from sklearn.svm import SVC
     from sklearn.preprocessing import StandardScaler
     from sklearn.pipeline import make_pipeline
@@ -231,7 +236,8 @@ def train(n_per_font: int = 10, seed: int = 17, model_path: Path = MODEL_PATH) -
     split = int(len(X) * 0.9)
     clf = make_pipeline(StandardScaler(), SVC(C=10.0, gamma="scale", probability=False))
     clf.fit(X[idx[:split]], y[idx[:split]])
-    pred = clf.predict(X[idx[split:]]); truth = y[idx[split:]]
+    pred = clf.predict(X[idx[split:]])
+    truth = y[idx[split:]]
     acc = float((pred == truth).mean())
     acc_value = float(((pred % 10) == (truth % 10)).mean())   # digit value, script ignored
     clf.fit(X, y)                                  # final model on everything
@@ -254,7 +260,7 @@ class DigitRead:
 class DigitReader:
     def __init__(self, model_path: Path = MODEL_PATH):
         if not model_path.is_file():
-            raise FileNotFoundError(f"{model_path} — run `python -m ocr_service.digit_reader --train`")
+            raise FileNotFoundError(f"{model_path} — run `python -m ocr_research.digit_reader_v1 --train`")
         import joblib
         self.svm = joblib.load(model_path)
 
@@ -286,7 +292,9 @@ class DigitReader:
             g = normalize_glyph(b[y0:y1, x0:x1])
             f = features(g, (y1 - y0) / line_h)[None, :]
             cls = int(self.svm.predict(f)[0])
-            digits.append(CLASSES[cls]); boxes_out.append((x0, y0, x1, y1)); clear += 1
+            digits.append(CLASSES[cls])
+            boxes_out.append((x0, y0, x1, y1))
+            clear += 1
         txt = "".join(digits).strip(SEPARATORS)
         scripts = {"persian" if d in PERSIAN else "latin" for d in digits if d not in SEPARATORS}
         return DigitRead(txt, (scripts.pop() if len(scripts) == 1 else ("mixed" if scripts else "none")),
@@ -331,9 +339,11 @@ class GlyphReader:
         for b in boxes:
             cy = (b[1] + b[3]) / 2
             for ln in lines:
-                y0 = min(x[1] for x in ln[-8:]); y1 = max(x[3] for x in ln[-8:])
+                y0 = min(x[1] for x in ln[-8:])
+                y1 = max(x[3] for x in ln[-8:])
                 if y0 - 0.3 * (y1 - y0) <= cy <= y1 + 0.3 * (y1 - y0):
-                    ln.append(b); break
+                    ln.append(b)
+                    break
             else:
                 lines.append([b])
         return lines
@@ -353,8 +363,10 @@ class GlyphReader:
             def flush():
                 digit_like = [b for b in run if (b[3] - b[1]) >= 0.5 * ref]
                 if len(digit_like) >= 3:
-                    x0 = min(b[0] for b in run); y0 = min(b[1] for b in run)
-                    x1 = max(b[2] for b in run); y1 = max(b[3] for b in run)
+                    x0 = min(b[0] for b in run)
+                    y0 = min(b[1] for b in run)
+                    x1 = max(b[2] for b in run)
+                    y1 = max(b[3] for b in run)
                     pad = max(2, int(0.15 * (y1 - y0)))
                     crop = gray[max(0, y0 - pad):y1 + pad, max(0, x0 - pad):x1 + pad]
                     r = self.reader.read_line(crop)
@@ -366,7 +378,8 @@ class GlyphReader:
                 w, h = b[2] - b[0], b[3] - b[1]
                 narrow = w <= 1.15 * ref and h <= 1.4 * ref          # a digit, dot or separator
                 if not narrow:
-                    flush(); continue
+                    flush()
+                    continue
                 if run and b[0] - run[-1][2] > 0.9 * ref:           # gap too wide: new run
                     flush()
                 run.append(b)
@@ -383,7 +396,9 @@ class GlyphReader:
 
 
 def main() -> int:
-    import argparse, json, sys
+    import argparse
+    import json
+    import sys
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--train", action="store_true")

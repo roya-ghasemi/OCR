@@ -30,7 +30,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 from PIL import Image, ImageOps  # noqa: E402
 
-from ocr_service.numeric_validator import to_ascii_digits  # noqa: E402
+from ocr_research.numeric_validator import to_ascii_digits  # noqa: E402
 
 EVAL = ROOT / "ocr_eval" / "eval_set.jsonl"
 OUT = ROOT / "ocr_eval" / "experiments" / "digits_0922"
@@ -68,18 +68,18 @@ def gt_atoms(doc: dict) -> collections.Counter:
 def load_image(doc: dict, source: str) -> Image.Image:
     raw = Path(doc["image"]).read_bytes()
     if source == "prepared":
-        from ocr_service.preprocess import prepare
+        from ocr_research.preprocess import prepare
         raw, _ = prepare(raw)
     return ImageOps.exif_transpose(Image.open(io.BytesIO(raw))).convert("RGB")
 
 
 def make_reader(name: str):
     if name == "glyph":
-        from ocr_service.digit_reader import GlyphReader
+        from ocr_research.digit_reader_v1 import GlyphReader
         return GlyphReader()
     if name == "tesseract":
         from ocr_service.config import settings
-        from ocr_service.numeric_validator import TesseractReader
+        from ocr_research.numeric_validator import TesseractReader
         cmd, data = settings.resolved_tesseract()
         return TesseractReader(cmd, settings.tesseract_langs, data)
     mod, _, cls = name.rpartition(":")          # "module.path:ClassName"
@@ -125,9 +125,13 @@ def main() -> int:
         hit = gt & got
         n_gt, n_hit = sum(gt.values()), sum(hit.values())
         n_read, n_ok = sum(got.values()), sum((got & gt).values())
-        tot_gt += n_gt; tot_hit += n_hit; tot_read += n_read; tot_read_ok += n_ok
+        tot_gt += n_gt
+        tot_hit += n_hit
+        tot_read += n_read
+        tot_read_ok += n_ok
         for at, k in gt.items():
-            by_len[len(at)][0] += k; by_len[len(at)][1] += (hit[at])
+            by_len[len(at)][0] += k
+            by_len[len(at)][1] += (hit[at])
         # whole grouped numbers, exactly as printed
         read_texts = [to_ascii_digits(w.text) for w in words]
         for f in FIELDS:

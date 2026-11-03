@@ -18,7 +18,7 @@ Output: `models/digit_glyphs.npz` with
     y   (N,)        int16 class index into CLASSES
     font(N,)        int16 font index (for a by-font holdout)
 
-    venv312\Scripts\python.exe -m ocr_service.digit_cnn_data --lines-per-font 80
+    venv312\Scripts\python.exe -m ocr_research.digit_cnn_data --lines-per-font 80
 """
 from __future__ import annotations
 
@@ -34,20 +34,18 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
-from .digit_reader import _fonts
+from ocr_service.glyph_features import (CLASSES, G, LATIN, PERSIAN, REJECT,  # noqa: F401
+                                        binarize, line_context, normalize_glyph, scalars)
+
+from .digit_reader_v1 import _fonts
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "models" / "digit_glyphs.npz"
 DEHKHODA = ROOT / "dehkhoda" / "dehkhoda.db"
 
-G = 32                                     # glyph canvas
-PERSIAN = "۰۱۲۳۴۵۶۷۸۹"
+# class layout (glyph_features.CLASSES): 0-9 Persian/Arabic-Indic digit value, 10-19 Latin
+# digit value, 20 slash, 21 dash, 22 comma, 23 dot (also each dot of ':'), 24 reject
 ARABIC = "٠١٢٣٤٥٦٧٨٩"
-LATIN = "0123456789"
-# class layout: 0-9 Persian/Arabic-Indic digit value, 10-19 Latin digit value,
-# 20 slash, 21 dash, 22 comma, 23 dot (also each dot of ':'), 24 reject
-CLASSES = list(PERSIAN) + list(LATIN) + ["/", "-", ",", ".", "<rej>"]
-REJECT = 24
 SEP_CLASS = {"/": 20, "-": 21, ",": 22, "،": 22, "٫": 22, ".": 23, ":": 23}
 
 # --- Arabic shaping via Presentation Forms-B ------------------------------------
@@ -181,7 +179,8 @@ def render_line(tokens: list[tuple[str, str]], font: ImageFont.FreeTypeFont, px:
         if kind == "number":
             chars = []
             for i, c in enumerate(text):
-                x0 = x + font.getlength(text[:i]); x1 = x + font.getlength(text[:i + 1])
+                x0 = x + font.getlength(text[:i])
+                x1 = x + font.getlength(text[:i + 1])
                 chars.append((x0, x1, c))
             if ring_zero and any(c in "۰٠" for c in text):
                 # draw char by char so the zeros can be replaced by rings
@@ -190,7 +189,9 @@ def render_line(tokens: list[tuple[str, str]], font: ImageFont.FreeTypeFont, px:
                 dh = max(4, bot - top)
                 for x0, x1, c in chars:
                     if c in "۰٠":
-                        r = dh * rng.uniform(0.22, 0.32); cx = (x0 + x1) / 2; cy = (top + bot) / 2 + dh * rng.uniform(-0.05, 0.08)
+                        r = dh * rng.uniform(0.22, 0.32)
+                        cx = (x0 + x1) / 2
+                        cy = (top + bot) / 2 + dh * rng.uniform(-0.05, 0.08)
                         d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=0, width=max(1, int(px / rng.uniform(8, 14))))
                     else:
                         d.text((x0, y), c, font=font, fill=0)
@@ -213,7 +214,8 @@ def augment(im: Image.Image, rng: random.Random) -> np.ndarray:
         k = np.ones((2, 2), np.uint8)
         a = cv2.erode(a, k) if rng.random() < 0.5 else cv2.dilate(a, k)
     if rng.random() < 0.6:                       # contrast / shadow
-        gain = rng.uniform(0.6, 1.0); bias = rng.uniform(0, 70)
+        gain = rng.uniform(0.6, 1.0)
+        bias = rng.uniform(0, 70)
         a = np.clip(a.astype(np.float32) * gain + bias, 0, 255).astype(np.uint8)
     if rng.random() < 0.5:
         a = np.clip(a.astype(np.float32) + np.random.normal(0, rng.uniform(2, 12), a.shape), 0, 255).astype(np.uint8)
@@ -223,49 +225,12 @@ def augment(im: Image.Image, rng: random.Random) -> np.ndarray:
     return a
 
 
-def binarize(gray: np.ndarray) -> np.ndarray:
-    """Local threshold — the pages carry shading and a coloured letterhead; a global
-    Otsu loses light strokes. Same function at training and inference."""
-    blur = cv2.GaussianBlur(gray, (0, 0), 0.6)
-    win = 51 if min(gray.shape) > 60 else 15
-    b = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, win, 15)
-    return b
 
 
-def normalize_glyph(bin_img: np.ndarray) -> np.ndarray:
-    ys, xs = np.where(bin_img > 0)
-    if len(xs) == 0:
-        return np.zeros((G, G), np.uint8)
-    g = bin_img[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
-    h, w = g.shape
-    side = max(h, w)
-    canvas = np.zeros((side, side), np.uint8)
-    canvas[(side - h) // 2:(side - h) // 2 + h, (side - w) // 2:(side - w) // 2 + w] = g
-    canvas = cv2.resize(canvas, (G - 4, G - 4), interpolation=cv2.INTER_AREA)
-    out = np.zeros((G, G), np.uint8)
-    out[2:-2, 2:-2] = (canvas > 96).astype(np.uint8) * 255
-    return out
 
 
-def line_context(boxes: list[tuple[int, int, int, int]]) -> tuple[float, float]:
-    """(ref_h, line_cy) from the tall components of a line; shared with inference."""
-    hs = np.array([b[3] - b[1] for b in boxes], np.float32)
-    if len(hs) == 0:
-        return 1.0, 0.0
-    # percentile-based so one oversized blob (a shadow, a logo fragment) on the line
-    # cannot drag the reference height away from the glyphs
-    p80 = float(np.percentile(hs, 80))
-    tall = (hs >= 0.5 * p80) & (hs <= 2.0 * p80)
-    if not tall.any():
-        tall = hs >= 0.5 * hs.max()
-    ref = float(np.median(hs[tall]))
-    cys = np.array([(b[1] + b[3]) / 2 for b in boxes], np.float32)[tall]
-    return max(ref, 1.0), float(np.median(cys))
 
 
-def scalars(box, ref_h: float, line_cy: float) -> np.ndarray:
-    x0, y0, x1, y1 = box
-    return np.array([(y1 - y0) / ref_h, ((y0 + y1) / 2 - line_cy) / ref_h, (x1 - x0) / ref_h], np.float32)
 
 
 def components(b: np.ndarray, min_area: int = 3):
@@ -365,12 +330,17 @@ def build(lines_per_font: int, seed: int, out: Path) -> dict:
                 if cls == REJECT and rng.random() < 0.6:
                     continue
                 glyph = normalize_glyph((lab[y0:y1, x0:x1] == idx).astype(np.uint8) * 255)
-                X.append(glyph); S.append(scalars(c[:4], ref_h, cy)); y.append(cls); F.append(fi)
+                X.append(glyph)
+                S.append(scalars(c[:4], ref_h, cy))
+                y.append(cls)
+                F.append(fi)
                 counts[cls] += 1
         if (fi + 1) % 20 == 0:
             print(f"  fonts {fi + 1}/{len(fonts)}  samples {len(X)}  {time.perf_counter() - t0:.0f}s", flush=True)
-    X = np.stack(X).astype(np.uint8); S = np.stack(S).astype(np.float32)
-    y = np.array(y, np.int16); F = np.array(F, np.int16)
+    X = np.stack(X).astype(np.uint8)
+    S = np.stack(S).astype(np.float32)
+    y = np.array(y, np.int16)
+    F = np.array(F, np.int16)
     out.parent.mkdir(exist_ok=True)
     np.savez_compressed(out, X=X, S=S, y=y, font=F, classes=np.array(CLASSES), fonts=np.array(fonts))
     info = {"samples": int(len(y)), "fonts": len(fonts), "fonts_latin_persian_shaped": sum(latin_shaped.values()), "per_class": {CLASSES[i]: int(counts[i]) for i in range(len(CLASSES))},

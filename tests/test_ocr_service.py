@@ -11,9 +11,9 @@ from PIL import Image, ImageDraw
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from ocr_service.numeric_validator import (  # noqa: E402
+from ocr_research.numeric_validator import (  # noqa: E402
     NumericValidator, TesseractReader, Word, classify, digits_only, find_numeric_spans, summarize, to_ascii_digits)
-from ocr_service.preprocess import compress, estimate_skew, prepare, rotate, _to_cv  # noqa: E402
+from ocr_research.preprocess import compress, estimate_skew, prepare, rotate, _to_cv  # noqa: E402
 from ocr_service.schemas import OcrResponse  # noqa: E402
 
 
@@ -51,7 +51,9 @@ class FakeReader(TesseractReader):
     def __init__(self, words, crop_text):
         self._words, self._crop = words, crop_text
         self._version = "fake-5.0"
-        self._pt = object(); self._cmd = None; self.langs = "fas+eng"
+        self._pt = object()
+        self._cmd = None
+        self.langs = "fas+eng"
     def available(self): return True
     def page_words(self, im): return list(self._words)
     def read_crop(self, im, box, pad=0.35): return self._crop
@@ -74,7 +76,8 @@ def test_disagreement_is_low_with_both_candidates():
     assert out[0].confidence == "low"
     assert out[0].candidates == ["۲۲۱/۰۰۰/۰۰۰", "321/000/000"]
     assert out[0].bbox == (100, 100, 400, 140)
-    s = summarize(out); assert s["conflict_rate"] == 1.0
+    s = summarize(out)
+    assert s["conflict_rate"] == 1.0
 
 
 def test_no_region_found_is_unverified_not_high():
@@ -87,7 +90,11 @@ def test_no_region_found_is_unverified_not_high():
 
 def test_tesseract_missing_marks_everything_unverified():
     class Missing(TesseractReader):
-        def __init__(self): self._pt = None; self._version = None; self._cmd = None; self.langs = "fas"
+        def __init__(self):
+            self._pt = None
+            self._version = None
+            self._cmd = None
+            self.langs = "fas"
     out = NumericValidator(Missing()).validate(_img(), {"body_text": "کد ملی ۰۹۲۴۴۲۴۱۱۷"})
     assert out and all(o.confidence == "unverified" for o in out)
 
@@ -116,7 +123,8 @@ def _page(skew=0.0):
 
 
 def test_prepare_crops_deskews_and_fits_under_cap():
-    buf = io.BytesIO(); _page(skew=4.0).save(buf, "JPEG", quality=95)
+    buf = io.BytesIO()
+    _page(skew=4.0).save(buf, "JPEG", quality=95)
     out, st = prepare(buf.getvalue(), max_bytes=300_000)
     assert st.out_bytes <= 300_000
     assert st.cropped and st.crop_box is not None
@@ -132,7 +140,7 @@ def test_compress_always_fits_even_for_huge_input():
 
 def test_estimate_skew_sign():
     # Crop first, as the pipeline does: on the raw frame the desk edges vote too.
-    from ocr_service.preprocess import find_page
+    from ocr_research.preprocess import find_page
     bgr = _to_cv(_page(skew=3.0))
     x0, y0, x1, y1 = find_page(bgr)
     bgr = bgr[y0:y1, x0:x1]
@@ -158,7 +166,7 @@ def test_the_prepared_page_reports_the_scale_it_was_sent_at():
     """The review crops depend on this and their failure is silent.
 
     Every bbox is measured in the prepared page, but `prepared_image` is capped at 1600 px
-    so the response stays sendable. On the brief's letter that is a 0.534 factor: without it
+    so the response stays sendable. On the reference letter that is a 0.534 factor: without it
     the four «نیاز به بازبینی» crops were cut from the wrong pixels and the one at x=1843
     fell past the capped edge and was never drawn at all.
     """

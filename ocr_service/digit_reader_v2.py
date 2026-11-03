@@ -24,7 +24,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from .digit_cnn_data import CLASSES, REJECT, binarize, line_context, normalize_glyph, scalars
+from .glyph_features import CLASSES, REJECT, binarize, line_context, normalize_glyph, scalars
 
 log = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[1]
@@ -185,11 +185,13 @@ class GlyphReaderV2:
             if best is None:
                 lines.append({"y0": y0, "y1": y1, "items": [g], "hs": [h]})
             else:
-                best["items"].append(g); best["hs"].append(h)
+                best["items"].append(g)
+                best["hs"].append(h)
                 # outsized blobs must not widen an established line; while the line is
                 # young its median height is not yet meaningful (a colon dot may be first)
                 if len(best["hs"]) < 6 or h <= 2.0 * float(np.median(best["hs"])):
-                    best["y0"] = min(best["y0"], y0); best["y1"] = max(best["y1"], y1)
+                    best["y0"] = min(best["y0"], y0)
+                    best["y1"] = max(best["y1"], y1)
         # Left to right, so that a zero already attached extends the line for the next
         # one: the zeros of `/۰۰۰` chain onto their own number instead of each being
         # measured against the gap left by the slash.
@@ -206,7 +208,7 @@ class GlyphReaderV2:
             # adjacency first and vertical distance only as a tie-break. Choosing by cy
             # alone put the last zero of `۳۲۱/۰۰۰/۰۰۰` on a neighbouring line and
             # deleted it from the amount.
-            def key(ln):
+            def key(ln, g=g, cy=cy):
                 dx = min((max(m.box[0] - g.box[2], g.box[0] - m.box[2], 0) for m in ln["items"]), default=1e9)
                 dcy = abs(cy - (ln["y0"] + ln["y1"]) / 2)
                 return (dx, dcy)
@@ -231,7 +233,8 @@ class GlyphReaderV2:
 
         def find(a):
             while parent[a] != a:
-                parent[a] = parent[parent[a]]; a = parent[a]
+                parent[a] = parent[parent[a]]
+                a = parent[a]
             return a
 
         for i, a in enumerate(items):
@@ -257,17 +260,21 @@ class GlyphReaderV2:
             for g in ln:
                 x0, y0, x1, y1 = g.box
                 X.append(normalize_glyph((lab[y0:y1, x0:x1] == g.idx).astype(np.uint8) * 255))
-                S.append(scalars(g.box, ref_h, cy)); refs.append(g)
+                S.append(scalars(g.box, ref_h, cy))
+                refs.append(g)
         if not X:
             return
         P = self.net(np.stack(X), np.stack(S))
         for g, p in zip(refs, P):
-            g.cls = int(p.argmax()); g.prob = float(p[g.cls]); g.probs = p
+            g.cls = int(p.argmax())
+            g.prob = float(p[g.cls])
+            g.probs = p
             # digit VALUE probability pools both scripts: the Latin `0` and Persian `۰`
             # classes describe the same value, so an email's `2006` should not lose
             # confidence to the script split
             pv = p[:10] + p[10:20]
-            g.value = int(pv.argmax()); g.vprob = float(pv[g.value])
+            g.value = int(pv.argmax())
+            g.vprob = float(pv[g.value])
             g.script = "persian" if p[g.value] >= p[10 + g.value] else "latin"
 
     # -- runs ---------------------------------------------------------------------
@@ -305,7 +312,8 @@ class GlyphReaderV2:
         kind: list[tuple[str, int]] = []           # ("d", value) | ("s", cls) | ("z", 0) | ("r", -1)
         for g in ln:
             if g.stacked or g.probs is None:
-                kind.append(("r", -1)); continue
+                kind.append(("r", -1))
+                continue
             h = g.box[3] - g.box[1]
             if digit_mass(g) >= self.p_digit:
                 # a blob well under digit height cannot be any digit but the dot-zero
@@ -325,7 +333,8 @@ class GlyphReaderV2:
         i, n = 0, len(ln)
         while i < n:
             if kind[i][0] not in ("d", "z"):
-                i += 1; continue
+                i += 1
+                continue
             run = [i]
             j = i + 1
             bridged_idx: set[int] = set()
@@ -337,16 +346,19 @@ class GlyphReaderV2:
                 if kind[j][0] == "r":
                     # one smudged digit inside a long number: bridge it if it is digit-sized,
                     # has some digit probability, and a digit follows immediately
-                    gj = ln[j]; hj, wj = gj.box[3] - gj.box[1], gj.box[2] - gj.box[0]
+                    gj = ln[j]
+                    hj, wj = gj.box[3] - gj.box[1], gj.box[2] - gj.box[0]
                     nxt_ok = j + 1 < n and kind[j + 1][0] == "d" and ln[j + 1].box[0] - gj.box[2] <= 0.75 * dh
                     strong_so_far = [ln[k].vprob for k in run if kind[k][0] == "d"]
                     if (not bridged_idx and len(strong_so_far) >= 3 and float(np.mean(strong_so_far)) >= 0.75
                             and nxt_ok and ln[j + 1].vprob >= 0.6 and not gj.stacked
                             and 0.6 * dh <= hj <= 1.3 * dh and wj <= 1.2 * dh and digit_mass(gj) >= 0.25):
-                        kind[j] = ("d", gj.value); bridged_idx.add(j)
+                        kind[j] = ("d", gj.value)
+                        bridged_idx.add(j)
                     else:
                         break
-                run.append(j); j += 1
+                run.append(j)
+                j += 1
             # split the candidate at weak glyphs (letters that carry some digit
             # probability drag a run's mean down; the clean digits beside them must
             # survive), then keep every strong segment on its own
@@ -422,8 +434,10 @@ class GlyphReaderV2:
         chars = [CLASSES[kind[k][1]] if kind[k][0] in ("d", "z") else SEP_CHARS[kind[k][1]] for k in run]
         scripts = {ln[k].script for k in real}
         dh = float(np.median([ln[k].box[3] - ln[k].box[1] for k in real]))
-        x0 = min(ln[k].box[0] for k in run); y0 = min(ln[k].box[1] for k in run)
-        x1 = max(ln[k].box[2] for k in run); y1 = max(ln[k].box[3] for k in run)
+        x0 = min(ln[k].box[0] for k in run)
+        y0 = min(ln[k].box[1] for k in run)
+        x1 = max(ln[k].box[2] for k in run)
+        y1 = max(ln[k].box[3] for k in run)
         parts = [(ln[k], kind[k][0], kind[k][1]) for k in run]
         return NumberRead("".join(chars), (x0, y0, x1, y1), float(min(probs)), float(np.mean(probs)),
                           len(digits), dh, scripts.pop() if len(scripts) == 1 else "mixed", parts)
@@ -490,7 +504,8 @@ class GlyphReaderV2:
                         continue
                     part = (g, kind, val)
                     r.parts = ([part] + r.parts) if side == "l" else (r.parts + [part])
-                    used.add(id(g)); grew = True
+                    used.add(id(g))
+                    grew = True
                     break
             self._rebuild(r)
         return reads
@@ -538,7 +553,7 @@ class GlyphReaderV2:
         return self._extend(reads, glyphs)
 
     def page_words(self, im: Image.Image) -> list:
-        from .numeric_validator import Word
+        from ocr_research.numeric_validator import Word   # research tools only
         return [Word(r.text, r.box, 100.0 * r.confidence) for r in self.read_page(im)]
 
     def read_crop(self, im: Image.Image, box: tuple[int, int, int, int], pad: float = 0.35) -> str:

@@ -10,7 +10,7 @@ Architecture (small on purpose — ~2k glyphs per page at inference, CPU):
     conv3x3(1->16) relu pool2 | conv3x3(16->32) relu pool2 | conv3x3(32->64) relu pool2
     -> flatten(1024) ++ 3 line scalars -> fc 128 relu -> fc 25
 
-    venv\Scripts\python.exe -m ocr_service.digit_cnn_train --epochs 12
+    venv\Scripts\python.exe -m ocr_research.digit_cnn_train --epochs 12
 """
 from __future__ import annotations
 
@@ -96,7 +96,10 @@ def main() -> int:
                 xb = torch.roll(xb, shifts=(dy, dx), dims=(2, 3))
             logits = net(xb, Str[idx])
             loss = F.cross_entropy(logits, ytr[idx], weight=wt, label_smoothing=0.05)
-            opt.zero_grad(); loss.backward(); opt.step(); sched.step()
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+            sched.step()
             tot += loss.item() * len(idx)
         net.eval()
         with torch.no_grad():
@@ -113,7 +116,8 @@ def main() -> int:
 
     # confusion among digit values (script-agnostic) on holdout, for the report
     with torch.no_grad():
-        pv = pred.clone(); yv = yte.clone()
+        pv = pred.clone()
+        yv = yte.clone()
     conf = {}
     for t in range(20):
         m = yv == t

@@ -31,9 +31,9 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 from PIL import Image  # noqa: E402
 
-from ocr_service.numeric_reconcile import Policy, reconcile  # noqa: E402
-from ocr_service.numeric_validator import digits_only, to_ascii_digits  # noqa: E402
-from ocr_service.preprocess import prepare  # noqa: E402
+from ocr_research.numeric_reconcile import Policy, reconcile  # noqa: E402
+from ocr_research.numeric_validator import digits_only, to_ascii_digits  # noqa: E402
+from ocr_research.preprocess import prepare  # noqa: E402
 
 EVAL = ROOT / "ocr_eval" / "eval_set.jsonl"
 BENCH = ROOT / "ocr_eval" / "benchmarks"
@@ -77,7 +77,7 @@ def grouped_match(gt: str, cands: list[str]) -> str | None:
 
 
 def span_set(fields: dict) -> set[tuple[str, str]]:
-    from ocr_service.numeric_validator import find_numeric_spans
+    from ocr_research.numeric_validator import find_numeric_spans
     return {(s.field, digits_only(s.value)) for s in find_numeric_spans(fields, 3)}
 
 
@@ -156,9 +156,13 @@ def main() -> int:
             g, b, af = atoms(doc["fields"][f]), atoms(before.get(f)), atoms(after.get(f))
             per_field[f]["records"] += sum((g & rec_atoms[f]).values())
             per_field[f]["records_emitted"] += sum(rec_atoms[f].values())
-            per_field[f]["gt"] += sum(g.values()); per_field[f]["before"] += sum((g & b).values()); per_field[f]["after"] += sum((g & af).values())
-            per_field[f]["emitted_before"] += sum(b.values()); per_field[f]["emitted_after"] += sum(af.values())
-            per_field[f]["wrong_before"] += sum((b - g).values()); per_field[f]["wrong_after"] += sum((af - g).values())
+            per_field[f]["gt"] += sum(g.values())
+            per_field[f]["before"] += sum((g & b).values())
+            per_field[f]["after"] += sum((g & af).values())
+            per_field[f]["emitted_before"] += sum(b.values())
+            per_field[f]["emitted_after"] += sum(af.values())
+            per_field[f]["wrong_before"] += sum((b - g).values())
+            per_field[f]["wrong_after"] += sum((af - g).values())
 
         for r in records:
             g = atoms(doc["fields"].get(r.field))
@@ -168,14 +172,18 @@ def main() -> int:
                     tot["corrected_right"] += int(g[dcn.resolved] > 0)
                     tot["corrected_was_right"] += int(g[dcn.vlm] > 0)
                 elif dcn.status == "confirmed":
-                    tot["confirmed"] += 1; tot["confirmed_right"] += int(g[dcn.vlm] > 0)
+                    tot["confirmed"] += 1
+                    tot["confirmed_right"] += int(g[dcn.vlm] > 0)
                 elif dcn.status == "conflict":
-                    tot["conflict"] += 1; tot["conflict_vlm_right"] += int(g[dcn.vlm] > 0)
+                    tot["conflict"] += 1
+                    tot["conflict_vlm_right"] += int(g[dcn.vlm] > 0)
                     tot["conflict_classical_right"] += int(dcn.classical is not None and g[dcn.classical] > 0)
                 else:
-                    tot["unverified"] += 1; tot["unverified_vlm_right"] += int(g[dcn.vlm] > 0)
+                    tot["unverified"] += 1
+                    tot["unverified_vlm_right"] += int(g[dcn.vlm] > 0)
             if r.confidence == "added":
-                tot["added"] += 1; tot["added_right"] += int(g[r.value_ascii] > 0)
+                tot["added"] += 1
+                tot["added_right"] += int(g[r.value_ascii] > 0)
         per_doc.append({"doc_id": d["doc_id"], "fields_after": after,
                         "records": [{"field": r.field, "kind": r.kind, "value": r.value, "resolved": r.resolved,
                                      "confidence": r.confidence, "classical": r.classical_value} for r in records]})

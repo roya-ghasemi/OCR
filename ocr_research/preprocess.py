@@ -4,7 +4,7 @@ r"""Edge / server pre-processing: auto-crop the page, deskew, compress under a b
 Used in two places with one code path:
   * server side — `prepare(image_bytes)` runs on every incoming image when
     `OCRS_PREPROCESS_INCOMING=1` (raw phone photos arrive un-cropped and skewed);
-  * client spec — `python -m ocr_service.preprocess in.jpg out.jpg` is the reference
+  * client spec — `python -m ocr_research.preprocess in.jpg out.jpg` is the reference
     behaviour for the mobile team, and prints the same stats the server logs.
 
 Order matters: crop first (so the deskew angle is estimated from the page, not the
@@ -179,10 +179,12 @@ def prepare(image_bytes: bytes, *, max_bytes: int = 300_000, fmt: str = "JPEG",
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Reference client-side pre-processing.")
-    ap.add_argument("src"); ap.add_argument("dst")
+    ap.add_argument("src")
+    ap.add_argument("dst")
     ap.add_argument("--max-kb", type=int, default=300)
     ap.add_argument("--format", choices=["JPEG", "WEBP"], default="JPEG")
-    ap.add_argument("--no-crop", action="store_true"); ap.add_argument("--no-deskew", action="store_true")
+    ap.add_argument("--no-crop", action="store_true")
+    ap.add_argument("--no-deskew", action="store_true")
     a = ap.parse_args()
     data, st = prepare(open(a.src, "rb").read(), max_bytes=a.max_kb * 1000, fmt=a.format,
                        do_crop=not a.no_crop, do_deskew=not a.no_deskew)

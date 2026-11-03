@@ -18,7 +18,7 @@ pass finds no digit boxes at all, a coarse position heuristic per field (header 
 body / footer band) is tried. Assumption: printed administrative letters; no
 handwriting.
 
-Confidence contract (Section 2.3 of the brief):
+Confidence contract (Section 2.3 of the requirements):
     high        Tesseract's digits == VLM's digits
     low         both read something, they differ -> `candidates` carries both
     unverified  Tesseract unavailable, or found no number to compare against

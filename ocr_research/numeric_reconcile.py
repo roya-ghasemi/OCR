@@ -269,7 +269,9 @@ def reconcile(fields: dict[str, str | None], reads, page_h: int, pol: Policy | N
                                         None if conf in ("high", "corrected") else
                                         ("vlm/classical reader disagree" if conf == "low" else "no digit region found on page"),
                                         decisions))
-            pieces.append(text[pos:m.start()]); pieces.append(resolved); pos = m.end()
+            pieces.append(text[pos:m.start()])
+            pieces.append(resolved)
+            pos = m.end()
         pieces.append(text[pos:])
         out_fields[f] = "".join(pieces)
 
