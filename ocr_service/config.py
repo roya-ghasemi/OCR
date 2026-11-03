@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Settings for the OCR service. Every setting is an environment variable
-`OCRS_<NAME>` with a documented default; `Settings().provenance()` is stamped into
-every benchmark file and `/health`.
+"""Settings for the OCR service, read from `<repo>/.env` (see `.env.example`); an
+environment variable `OCRS_<NAME>` overrides the file. A relative path in a setting is
+relative to the repository folder. `Settings().provenance()` is stamped into every
+benchmark file and `/health`.
 
 There is no model to configure: transcription is Tesseract (fas, eng) plus the
 in-repo CNN digit reader (`models/digit_cnn.npz`), CPU only.
@@ -15,6 +16,7 @@ import shutil
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from . import __version__
@@ -98,6 +100,18 @@ class Settings(BaseSettings):
     job_ttl_s: int = 86400
     request_timeout_s: float = 600.0
     log_level: str = "INFO"
+
+    @field_validator("tesseract_cmd", "tessdata_dir", "digit_model", "cache_dir", "spool_dir")
+    @classmethod
+    def _from_repo(cls, v: str | None) -> str | None:
+        """Empty means "use the default"; a relative path is taken from the repository folder,
+        so .env can say `models/tesseract` wherever the project is copied."""
+        if not v:
+            return None
+        if os.sep not in v and "/" not in v:
+            return v                        # a bare command name such as `tesseract`
+        p = Path(v)
+        return str(p if p.is_absolute() else REPO_DIR / p)
 
     def resolved_tesseract(self) -> tuple[str | None, str | None]:
         cmd = self.tesseract_cmd

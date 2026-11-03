@@ -87,6 +87,19 @@ PRINTED_AFTER_LABEL = 85.0
 # A token mixing Persian-Indic and ASCII digits — «۱7», «۱/2». No real page does this; it
 # is the recogniser reading a handwritten mark as whichever digit each stroke resembled.
 _MIXED_DIGITS = re.compile(r"(?=.*[۰-۹])(?=.*[0-9])")
+# A token in Latin script as the English model reads it: letters, digits and the marks of
+# e-mail addresses, URLs, codes and ranges («a-z», «info@site.ir», «bp7S-y6]5x»).
+_LATIN_TOKEN = re.compile(r"[A-Za-z0-9@._\-+:/#%&$()\[\]=*'\"!?,]+")
+# How sure the English model must be of a Latin token to put it in a Persian line, and how
+# unsure the Persian model must have been of what it read in the same place (E40).
+LATIN_KEEP_CONF = 80.0
+DIGITS_KEEP_CONF = 90.0
+DIGITS_UNSURE_CONF = 30.0
+# Latin letters the English model reports for Persian digits of the same shape: ۷ as «V»,
+# ۸ as «A», ۲ as «Y» or «r», ۱ as «I» or «l», ۵ as «O». A token made only of these is a
+# Persian number, not Latin text.
+_DIGIT_LOOKALIKES = set("AVYIlOorwfeqP")
+_PERSIAN_DIGIT = re.compile(r"[۰-۹٠-٩]")
 # Confidence under which a token that is not a known word is taken as unread rather than
 # read. Body text on the corpus runs 0.86-0.93; the handwritten header runs 0.49-0.68.
 UNREAD_CONF = 70.0
@@ -384,7 +397,9 @@ class Transcriber:
                 if len(_key(w.text)) <= 1 and gap(w, nb) >= h:
                     ws.pop(end)
 
-    def _candidates(self, page: Image.Image, ink: np.ndarray) -> list[Line]:
+    def _candidates(self, page: Image.Image, ink: np.ndarray) -> tuple[list[Line], list[Word]]:
+        """Readings that compete per line, and every Latin token the English model was sure of
+        (page coordinates), for `_keep_latin`."""
         boxes, _ = text_lines(ink)
         crops = [_crop(page, b) for b in boxes]
         offs = [(max(0, b[0] - 2), max(0, b[1] - 2)) for b in boxes]
@@ -396,7 +411,10 @@ class Transcriber:
             read = self._read_lines(ex, crops, (self.lang_fa, "eng"))
             cands = [L for f in layouts for L in f.result()]
             sparse = [L for f in text_only for L in f.result()]
+        latin: list[Word] = []
         for b, (ox, oy), wf, we in zip(boxes, offs, read[self.lang_fa], read["eng"]):
+            latin += [Word(w.text, w.conf, (w.box[0] + ox, w.box[1] + oy, w.box[2] + ox, w.box[3] + oy))
+                      for w in we if w.conf >= LATIN_KEEP_CONF and _LATIN_TOKEN.fullmatch(w.text)]
             for ws, lang in ((wf, "fas"), (we, "eng")):   # tags, not model names
                 if not ws:
                     continue
@@ -411,7 +429,49 @@ class Transcriber:
             return any(_NUMTOK.search(w.text) for w in L.words)
         numeric = [c for c in cands if has_digit(c)]
         return cands + [L for L in sparse
-                        if not has_digit(L) and not any(self._conflict(L, c) for c in numeric)]
+                        if not has_digit(L) and not any(self._conflict(L, c) for c in numeric)], latin
+
+    @staticmethod
+    def _keep_latin(rows: list[list[Line]], latin: list[Word], digit_boxes: list = ()) -> None:
+        """Put Latin text inside a Persian line back as it is printed.
+
+        A line is won as a whole by one reading, so on a Persian line with «a-z», «A-Z» or an
+        e-mail address in it the Persian model's guess at the Latin part survives: «2-» for
+        «a-z», «۸-2» for «A-Z». The English model reads those exactly, and is sure of them
+        where the Persian model was not. Such a token replaces the Persian model's reading
+        at the same place. A word in Persian letters is never replaced; Persian digits only by
+        a token with real Latin letters (not «V», «A», «Y», which are ۷, ۸, ۲ to the English
+        model) and only where the digit reader saw no Persian number (`digit_boxes`, working-image
+        coordinates); and a run of digits only where the Persian model read nothing usable (E40).
+        """
+        if not latin:
+            return
+        for row in rows:
+            for line in row:
+                if line.source == "line-eng":
+                    continue
+                for e in latin:
+                    if _yov(e.box, line.bbox) < 0.5 or _xov(e.box, line.bbox) < 0.8:
+                        continue
+                    hit = [i for i, w in enumerate(line.words) if _xov(w.box, e.box) > 0.5]
+                    if not hit:
+                        continue
+                    ws = [line.words[i] for i in hit]
+                    if any(w.text == e.text for w in ws):
+                        continue
+                    if any(_PERSIAN_CHAR.search(w.text) or w.conf >= e.conf for w in ws):
+                        continue
+                    letters = re.findall(r"[A-Za-z]", e.text)
+                    if letters:
+                        if len(letters) < 2 or set(letters) <= _DIGIT_LOOKALIKES:
+                            continue
+                        if (any(_PERSIAN_DIGIT.search(w.text) for w in ws)
+                                and any(_yov(d, e.box) > 0.5 and _xov(d, e.box) > 0.3 for d in digit_boxes)):
+                            continue                    # Persian digits the English model read as letters
+                    elif (e.conf < DIGITS_KEEP_CONF or any(w.conf >= DIGITS_UNSURE_CONF for w in ws)
+                          or any(_PERSIAN_DIGIT.search(w.text) for w in ws)):
+                        continue
+                    line.words[hit[0]:hit[-1] + 1] = [e]
 
     @staticmethod
     def _conflict(a: Line, b: Line) -> bool:
@@ -655,15 +715,19 @@ class Transcriber:
         timing["binarise_s"] = round(time.perf_counter() - t, 3)
 
         t = time.perf_counter()
-        rows = self._select(self._candidates(page, ink))
-        pieces = [p for r in rows for p in r]
+        cands, latin = self._candidates(page, ink)
+        rows = self._select(cands)
         timing["tesseract_s"] = round(time.perf_counter() - t, 3)
 
         t = time.perf_counter()
         reader = self.glyph_reader()
-        if reader is not None:
-            self._fix_numbers(pieces, reader.read_page(im), scale)
+        reads = reader.read_page(im) if reader is not None else []
         timing["digits_s"] = round(time.perf_counter() - t, 3)
+        self._keep_latin(rows, latin, [tuple(v * scale for v in r.box) for r in reads
+                                       if r.n_digits >= 2 and r.script != "latin"])
+        pieces = [p for r in rows for p in r]
+        if reader is not None:
+            self._fix_numbers(pieces, reads, scale)
 
         lines = self._finish_rows(rows)
         out_lines, numbers, unread = self._assemble(lines, scale)

@@ -1982,3 +1982,28 @@ better. So a digital image is read both ways and the transcript with more confid
 The screenshot: confidence mass 5.3 (paper) vs 77.3 (screen); every element of the form is
 returned, including the password and the button labels. Remaining errors there are short
 Latin runs inside a Persian line («a-z», «A-Z», «1-9»), read by the Persian model.
+
+## E40 — Latin text inside a Persian line, kept as printed
+
+**Date:** 2026-11-03 · **Trigger:** «a-z», «A-Z», «1-9» on a screenshot came back as «2-», «۸-2», «۱-»
+
+**Cause.** Each line is read by the Persian and the English model, but one reading wins the
+whole line. On a Persian line the Persian model's guesses at the Latin parts survive, although
+the English model read them exactly and with high confidence (a-z 93, A-Z 89 vs 0 and 3).
+
+**Fix.** After selection, a Latin token the English model read at ≥ 80 replaces the chosen
+reading at the same place when that reading is less confident. Guards, each added for a
+measured failure: a word in Persian letters is never replaced (dev `_16`: «۱۲مریم» → «VY»);
+a token needs two Latin letters not all of which look like Persian digits («A» is ۸, «V» is ۷:
+dev `_4`); where the digit reader found a Persian number of 2+ digits nothing is replaced
+(test `_12`: «۰/.۲۳» → «INY»); a digits-only token only where the Persian model read nothing
+usable (< 30) and contained no Persian digit.
+
+| | before | after |
+|---|--:|--:|
+| real letters dev 51 / test 33 | — | byte-identical transcripts |
+| rendered bilingual pages: CER | 23.69% | 19.92% |
+| … Latin words recovered | 72 / 125 | 96 / 125 |
+| rendered Persian pages: CER | 1.37% | 1.37% |
+
+Rendered pages: 17 better, 1 worse by one character.

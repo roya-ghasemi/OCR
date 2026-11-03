@@ -69,3 +69,29 @@ def test_a_number_from_the_digit_reader_reports_its_own_probability():
     _, numbers, _ = tr._assemble([Line([Word("مبلغ", 90.0, (60, 0, 100, 20)), w], (0, 0, 100, 20), "psm4")], 1.0)
     assert len(numbers) == 1
     assert numbers[0].source == "glyph" and numbers[0].confidence == 0.83
+
+
+def _row(*words):
+    ws = [Word(t, c, (x0, 0, x1, 20)) for t, c, x0, x1 in words]
+    return [[Line(ws, (min(w.box[0] for w in ws), 0, max(w.box[2] for w in ws), 20), "psm4")]]
+
+
+def test_latin_inside_a_persian_line_is_kept_as_printed():
+    rows = _row(("حروف", 90.0, 200, 260), ("2-", 0.0, 100, 140), ("کوچک", 92.0, 0, 80))
+    Transcriber._keep_latin(rows, [Word("a-z", 93.0, (98, 0, 142, 20))])
+    assert [w.text for w in rows[0][0].words] == ["حروف", "a-z", "کوچک"]
+
+
+def test_a_persian_word_is_never_replaced():
+    rows = _row(("۱۲مریم", 40.0, 100, 160))
+    Transcriber._keep_latin(rows, [Word("VY", 85.0, (100, 0, 160, 20))])
+    assert rows[0][0].words[0].text == "۱۲مریم"
+
+
+def test_persian_digits_read_as_letters_stay_persian():
+    rows = _row(("۸", 20.0, 100, 112))
+    Transcriber._keep_latin(rows, [Word("A", 90.0, (100, 0, 112, 20))])          # one letter: a digit shape
+    assert rows[0][0].words[0].text == "۸"
+    rows = _row(("۰/.۲۳", 20.0, 100, 160))
+    Transcriber._keep_latin(rows, [Word("INY", 90.0, (100, 0, 160, 20))], [(100, 0, 160, 20)])
+    assert rows[0][0].words[0].text == "۰/.۲۳"                                  # the digit reader saw a number

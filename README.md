@@ -83,6 +83,14 @@ recognised by its flat pixels and is also read through a screen route that keeps
 every colour, and the more confident of the two readings is returned (E39). `prep.screen`
 in the response says which one won.
 
+## English inside Persian text
+
+Every line is read by both the Persian and the English model. English words, codes, e-mail
+addresses and ranges inside a Persian line («a-z», «info@site.ir») are kept exactly as
+printed, never transliterated or translated: where the English model read a Latin token
+confidently and the Persian model was unsure at the same place, the Latin token is used
+(E40). Persian words and Persian-digit numbers are never replaced.
+
 ## Measured accuracy
 
 Real scanned letters with hand-checked ground truth (`ocr_eval/ground_truth_real_fixed_v2.jsonl`),
