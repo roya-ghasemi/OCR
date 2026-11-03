@@ -39,7 +39,7 @@ going forward; retained only as the "before" side of the Phase 1 comparison.
 | Bilingual Latin/digit segment CER | 32.85% |
 | Mean latency | 3.15 s/img (failures INCLUDED; 422s took ~17.7 s each) |
 
-Note: the WER figure quoted in the remediation brief (22.38%) does not match this
+Note: the WER figure quoted in the remediation plan (22.38%) does not match this
 run's 28.17%. Unresolved; the Phase 1 harness supersedes both.
 
 ## E001 — Dehkhoda corrector v1 (any single edit)
@@ -111,7 +111,7 @@ text, not fabrication). Orphan capture 79.5% (31/39 schema-homeless segments cap
 misfiled). Digit ordering: 40 exact / 1 reversed / 3 permuted / 2 partial — reversal
 hypothesis NOT supported. Latency ok-only p50 1.86 / p90 2.29 / p99 2.56 / mean 1.93s.
 
-The 22.38% WER in the remediation brief is traced: it is `wer_before` in
+The 22.38% WER in the remediation plan is traced: it is `wer_before` in
 `dehkhoda/results_correction.json`, produced by `eval_correction.py`'s `corpus_wer` over a
 different subset than run_eval.py's 28.17%. Both are superseded — Phase 1 does not quote a
 single flat WER; it reports the decomposition above.
@@ -120,7 +120,7 @@ Conclusion feeding Phase 2/3 (not acted on): reading is good; the gains are in o
 structure — receiver-null, contact routing, subject-label stripping, sender disambiguation,
 and a home for schema-orphaned content.
 
-## E005 — Phase 0 (revised brief): Dehkhoda ablation, name-leak verdict, GT audit
+## E005 — Phase 0 (revised plan): Dehkhoda ablation, name-leak verdict, GT audit
 
 **Date:** 2026-09-01 · **Split:** whole set for the ablation (post-processing A/B, not
 tuning); dev/test reported separately · **Verdict:** Dehkhoda stage REMOVED; D1 and D2
@@ -154,7 +154,7 @@ is present in the raw `/ocr` output, which no dictionary ever touched: `احتم
 0 occurrences in GT. (c) The shipped arm cannot reach any of them — the watchlist counts
 are byte-identical with the stage on and off.
 
-**Removed anyway**, on different grounds than the brief assumed: 2 token fixes for a
+**Removed anyway**, on different grounds than the plan assumed: 2 token fixes for a
 311 MB dependency and a 154,396-word classical lexicon, with every more-aggressive setting
 damaging output (`پروژه → پروره` ×11, `آید → آبد` ×12, `رضاى → رضاب` on a person's name)
 and one boolean flag away from being enabled. `main.py` no longer loads it; guard test in
@@ -173,7 +173,7 @@ so "keep it in git history" is not available and deleting would destroy the evid
   36: GT contains a name token in 15, predictions contain one in 11, and
   **pred-only cases = 0.** The model never emits a name absent from that image's GT.
 
-The brief's "different templates" premise is also wrong — the dataset has 2 layouts, not
+The requirements' "different templates" premise is also wrong — the dataset has 2 layouts, not
 5–6 (E003). Locked by `test_no_prediction_contains_a_value_absent_from_its_ground_truth`.
 
 ### GT audit (0.8) — a new, larger defect than the ones being hunted
@@ -217,7 +217,7 @@ forward.
 ### Exit criteria not met
 
 **0.9 reality-check set does not exist.** It requires 20–30 real scanned/photographed
-Persian documents with hand-verified GT; the brief left `{{source}}` unfilled and no such
+Persian documents with hand-verified GT; the plan left `{{source}}` unfilled and no such
 documents are in the repo. This cannot be synthesised — a synthetic stand-in would defeat
 the entire purpose of the set. **Blocked on the user.**
 
@@ -243,7 +243,7 @@ Raw: `ocr_eval/predictions_real.jsonl`, `ocr_eval/results_real_gtfree.json`
 
 ### max_tokens_4096 — 2026-09-02 (PARTIAL, n=43 of 54)
 
-**Hypothesis (from the remediation brief):** the 422s are token-budget exhaustion,
+**Hypothesis (from the remediation plan):** the 422s are token-budget exhaustion,
 so doubling `MAX_TOKENS` should raise the usable-output rate. Listed there as the
 leading hypothesis, to be tested first.
 
@@ -484,7 +484,7 @@ failure is sampling-dependent rather than a hard property of the document.
 | + `MAX_RETRIES=1` | **100.00%** | **4.42s** |
 
 **+85.2 pp usable-output and a 5× latency reduction, from three changes, none of
-which was the fix the brief predicted.**
+which was the fix the plan predicted.**
 
 ### TEST_SPLIT_rp12_repair_retry — 2026-09-02T12:52:46+00:00
 
@@ -1354,9 +1354,9 @@ length unchanged throughout. Tenth look at the test split.
 
 ## E26 — 2026-10-01 — the page was never cut out of the photograph
 
-**Brief.** Two pages supplied by the user: a Sabz Gostar letter (scan, blue stamp over the
+**Request.** Two pages supplied by the user: a Sabz Gostar letter (scan, blue stamp over the
 signature block, handwritten number/date, binder rings down the left margin) and a phone
-photo of a kashida-justified printed page lying on a desk. Rule from the brief: *correct
+photo of a kashida-justified printed page lying on a desk. Rule from the requirements: *correct
 and incomplete beats complete and wrong* — nothing may be invented, least of all numbers.
 
 **Finding that framed everything else.** `preprocess.py` — `find_page`, `estimate_skew`,
@@ -1370,7 +1370,7 @@ output, one of them a complete fabricated table row («18 8 تا دا که ۱811
 
 `ocr_eval/pages/` — three pages with a hand-typed transcript of **everything printed on
 them**, scored by `ocr_eval/tools/bench_pages.py`: CER, **WER**, *unsupported lines*
-(predicted lines matching nothing in the GT — the brief's "no nonsense text" criterion,
+(predicted lines matching nothing in the GT — the requirements' "no nonsense text" criterion,
 which a page-wide CER barely registers), and structure (lines / paragraphs / tables).
 The corpus benchmark measures none of these.
 
@@ -1391,7 +1391,7 @@ The corpus benchmark measures none of these.
 | low-resolution photo | 9.00% → **8.15%** | 25.23% → 26.15% | 0 → 0 |
 
 Image 2 now reports **11 lines, 1 paragraph, 0 tables** — exactly what the page has, and
-exactly the brief's structural acceptance criterion. The three fabricated tables and the
+exactly the requirements' structural acceptance criterion. The three fabricated tables and the
 Latin junk are gone because the desk no longer reaches the recogniser.
 
 ### Measured — dev 51 (regression guard)
@@ -1459,7 +1459,7 @@ Three changes, each measured on the three-page corpus and guarded on dev 51.
 
 `_cells` called any gap wider than 1.2 line heights a cell boundary. Justified Persian is
 stretched by **widening its spaces**, so one line of prose has gaps as wide as any table's:
-the brief's one-paragraph page reported **two tables**, the letter three, the prose photo
+the requirements' one-paragraph page reported **two tables**, the letter three, the prose photo
 one. A column is distinguished from a stretched space by being in the *same place on the
 next row*, so `_table_cuts` now keeps a gap only when the line above or below breaks within
 0.6 line heights of it.
@@ -1519,7 +1519,7 @@ read or a word already in the list, so nothing can be assembled and no word inve
 
 ## E28 — 2026-10-01 — what nobody read is shown, not guessed
 
-The brief's first acceptance criterion is that no nonsense line appears in the output. Two
+The requirements' first acceptance criterion is that no nonsense line appears in the output. Two
 sources remained after E27, and neither is a reading problem.
 
 ### A handwritten form value is not text
@@ -1527,7 +1527,7 @@ sources remained after E27, and neither is a reading problem.
 «شماره:» and «تاریخ:» are printed; what follows them is written by hand, and the recogniser
 answers with whichever letters each stroke resembled — «شماره: ۱7 یک», «تاریخ: امه ۱/2».
 `Transcriber._unread` keeps the printed label and reports the value as a region, with its
-box and what was offered, in a new `unread[]` on the response. The brief is explicit that a
+box and what was offered, in a new `unread[]` on the response. The requirements are explicit that a
 handwritten region must never reach the body text.
 
 A token counts as read when it is a word in the list, a clean number, or Latin, so this can
@@ -1588,8 +1588,8 @@ the point of declining to guess: the value is not invented, it is put in front o
   «میکائیل» are ambiguous dot repairs the lexicon cannot settle.
 * The letter's e-mail line still ends «govareshk ۱۲” ;» — validation of e-mail, phone and
   date shapes is not implemented.
-* Image 2 CER 3.90% against the brief's 2% target; the remainder is kashida.
-* No cache (the brief's section 5) and no font training.
+* Image 2 CER 3.90% against the requirements' 2% target; the remainder is kashida.
+* No cache (the requirements' section 5) and no font training.
 
 ## E29 — 2026-10-01 — the fine-tune reads photographs better and the letter worse
 
@@ -1695,7 +1695,7 @@ Measured per text line, on the page the recogniser is actually handed:
 | | line height | >240 | <40 | 60–200 |
 |---|---:|---:|---:|---:|
 | E29 degraded synthetic | 53 px | 0.539 | 0.115 | 0.086 |
-| the brief's letter (CamScanner) | **73 px** | **0.817** | 0.068 | 0.056 |
+| the reference letter (CamScanner) | **73 px** | **0.817** | 0.068 | 0.056 |
 | tech_prose (phone photo) | 26 px | 0.000 | 0.000 | **0.639** |
 | spring_prose (phone photo) | 31 px | 0.000 | 0.001 | **0.842** |
 
@@ -1752,7 +1752,7 @@ knowing.
 
 Per field, every one improves or holds except `sender` (+0.29 pp, already the worst field at
 53% — the letterhead, D67). The lower len ratio says the model returns slightly *less* text;
-with CER down, it is being more conservative, which is the direction the brief asks for, but
+with CER down, it is being more conservative, which is the direction the requirements ask for, but
 it is a real difference and not a rounding artefact.
 
 ### Measured — three pages
@@ -1798,7 +1798,7 @@ both corpora — 84 documents — all three headline metrics move the same way.
 
 The len ratio falls by about two points on both splits: the model returns slightly less text.
 With CER down and atom recall up, what it stops returning was wrong, which is the direction
-the brief asks for. It is still a real difference and is recorded rather than explained.
+the requirements ask for. It is still a real difference and is recorded rather than explained.
 
 ### The letter page regression, and what it is not
 
@@ -1823,7 +1823,7 @@ items by chance is one in six.
 What stands is narrower and still matters: on that line the model reorders and invents a
 number. The service already declines to vouch for those particular digits — the digit reader
 returns confidence 0.268 and 0.000 for two of them under *either* model, and they are counted
-in «۵ عدد تأیید نشده». The brief's rule is doing its job: the number is shown and flagged,
+in «۵ عدد تأیید نشده». The requirements' rule is doing its job: the number is shown and flagged,
 not asserted.
 
 ## E37 — 2026-10-07 — one model cannot hold print and handwriting at once
@@ -1898,5 +1898,51 @@ mixed training cannot do.
 And nastaliq is not in this data at all. The handwriting split is everyday cursive — upright,
 separated words, naskh-like forms. Images 15 and 17 are nastaliq calligraphy: steeply sloped,
 heavily ligatured, a different letterform geometry. Training on the former cannot teach the
-latter. A nastaliq face (`IranNastaliq`) is now in `ocr_service/fonts/` and visible to Pango,
+latter. A nastaliq face (`IranNastaliq`) is now in `ocr_train/fonts/` and visible to Pango,
 so the synthetic route that fixed kashida in E29 is open for it.
+
+## E38 — batched line reads, and a sparse-text pass kept out of the numbers
+
+**Date:** 2026-11-03 · **Split:** dev for every choice, test once per finalist · cache off
+
+### Batched Tesseract calls (no change to output)
+
+Each line crop was read by its own tesseract process — about 110 processes per page, most of
+the CPU going to process start-up and model loading. `tesseract.py` now writes a batch of
+crops to a list file and reads it with one process; the TSV `page_num` maps the rows back.
+The LSTM recogniser keeps no state between pages, so the words and confidences are the same:
+**all 51 dev transcripts byte-identical** to the previous build. Processes per page ~110 → ~35,
+dev p50 4.0 s → 2.9 s. Layout passes now run in the same pool as the line batches, and
+`OMP_THREAD_LIMIT=1` stops each process from spawning threads that compete with the others.
+
+### Candidate sets tried on dev (coverage CER / atom recall / whole numbers)
+
+| variant | CER | atoms | numbers |
+|---|--:|--:|--:|
+| baseline (psm 3,4,6) | 12.86% | 86.07% | 78.79% |
+| psm 13 for every line, not only unsure ones | 12.87% | 86.07% | 78.79% |
+| no English line reads | 16.86% | 80.41% | 70.80% |
+| psm 3,4,6,11 | 12.37% | 86.36% | 78.51% |
+| psm 3,4,11 | 12.54% | 86.50% | 79.06% |
+| psm 3,4,6,11,12 | 12.42% | 85.78% | 78.24% |
+| psm 11 only as gap filler (no conflict with any line) | 12.86% | 86.07% | 78.79% |
+| psm 11 lines without digits | 12.43% | 86.07% | 78.79% |
+| **psm 11 lines without digits, outside any region a digit reading claims** | **12.62%** | **86.07%** | **78.79%** |
+
+On test, 3,4,6,11 and 3,4,11 both lowered CER but cost whole numbers (69.53% → 68.82% and
+68.46%), and "lines without digits" still cost 1.8 pp: a digit-free psm 11 line could displace
+a reading that held the number. Psm 11 splits number groups apart; it is good at words.
+
+**Shipped:** psm 11 (`OCRS_TEXT_PSMS`) competes only where no candidate reading holds a digit.
+Numbers are decided exactly as before.
+
+| | dev before | dev after | test before | test after |
+|---|--:|--:|--:|--:|
+| coverage CER | 12.86% | 12.62% | 17.57% | 17.23% |
+| body_text field CER | 18.97% | 18.44% | 32.48% | 29.08% |
+| atom recall | 86.07% | 86.07% | 81.22% | 81.22% |
+| whole numbers exact | 78.79% | 78.79% | 69.53% | 69.53% |
+| p50 s/page | 4.0 | 3.0 | 4.1 | 3.1 |
+
+Per document: dev 20 better / 7 worse (largest loss 2 characters), test 12 better / 4 worse
+(largest loss 9 characters).

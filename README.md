@@ -1,36 +1,27 @@
 # Persian OCR — full-text transcription service
 
-Upload **any** image — an administrative letter, a page of prose, a table, a form —
-and get back every printed line in reading order, with the numbers read by a
-dedicated Persian digit reader. When the page is a letter, the usual letter fields
-are also cut out of the transcript. Nothing is generated: every character in the
-output was recognised from the pixels.
+Upload any image — an administrative letter, a page of prose, a table, a form — and get
+back every printed line in reading order, with numbers checked by a dedicated Persian digit
+reader. When the page is a letter, the letter fields are also cut out of the transcript.
+Every character in the output was recognised from the pixels; nothing is generated.
 
-CPU only. No GPU, no model server, no LM Studio.
+CPU only. Runtime models total about 24 MB (see [Models](#models)).
 
-## راه‌اندازی سریع (فارسی)
+## راه‌اندازی سریع
 
 ```powershell
 cd D:\OCR_ghasemi\ocr
 .\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000
 ```
 
-وقتی پیام `Application startup complete.` آمد (حدود ۱ ثانیه)، در مرورگر
-**http://127.0.0.1:8000/** را باز کنید، تصویر را بکشید و رها کنید. متن صفحه همان‌طور که
-روی کاغذ چیده شده برمی‌گردد: پاراگراف‌های راست‌به‌چپ، جدول به‌صورت جدول واقعی، فیلدهای
-نامه در بالا، و هر عدد با درستی گروه‌های سه‌رقمی‌اش.
-
-برای کار با API، http://127.0.0.1:8000/docs را باز کنید و `POST /ocr` → **Try it out**.
-
-از خط فرمان:
+بعد از پیام `Application startup complete.` آدرس **http://127.0.0.1:8000/** را در مرورگر باز
+کنید و تصویر را بکشید و رها کنید. متن صفحه با همان چیدمان کاغذ برمی‌گردد: پاراگراف‌های
+راست‌به‌چپ، جدول به‌صورت جدول، فیلدهای نامه در بالا و هر عدد با منبع و درستی گروه‌های
+سه‌رقمی‌اش. مستندات API در http://127.0.0.1:8000/docs است.
 
 ```powershell
 curl.exe -F "file=@exampel_paper.png" http://127.0.0.1:8000/ocr
 ```
-
-برای خاموش کردن: `Ctrl + C`.
-
----
 
 ## What you get
 
@@ -39,187 +30,150 @@ curl.exe -F "file=@exampel_paper.png" http://127.0.0.1:8000/ocr
 ```json
 {
   "doc_id": "letter.jpg",
-  "text": "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش ...\nسلام علیکم؛\nاحتراما عطف به نامه ...\n\nآدرس: مشهد - ...",
-  "lines":   [{"text": "جناب آقای دکتر سلطانی", "bbox": [612, 402, 1480, 455], "confidence": 0.91, "source": "psm4", "paragraph": 0, "cells": []}],
-  "numbers": [{"value": "۱۴۰۳/۰۹/۲۰", "value_ascii": "1403/09/20", "bbox": [...], "source": "glyph", "confidence": 0.82, "grouping": "none"},
-              {"value": "۱۲۵,۰۰۰,۰۰۰", "value_ascii": "125,000,000", "bbox": [...], "source": "glyph", "confidence": 0.84, "grouping": "ok"}],
+  "text": "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش ...\nسلام علیکم؛\n...",
+  "lines":   [{"text": "جناب آقای دکتر سلطانی", "bbox": [612, 402, 1480, 455], "confidence": 0.91,
+               "source": "psm4", "paragraph": 0, "cells": []}],
+  "numbers": [{"value": "۱۲۵,۰۰۰,۰۰۰", "value_ascii": "125,000,000", "bbox": [...],
+               "source": "glyph", "confidence": 0.84, "grouping": "ok"}],
   "is_letter": true,
-  "fields": {"sender": null, "receiver": "جناب آقای دکتر سلطانی\nمعاون محترم پژوهش ...", "subject": null,
-             "body_text": "سلام علیکم؛\n...", "contact_info": "آدرس: ...\nتلفن: ..."},
+  "fields": {"sender": null, "receiver": "...", "subject": null, "body_text": "...", "contact_info": "..."},
   "needs_review": true,
   "review_reasons": ["3 low-confidence line(s)", "5 number(s) not confirmed by the digit reader"],
-  "skew_deg": 0.0, "image_size": [2304, 3016], "timing": {"total_s": 2.8}, "service": {...}
+  "unread": [], "validations": [],
+  "skew_deg": 0.0, "image_size": [2304, 3016], "timing": {"total_s": 2.4}, "service": {...}
 }
 ```
 
 * `text` — the whole page, lines in reading order, paragraphs separated by a blank line.
-  **This is the primary output.**
-* `lines` — each line with its box, confidence, and which reading won.
-* `numbers` — every number with `source`: `glyph` (digits confirmed by the CNN digit
-  reader) or `tesseract` (not confirmed — check it).
-* `fields` — only for letters (`is_letter`), and only **verbatim lines** of `text`: a
-  field that is not printed is `null`. `subject` is only the text after a printed
-  `موضوع:` label. On a page that is not a letter every field is `null`.
-* `needs_review` / `review_reasons` — low-confidence lines or unconfirmed numbers.
+* `lines` — each line with its box, confidence, and which reading won; `cells` when the
+  line is a table row.
+* `numbers` — `source` is `glyph` (confirmed by the CNN digit reader) or `tesseract`
+  (not confirmed). `grouping` is `broken` when a thousands group is not three digits: a
+  digit was lost, so the amount must not be trusted. It is flagged, never repaired.
+* `fields` — letters only, and only verbatim lines of `text`; a field that is not printed
+  is `null`. On a page that is not a letter every field is `null`.
+* `unread` — regions that were not transcribed (handwriting after a form label, marks,
+  an unreadable letterhead), with what the recogniser offered.
+* `needs_review` / `review_reasons` — why a human should look.
 
-* `numbers[].grouping` — `ok` when a grouped amount's groups are all three digits
-  («۱۲۵,۰۰۰,۰۰۰»), **`broken`** when one is not («۳۲۱/۰۰۰/۰۰», «۱۶۵.۰۰۰۰۰۰»): a digit was
-  lost or run together, so the amount must not be trusted. It is flagged, never
-  repaired — filling the gap in would mean printing a digit nobody read. `none` for
-  dates, reference, account and phone numbers.
-* `lines[].cells` — a line's pieces when a wide gap splits it (a table row), in reading
-  order; empty on ordinary prose. This is what the page at `/` rebuilds tables from.
-* `glyph_px` — the text height in the image **as supplied**. Under ~20 the dots that
-  separate ب/ی/پ/ن and ح/خ/ج are not in the file, so typos like «صبخگاهی» for «صبحگاهی»
-  are unavoidable; the service resamples such a page to ~30 px and says so in
-  `review_reasons`. A 300 DPI rescan is the actual fix.
-
-Other endpoints: `GET /` (the upload page), `GET /health` (Tesseract, digit model, their
-hashes), `GET /jobs/{id}` (queued mode), `GET /docs` (interactive API form).
+Other endpoints: `GET /` (upload page), `GET /healthz` (liveness), `GET /health`
+(readiness: engine, model hashes, cache, queue), `GET /jobs/{id}` (queued mode),
+`GET /docs`.
 
 ## How it works
 
 ```
-image → deskew (≥1°) → binarise + remove rules/specks
-      → line candidates: Tesseract layout psm 3, 4, 6  +  own line finder, kashida-squeezed,
-                         read with psm 7/13 (fas, eng)
-      → best reading per physical line → table cells ordered right-to-left
-      → CNN digit reader replaces number tokens it confirms → junk-line filter
-      → thousands grouping checked → dot confusions repaired against the Persian word list
-      → text + lines + numbers  →  letter fields cut out by rules (letters only)
+image → crop the sheet, remove blue stamps → deskew (≥1°) → binarise, remove rules/specks
+      → candidates: Tesseract layout passes (psm 3, 4, 6; psm 11 for lines without digits)
+                    +  own line finder, each line
+                    read with psm 7/13 in Persian and English (batched per process)
+      → best reading per physical line → CNN digit reader confirms number tokens
+      → table cells, paragraphs, dot-confusion repair, Persian comma
+      → text + lines + numbers → letter fields by rules (letters only)
 ```
 
-Code: `ocr_service/transcribe.py` (recognition), `ocr_service/letter_fields.py`
-(fields), `ocr_service/pipeline.py`, `ocr_service/api.py`,
-`ocr_service/static/index.html` (the page at `/`). The reasoning behind every
-step, with the measurement that justified it, is in the `transcribe.py` docstring and
-experiments **E19** and **E20** in `ocr_eval/experiments.md`.
+Details and module map: [ARCHITECTURE.md](ARCHITECTURE.md). Every design decision and the
+measurement behind it: `ocr_eval/experiments.md`.
 
-## Measured accuracy (E20)
+## Measured accuracy
 
-Real scanned letters with hand-checked ground truth (`ocr_eval/ground_truth_real_fixed_v2.jsonl`).
-Tuned on dev only. "Previous" is the Qwen2.5-VL service this replaces, on the same documents.
+Real scanned letters with hand-checked ground truth (`ocr_eval/ground_truth_real_fixed_v2.jsonl`),
+51 dev / 33 test documents. Settings are tuned on dev only; test is the check.
 
-| | dev (51) previous | dev (51) **now** | test (33) previous | test (33) **now** |
+| | dev 1.0 | dev **1.1** | test 1.0 | test **1.1** |
 |---|---:|---:|---:|---:|
-| page text error (coverage CER) | 28.5% | **14.7%** | 24.7% | **18.1%** |
-| letter body text error | 32.9% | **11.3%** | 26.8% | **17.4%** |
-| contact/address line error | 21.0% | **16.1%** | 24.5% | **14.6%** |
-| digit groups found | 70.8% | **83.6%** | 52.0% | **80.6%** |
-| whole numbers exact | 54.8% | **75.8%** | 36.2% | **68.8%** |
-| text recovered (length ratio) | 0.80 | **0.95** | 0.84 | **0.92** |
-| seconds per page (p50) | ~8–10 (GPU) | **2.9 (CPU)** | ~8 (GPU) | **3.0 (CPU)** |
+| page text error (coverage CER) | 12.86% | **12.62%** | 17.57% | **17.23%** |
+| letter body text error | 18.97% | **18.44%** | 32.48% | **29.08%** |
+| receiver error | 13.22% | **13.17%** | 15.05% | **14.75%** |
+| digit groups found | 86.07% | 86.07% | 81.22% | 81.22% |
+| whole numbers exact | 78.79% | 78.79% | 69.53% | 69.53% |
+| text recovered (length ratio) | 0.927 | **0.934** | 0.864 | **0.870** |
+| seconds per page (p50, 14-core CPU) | 4.0 | **3.0** | 4.1 | **3.1** |
+| Tesseract processes per page | ~110 | **~35** | | |
 
-**Still not money-safe:** about 1 in 4 whole numbers has a wrong digit somewhere (was 1
-in 3 before E20). Use `numbers[].grouping == "broken"` — which never fires on a correct
-amount in the whole corpus — together with `numbers[].source == "glyph"` and
-`needs_review`. The service never repairs a number it cannot read; it says so instead.
+1.1 changes: line crops are read in batches (one process per batch instead of one per
+line, identical output), and a sparse-text pass (psm 11) competes in regions without
+digits (E38). Benchmark files: `ocr_eval/benchmarks/bench_fulltext_{dev,test}.json`.
 
-Known limits (open defects D67–D69 in `ocr_eval/error_register.md`):
-stylised letterhead fonts on coloured banners are not read (`sender` is usually null);
-handwriting is not read; text under a stamp or signature can be lost; photos with
-strong perspective read worse; `subject` is null unless a `موضوع:` line is printed.
-**Captures under ~20 px text height produce dot confusions** (ب/ی/پ/ن, ح/خ/ج) that no
-post-processing can undo — the service upsamples and flags them (D76). A spell-corrector
-was built to the `dehkhoda/REMOVED.md` policy and measured for exactly this: 3 fixes
-against 11 corruptions, including a year and two proper nouns, and no candidate at all
-for the reported word. It is not shipped (D77).
+**Not money-safe on its own:** about 1 in 4 whole numbers still has a wrong digit. Use
+`numbers[].grouping == "broken"`, `numbers[].source == "glyph"` and `needs_review`.
 
-## Any image, not just letters
+Known limits (open defects in `ocr_eval/error_register.md`): stylised letterheads on
+coloured banners are not read (`sender` is usually null); handwriting is not read; text
+under a stamp or signature can be lost; strong perspective reads worse; captures under
+~20 px text height lose the dots that separate ب/ی/پ/ن and ح/خ/ج — the service upsamples
+and flags them, but a 300 DPI scan is the real fix.
 
-A letter gets its five fields cut out of the transcript; **anything else — prose, a book
-page, a receipt, a table, a photo with text in it — gets every line, top to bottom, in
-reading order, with paragraphs kept and tables rebuilt.** On a page that is not a letter
-`is_letter` is false and the five fields are null *by design* (they are never invented,
-D65) — the whole page is in `text` and `lines`, and the page at `/` says so rather than
-looking empty. Guard: `test_a_page_that_is_not_a_letter_still_comes_back_whole_and_in_order`.
+## Models
 
-Measured on a general-prose page (`ocr_eval/samples/`, hand-typed transcript, 325 words):
-CER 9.2%, word recall 75.7%, all 23 lines and 4 paragraphs in order — on a 12 px scan
-that should have been captured at 300 DPI.
+| file | size | what it does |
+|---|---:|---|
+| `tessdata/fas_custom.traineddata` | 3.3 MB | Persian recogniser, fine-tuned here (`ocr_train/`), default |
+| `fas.traineddata` (tessdata_best) | 3.3 MB | stock Persian model, rollback with `OCRS_LANG_FA=fas` |
+| `eng.traineddata` (tessdata_fast) | 4.1 MB | Latin runs inside Persian text |
+| `ara.traineddata` (tessdata_best) | 12.6 MB | optional re-read of Arabic pages |
+| `models/digit_cnn.npz` | 0.6 MB | Persian/Latin digit reader (numpy inference, no torch) |
 
-```powershell
-.\venv312\Scripts\python.exe ocr_eval\tools\score_sample.py
-```
+There is no neural network server and no GPU. The 7B vision-language models used before
+2026-09-27 were removed (see History).
 
-## The page at `/`
+## Setup
 
-http://127.0.0.1:8000/ — drop an image in and the page comes back laid out as it is
-printed: the letter's fields on top, right-to-left justified paragraphs, and a real
-HTML table wherever the page has one (consecutive lines that split into aligned cells —
-`lines[].cells`). Beside it, every number with its source and its thousands-grouping
-verdict, and a switch that lays the line and cell boxes over the original scan. There is
-also a raw-text view and the full JSON, both copyable.
-
-One file, `ocr_service/static/index.html` — plain HTML, CSS and JavaScript, no CDN and
-no build step, so it works on a server with no internet access.
-
-## Spelling: dots, and only dots
-
-A low-resolution capture loses the marks that separate ب/پ/ت/ث/ن/ی, ج/چ/ح/خ and س/ش, so
-«صبحگاهی» comes back «صبخگاهی». After the page is read, each word the reader was **unsure
-of** is checked against Tesseract's own Persian word list (13,892 words, shipped in
-`ocr_service/data/`): a word is replaced only by one that is **identical once every letter
-is folded onto its mark group**, and only when exactly one such word exists, one mark
-moves, and the length is unchanged.
-
-That is much narrower than spell-checking, deliberately. «صبخگاهی»→«صبحگاهی» is reachable;
-«شادی»→«هادی» is not, because ش and ه are different shapes rather than the same shape with
-different dots. **Digits and Latin are never touched**, and a word the reader was confident
-of is never touched.
-
-Measured (E24): dev coverage CER 14.65% → 14.61%, numbers and text length unchanged; the
-low-resolution prose page 9.24% → 9.00% CER, word recall 75.7% → 76.9%. All 27 changes on
-dev were audited by hand: 23 correct, 1 wrong, 3 ambiguous. Switch it off with
-`OCRS_SPELLFIX=0`; `/health` reports whether the list loaded.
-
-## Setup (once)
-
-Needs Python 3.12 (`venv312`), Tesseract 5 with the Persian/English `tessdata_best`
-models, and the digit model `models/digit_cnn.npz`.
+Python 3.12, Tesseract 5, and the models above.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File deploy\install_tesseract.ps1
-.\venv312\Scripts\python.exe -m pip install -r requirements-service.txt
+.\venv312\Scripts\python.exe -m pip install -r requirements.txt      # service + tests + eval
 ```
 
-`tessdata/` and `models/` are found automatically in the repo (or in the main checkout
-when running from a git worktree). Check with `GET /health`: `"status": "ok"`.
+`requirements-service.txt` is the runtime only (what the Docker image installs);
+`requirements-train.txt` adds training. `GET /health` must report `"status": "ok"`.
 
 ## Configuration
 
-Every setting is an environment variable `OCRS_<NAME>` (see `ocr_service/config.py`):
-`TESSERACT_CMD`, `TESSDATA_DIR`, `DIGIT_MODEL`, `LAYOUT_PSMS` (default `3,4,6`),
-`DESKEW_MIN_DEG` (1.0), `MIN_LINE_CONF` (30), `NUMBER_MIN_PROB` (0.6), `WORKERS` (8),
-`LETTER_FIELDS` (1), `SPELLFIX` (1), `MAX_UPLOAD_MB` (25), `ASYNC_MODE`, `REDIS_URL`.
+Every setting is an environment variable `OCRS_<NAME>` (`ocr_service/config.py`):
+`LANG_FA` (`fas_custom`), `LANG_AR` (`ara`, empty disables), `TESSERACT_CMD`, `TESSDATA_DIR`,
+`DIGIT_MODEL`, `LAYOUT_PSMS` (`3,4,6`), `TEXT_PSMS` (`11`), `WORKERS` (8 Tesseract processes per page),
+`MAX_CONCURRENT_PAGES` (2), `DESKEW_MIN_DEG` (1.0), `MIN_LINE_CONF` (30),
+`NUMBER_MIN_PROB` (0.6), `LETTER_FIELDS` (1), `SPELLFIX` (1), `MAX_UPLOAD_MB` (25),
+`CACHE` (1), `CACHE_DIR`, `ASYNC_MODE` (0), `REDIS_URL`, `SPOOL_DIR`.
 
-## Queued mode and deployment
+## Deployment
 
-```powershell
-set OCRS_ASYNC_MODE=1
-.\venv312\Scripts\python.exe -m celery -A ocr_service.tasks worker --pool=solo -l info
-.\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --port 8000
+```bash
+docker compose -f deploy/docker-compose.yml up -d --build
 ```
 
-`POST /ocr` then returns `202 {job_id}`; poll `GET /jobs/{job_id}`. Production:
-`docker compose -f deploy/docker-compose.yml up --build` (nginx → API → Redis → workers, CPU only).
+nginx → API (enqueues) → Redis → Celery workers, CPU only. The image contains only the
+service package and the runtime models (`.dockerignore` is an allow-list); downloaded
+models are pinned and sha256-checked; the container runs as a non-root user. Bare-metal
+(systemd) and operations: [RUNBOOK.md](RUNBOOK.md).
 
-## Evaluation
+## Development
 
 ```powershell
+.\venv312\Scripts\python.exe -m ruff check .
+.\venv312\Scripts\python.exe -m pytest
 .\venv312\Scripts\python.exe ocr_eval\tools\bench_fulltext.py --split dev    # tune here
 .\venv312\Scripts\python.exe ocr_eval\tools\bench_fulltext.py --split test   # final check only
-.\venv312\Scripts\python.exe -m pytest -q
 ```
 
-Writes `ocr_eval/benchmarks/bench_fulltext_<split>.json` (per-document transcript,
-fields, scores, and the previous service's scores on the same documents).
+CI (`.github/workflows/ci.yml`) runs lint, the tests with Tesseract installed, and builds
+the image.
+
+| folder | contents |
+|---|---|
+| `ocr_service/` | the service (the only package that is deployed) |
+| `ocr_train/` | Tesseract fine-tuning pipeline |
+| `ocr_research/` | digit-CNN training and earlier approaches kept for comparison |
+| `ocr_eval/` | ground truth, benchmarks, experiment log, reports |
+| `deploy/` | Dockerfile, compose, nginx, systemd unit, Windows installer |
+| `docs/history/` | reports from the vision-language-model period |
 
 ## History
 
-Until 2026-09-27 this repo served a vision-language model (coreOCR-7B, then
-Qwen2.5-VL-7B) that returned five letter fields as JSON. It was removed in E19: it
-truncated long pages at a 1,400-character grammar cap, invented senders/receivers for
-pages that are not letters, and scrambled right-to-left word order. The reports of
-that period (`FINAL_REPORT*.md`, `BRIEF_NEXT.md`, `ocr_eval/experiments.md` E0–E18)
-describe that system; its code is in git history.
+Until 2026-09-27 the service ran a vision-language model (coreOCR-7B, then Qwen2.5-VL-7B)
+that returned five letter fields as JSON. It was replaced (E19) because it truncated long
+pages, invented senders and receivers for pages that are not letters, and scrambled
+right-to-left word order. Reports from that period are in `docs/history/` and experiments
+E0–E18 of `ocr_eval/experiments.md`.

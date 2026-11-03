@@ -72,7 +72,7 @@ LEXICON_TOKENS = re.compile(
 # The serving path since E19 (the LLM path - main.py, engine.py, ocr_pipeline/ - is gone).
 RUNTIME_FILES = ["ocr_service/transcribe.py", "ocr_service/letter_fields.py", "ocr_service/pipeline.py",
                  "ocr_service/api.py", "ocr_service/config.py", "ocr_service/tasks.py",
-                 "ocr_service/spellfix.py"]
+                 "ocr_service/spellfix.py", "ocr_service/imaging.py", "ocr_service/tesseract.py"]
 
 
 def _executable_source(path: Path) -> str:

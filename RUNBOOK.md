@@ -203,8 +203,8 @@ models/digit_cnn.npz         the CNN digit reader           621 KB
 models/digit_cnn.json        its architecture — a provenance record, not loaded at
                              runtime; the reader builds from the .npz alone   3 KB
 tessdata/fas_custom.traineddata   the E30 fine-tune, the default model   3.2 MB
-requirements-service.txt     pinned dependencies
-requirements.txt             points at the above
+requirements-service.txt     pinned runtime dependencies (requirements-dev.txt and
+                             requirements-train.txt add tests/eval and training)
 deploy/                      Dockerfile, docker-compose.yml, nginx.conf, ocr-service.service
 RUNBOOK.md                   this file
 ```
@@ -215,26 +215,21 @@ fetches them; a bare-metal install needs them beside `fas_custom.traineddata`:
 ```
 fas.traineddata   tessdata_best   the rollback target, and nothing else reads Persian if the fine-tune is removed
 eng.traineddata   tessdata_fast   Latin runs inside Persian text
+ara.traineddata   tessdata_best   second reading of pages that look Arabic (optional; OCRS_LANG_AR="" turns it off)
 ```
 
-**Leave behind.** None of this is read at runtime; it is measured, not guessed:
+**Leave behind.** None of this is read at runtime. `.dockerignore` is an allow-list, so the
+image gets exactly the files above whatever else is in the checkout.
 
 | | why |
 |---|---|
-| `models/digits_hog_svm.joblib` | **120 MB**, the v1 reader. `joblib` and `sklearn` are never imported during a request — v2 superseded it, and only its `_fonts` helper is still used |
-| `models/digit_glyphs.npz` | 14 MB of digit training data |
-| `ocr_service/fonts/` | 816 KB, for rendering synthetic training lines. No font file is opened during a request |
-| `ocr_service/digit_cnn_train.py` | needs torch, which is not a service dependency |
-| `ocr_train/`, `train/` | the fine-tuning pipeline and its working files |
+| `ocr_research/` | training and comparison code (digit CNN trainer, v1 SVM reader, old VLM-path helpers) |
+| `ocr_train/`, `train/` | the Tesseract fine-tuning pipeline, its fonts and its working files |
 | `ocr_eval/`, `tests/` | benchmarks, ground truth, the test suite |
-| `Persian-OCR-Double-Benchmark/` | 2.2 GB dataset (and there is a second copy at the repo root) |
-| `Dehkhoda-SQL-master/`, `dehkhoda/` | dictionary build inputs |
-| `control/`, `debug_raw/`, `graft/`, `hf_cache/`, `install_log.txt` | scratch, index, logs |
-| `venv/`, `venv312/` | build these on the target, do not copy them |
-
-`ocr_service/numeric_reconcile.py` and `ocr_service/preprocess.py` are not imported by
-anything either. They are 25 KB and shipping the package whole is simpler than pruning it
-file by file; both are listed here so the list is honest, not because they cost anything.
+| `models/digits_hog_svm.joblib`, `models/digit_glyphs.npz` | 120 MB v1 model and 14 MB of digit training data |
+| `Persian-OCR-Double-Benchmark/` | 2.2 GB training/evaluation dataset |
+| `Dehkhoda-SQL-master/`, `dehkhoda/` | dictionary experiment (not shipped, see `dehkhoda/REMOVED.md`) |
+| `venv312/` | build the environment on the target, do not copy it |
 
 ### 5.2 System dependencies
 
@@ -259,6 +254,8 @@ python3.12 -m venv /srv/ocr/venv && /srv/ocr/venv/bin/pip install -r requirement
 | `OCRS_CACHE_DIR` | `<repo>/.cache/ocr` | point it outside the checkout so a redeploy keeps the cache |
 | `OCRS_CACHE` | `1` | `0` disables it |
 | `OCRS_WORKERS` | `8` | parallel Tesseract processes **per request** |
+| `OCRS_MAX_CONCURRENT_PAGES` | `2` | pages read at once per API process in sync mode; further requests wait |
+| `OCRS_SPOOL_DIR` | *(unset)* | async mode: uploads go to workers as files in this shared directory instead of through Redis |
 | `OCRS_MAX_UPLOAD_MB` | `25` | |
 | `OCRS_ASYNC_MODE` | `0` | `1` returns a `job_id` and needs Redis and a Celery worker |
 | `OCRS_REDIS_URL` | `redis://127.0.0.1:6379/0` | with async mode |
@@ -302,8 +299,15 @@ every write fails and every page is read twice with nothing in the log to say wh
 models:
 
 ```bash
-docker compose -f deploy/docker-compose.yml up --build --scale api=2 --scale worker=2
+docker compose -f deploy/docker-compose.yml up -d --build
+docker compose -f deploy/docker-compose.yml up -d --scale worker=3
 ```
+
+Every downloaded model is pinned to an upstream commit and checked against its sha256 at
+build time, the container runs as an unprivileged user, and `GET /healthz` is the liveness
+probe (it starts no Tesseract process). Redis runs with `noeviction`: it is the job queue,
+and under memory pressure it must refuse new jobs rather than drop queued ones. Uploads go
+from api to worker through the shared spool volume, not through Redis.
 
 The api and worker replicas share one cache volume. Entries are content-addressed and
 written beside-then-replaced, so concurrent access is safe.
@@ -311,7 +315,8 @@ written beside-then-replaced, so concurrent access is safe.
 ### 5.6 Verifying a deployment
 
 ```bash
-curl -s localhost:8000/health
+curl -s localhost:8000/healthz    # liveness
+curl -s localhost:8000/health     # readiness, with the model hashes
 ```
 
 Four things decide whether it is really working, not just answering:

@@ -6,7 +6,7 @@ Two kinds of ink on an administrative letter are not black text on white paper, 
 of them wrong:
 
   * **A stamp or a signature in blue ink.** It is darker than the paper, so it survives
-    binarisation and lands on top of the text it covers. On the brief's image 1 the
+    binarisation and lands on top of the text it covers. On test image 1 the
     company stamp sits over the signature block and «با تشکر / هادی جهان گشته / مدیر
     عامل» comes back as «هادی جهت کته». Blue ink is separable from black by colour and
     nothing else: both are dark.
@@ -76,7 +76,7 @@ def drop_blue_ink(bgr: np.ndarray) -> tuple[np.ndarray, int]:
       which perturbs pixels near every stamp. Through a pipeline whose line selection is a
       global search, that was enough to change readings far away from any stamp: on the
       18 dev pages that were not cropped at all — where erasing blue was the only change —
-      whole numbers fell 5.0 pp, and the brief's image 1 lost the hyphens in its phone
+      whole numbers fell 5.0 pp, and test image 1 lost the hyphens in its phone
       line. A flat fill with the local paper level changes the masked pixels and nothing
       else.
     * **Never overwrite a dark pixel.** Where the stamp crosses a printed letter, the
@@ -166,7 +166,7 @@ def drop_furniture(bgr: np.ndarray, band: float = 0.10) -> tuple[np.ndarray, int
 
     These are what puts a lone «۰», «سس» or «سح» on the end of an otherwise correct line:
     in right-to-left text the left margin is where lines *end*, so a mark sitting there
-    is read as the line's last word. The brief's image 1 has a spiral binder lying across
+    is read as the line's last word. Test image 1 has a spiral binder lying across
     its left edge, and its dark tip is the «۰» in «... آن اداره کل ۰».
 
     Only two kinds of component are removed, and a letter can be neither:
@@ -239,7 +239,7 @@ def separate(im: Image.Image, bands: bool = False,
     `bands` is off by default, and the measurement is why. Inverting the letterhead does
     put its pixels the right way up, but a letterhead is a multi-tone graphic, and what
     Tesseract then reads off it is «ام ٍ شرکت خدماتی 8۵ وی ی ده» — the company name is in
-    there, wrapped in noise that costs more than the name is worth: on the brief's image 1
+    there, wrapped in noise that costs more than the name is worth: on test image 1
     whole-page CER 11.3% → 13.4% and WER 19.0% → 25.3%, with one extra junk line. Under
     "correct and incomplete beats complete and wrong" that is a losing trade, so the band
     stays unread until it can be read cleanly (its own crop, its own binarisation, its own

@@ -3,7 +3,7 @@ r"""Find the sheet of paper in the frame and hand the transcriber that, and only
 
 A phone photo is not a page: it is a page lying on a desk, under a shadow, at an angle.
 Everything in the frame that is not paper is texture, and `flatten()`'s background
-division turns texture into ink — on the brief's image 2 the empty grey desk below the
+division turns texture into ink — on test image 2 the empty grey desk below the
 sheet produced four "lines" of output, one of them a whole fabricated table row
 («18 8 تا دا که ۱8111353112»). No amount of downstream filtering can fix that
 reliably, because by then the noise looks exactly like faint text. It has to not be in
@@ -50,7 +50,7 @@ MIN_PAGE_FRAC = 0.25
 # So the gate asks only the question it can answer honestly: is a large part of this frame
 # not page? At 0.93 and 0.97 the crop fired on corpus scans and made every one of the three
 # documents it touched worse (CER +1.4 to +7.1 pp, numbers and atoms both down). At 0.90 it
-# touches no corpus scan at all and still takes the brief's image 2, whose page covers 0.867
+# touches no corpus scan at all and still takes test image 2, whose page covers 0.867
 # of its frame. A page surrounded by a thin border is left alone — that border costs little,
 # and cropping it has been measured to cost more.
 FULL_FRAME_FRAC = 0.90
@@ -96,7 +96,7 @@ def _to_pil(a: np.ndarray) -> Image.Image:
 def _page_mask(bgr: np.ndarray) -> np.ndarray:
     """Paper is the smooth region; a desk is a textured one.
 
-    Brightness alone does not work and the measurement says so: on the brief's image 2 the
+    Brightness alone does not work and the measurement says so: on test image 2 the
     concrete desk sits at V 150-175 and the paper at 160-210, overlapping so heavily that
     Otsu puts the threshold at 105 and calls 94% of the frame page. Local standard
     deviation separates the same two surfaces with no overlap at all — paper 1.0-1.4,
@@ -165,7 +165,7 @@ def find_quad(bgr: np.ndarray) -> tuple[np.ndarray | None, tuple | None]:
     # "Is there anything here but page?" is asked of the CONVEX HULL, and the two wrong
     # answers either side of it were both measured. The bounding box says no for a sheet
     # lying at an angle, whose box fills the frame while its corners are still desk — that
-    # left the brief's image 2 uncropped. The raw contour says yes for a clean scan, whose
+    # left test image 2 uncropped. The raw contour says yes for a clean scan, whose
     # mask is ragged at the edges, so 34 of 54 corpus scans were cropped and 13 of them
     # perspective-warped for nothing: whole numbers -7.7 pp and CER +3.2 pp on exactly
     # those 13. A page is convex, so its hull is the honest measure of how much of the
@@ -225,7 +225,7 @@ def _text_outside(bgr: np.ndarray, keep: np.ndarray) -> int:
     if med <= 0:
         return 0
     # Counting loose components is not enough: a speckled desk produces thousands of
-    # glyph-sized specks, and on the brief's image 2 that refused the very crop that
+    # glyph-sized specks, and on test image 2 that refused the very crop that
     # removes them. Text is distinguished from texture by *alignment* — several
     # components of similar height sharing a baseline — so rows are counted, not blobs.
     rows: dict[int, int] = {}

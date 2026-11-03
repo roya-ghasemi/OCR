@@ -30,14 +30,13 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import time
 from pathlib import Path
 
 # The settings that change what the transcript says. A setting absent from this list is one
 # whose value cannot alter the output; adding a setting that *can* and forgetting it here is
 # how a cache starts lying, so the list is explicit rather than "everything on Settings".
 KEYED_SETTINGS = (
-    "lang_fa", "layout_psms", "crop_page", "ink_separate", "deskew_min_deg",
+    "lang_fa", "layout_psms", "text_psms", "crop_page", "ink_separate", "deskew_min_deg",
     "min_line_conf", "number_min_prob", "letter_fields", "spellfix",
 )
 

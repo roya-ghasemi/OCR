@@ -5,7 +5,7 @@ Handed handwriting or nastaliq calligraphy, the recogniser does not fail — it 
 the images that prompted this it answered «ff», «ee aa ay», «at r a} oe _ " - ss ) 4 . & ' A»
 and «فو اف as SY fe میک». Every one of those reached `text` as though it were a transcript.
 
-That is the worst failure this service can have, and the brief says so in the first line:
+That is the worst failure this service can have, and the requirements put it first:
 «درست و ناقص» بهتر از «کامل و غلط». A reader who is told nothing could be read goes and looks
 at the image. A reader handed «ee aa ay» does not know anything is wrong.
 
@@ -24,7 +24,7 @@ What separates them is what *script* came out. On nine pages:
     benchmark line 18           53         1.00              0.88
     benchmark line 20           51         1.00              0.56
     Arabic page 13             568         0.94              0.67
-    the brief's letter         716         0.94              0.86
+    the reference letter         716         0.94              0.86
     photographed prose         559         0.95              0.81
     low-resolution photo      1355         0.96              0.81
 

@@ -18,7 +18,7 @@ Two signals, measured across six pages:
     ------------------------------------------------------------
     benchmark line 18          0.00                 1.89
     benchmark line 20          0.00                 3.92
-    the brief's letter         0.00                 2.09
+    the reference letter         0.00                 2.09
     photographed prose         0.00                 1.25
     low-resolution photo       0.00                 2.95
 

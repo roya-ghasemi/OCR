@@ -159,6 +159,10 @@ fileIn.onchange = () => fileIn.files[0] && send(fileIn.files[0]);
   e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) send(f); });
 
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+}
+
 function status(html, cls) {
   const s = $('#status'); s.className = 'bar'; s.innerHTML = html;
   if (cls) s.firstElementChild && s.firstElementChild.classList.add(cls);
@@ -166,7 +170,7 @@ function status(html, cls) {
 
 async function send(file) {
   if (!file.type.startsWith('image/')) return status('<span class="pill bad">فقط فایل تصویری</span>');
-  status('<span><span class="spin"></span> در حال خواندن ' + file.name + ' …</span>');
+  status('<span><span class="spin"></span> در حال خواندن ' + esc(file.name) + ' …</span>');
   $('#out').classList.add('hide');
   if (URL_) URL.revokeObjectURL(URL_);
   URL_ = URL.createObjectURL(file);
@@ -178,9 +182,9 @@ async function send(file) {
     else if (!r.ok) throw new Error(d.detail || ('خطای ' + r.status));
     DATA = d; render(d);
     status('<span class="pill ok">آماده</span> <span style="color:var(--muted)">'
-      + file.name + ' — ' + (d.timing && d.timing.total_s != null ? d.timing.total_s + ' ثانیه' : '') + '</span>');
+      + esc(file.name) + ' — ' + (d.timing && d.timing.total_s != null ? d.timing.total_s + ' ثانیه' : '') + '</span>');
   } catch (e) {
-    status('<span class="pill bad">خطا</span> <span style="color:var(--muted)">' + e.message + '</span>');
+    status('<span class="pill bad">خطا</span> <span style="color:var(--muted)">' + esc(e.message) + '</span>');
   }
 }
 

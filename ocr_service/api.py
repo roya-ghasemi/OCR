@@ -5,14 +5,16 @@ r"""FastAPI service.
     POST /ocr            image -> full transcript (+ letter fields when it is a letter)
                          (or, with OCRS_ASYNC_MODE=1 or ?mode=async, a job_id)
     GET  /jobs/{job_id}  status / result of a queued job
-    GET  /health         Tesseract, digit reader, queue
+    GET  /health         readiness: Tesseract, digit reader, word list, cache, queue
+    GET  /healthz        liveness: the process answers (no Tesseract call)
 
 Run (dev):  venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8010
 """
 from __future__ import annotations
 
-import base64
+import asyncio
 import io
+import re
 import logging
 import uuid
 from contextlib import asynccontextmanager
@@ -50,8 +52,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Persian OCR — full-text transcription", version=__version__, lifespan=lifespan)
 
 STATIC = Path(__file__).resolve().parent / "static"
-
-
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
@@ -71,7 +71,7 @@ def _check_image(data: bytes) -> None:
             fmt = im.format
             im.verify()
     except (UnidentifiedImageError, OSError) as exc:
-        raise HTTPException(400, f"not a readable image: {exc}")
+        raise HTTPException(400, f"not a readable image: {exc}") from exc
     if fmt not in ALLOWED:
         raise HTTPException(400, f"unsupported image format {fmt}")
 
@@ -91,12 +91,13 @@ async def ocr(file: Optional[UploadFile] = File(None), image: Optional[UploadFil
 
     use_async = mode == "async" or (mode == "auto" and settings.async_mode)
     if use_async:
-        from .tasks import ocr_task
-        job = ocr_task.apply_async(kwargs={"image_b64": base64.b64encode(data).decode(), "doc_id": doc_id})
-        return JSONResponse({"job_id": job.id, "status": "queued", "poll": f"/jobs/{job.id}"}, status_code=202)
+        from .tasks import enqueue
+        job_id = uuid.uuid4().hex
+        await asyncio.to_thread(enqueue, data, doc_id, job_id)
+        return JSONResponse({"job_id": job_id, "status": "queued", "poll": f"/jobs/{job_id}"}, status_code=202)
 
     p = app.state.pipeline
-    if not (p._health or p.health())["tesseract"]["available"]:
+    if not p.ready():
         raise HTTPException(503, "Tesseract with Persian (fas) data is not available on this server")
     res: OcrResponse = await p.run(data, doc_id, want_prepared=prepared)
     return res
@@ -105,22 +106,33 @@ async def ocr(file: Optional[UploadFile] = File(None), image: Optional[UploadFil
 @app.get("/jobs/{job_id}", response_model=JobStatus)
 async def job(job_id: str):
     from celery.result import AsyncResult
-    from .tasks import celery_app
+
+    from .tasks import QUEUED, celery_app
     r = AsyncResult(job_id, app=celery_app)
-    state = r.state
-    if state in ("PENDING", "RECEIVED", "RETRY"):
+    state = await asyncio.to_thread(lambda: r.state)
+    if state == "PENDING":                  # never enqueued here, or already expired
+        raise HTTPException(404, "unknown or expired job")
+    if state in (QUEUED, "RECEIVED", "RETRY"):
         return JobStatus(job_id=job_id, status="queued")
     if state == "STARTED":
         return JobStatus(job_id=job_id, status="running")
     if state == "SUCCESS":
         return JobStatus(job_id=job_id, status="done", result=OcrResponse(**r.result))
-    return JobStatus(job_id=job_id, status="failed", error=str(r.result))
+    log.error("job %s failed: %r", job_id, r.result)
+    return JobStatus(job_id=job_id, status="failed", error="the page could not be processed")
+
+
+@app.get("/healthz", include_in_schema=False)
+async def healthz():
+    return {"status": "alive"}
 
 
 @app.get("/health", response_model=Health)
 async def health():
-    h = app.state.pipeline.health()
-    queue: dict = {"async_mode": settings.async_mode, "broker": settings.redis_url}
+    p = app.state.pipeline
+    h = await asyncio.to_thread(p.health, p.HEALTH_TTL_S)
+    queue: dict = {"async_mode": settings.async_mode,
+                   "broker": re.sub(r"//[^@/]*@", "//***@", settings.redis_url)}   # no password
     if settings.async_mode:
         if settings.redis_url.startswith("filesystem://"):
             queue["reachable"] = True

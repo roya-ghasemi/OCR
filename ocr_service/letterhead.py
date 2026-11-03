@@ -2,7 +2,7 @@
 r"""Read the printed letterhead — the sender and the registration number.
 
 The letterhead is the one part of an administrative letter the main pipeline cannot see. On
-the brief's letter nothing above y=277 reaches the transcript at all, because the text there
+the reference letter nothing above y=277 reaches the transcript at all, because the text there
 is **white on a coloured band** and every stage downstream of binarisation expects dark ink
 on light paper. 17 of 18 sampled pages in `ocr_eval/dataset_ex` are built that way.
 
@@ -19,7 +19,7 @@ neighbourhood that is saturated. That generalises to any coloured letterhead wit
 the hue, and it degrades to "no band found" on a plain dark-on-white page, which is the other
 case and already works.
 
-The brief's rule governs the output: a value is returned only when it matches the shape it
+The project's rule governs the output: a value is returned only when it matches the shape it
 claims to be. A registration number is digits following a «ثبت» label; a sender is a line
 carrying an organisation word. Anything else is left null rather than guessed — in particular
 the stylised logotype of a company name is a drawing, and this does not pretend to read it.
@@ -162,9 +162,9 @@ def read(bgr: np.ndarray, tesseract: str, tessdata: str | None, lang: str) -> di
     `sender` and `registration_number` are filled only when the reading is both
     well-formed and confident. On the sampled pages most readings are neither: the company
     name is a stylised logotype and comes back as «۱ا، ۱۰ شرکت خدماتی نعم», the registration
-    number as «۵ ۸۷۴ ۲۶ ۲». Returning those would be exactly the invented text the brief
-    forbids, so they are dropped and `band` is reported instead — a region for the viewer to
-    cut out and a human to read, which is what the brief asks for when something cannot be
+    number as «۵ ۸۷۴ ۲۶ ۲». Returning those would be exactly the invented text the rules
+    forbid, so they are dropped and `band` is reported instead — a region for the viewer to
+    cut out and a human to read, which is what the requirements ask for when something cannot be
     read confidently.
     """
     out: dict = {"sender": None, "registration_number": None,

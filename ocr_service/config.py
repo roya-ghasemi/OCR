@@ -8,11 +8,16 @@ in-repo CNN digit reader (`models/digit_cnn.npz`), CPU only.
 """
 from __future__ import annotations
 
+import hashlib
 import os
+import platform
 import shutil
+from functools import lru_cache
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from . import __version__
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 
@@ -28,22 +33,38 @@ def _find_up(rel: str) -> Path | None:
     return None
 
 
+@lru_cache(maxsize=32)
+def _sha_cached(path: str, mtime_ns: int, size: int) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:16]
+
+
+def file_sha(p: Path | None) -> str | None:
+    """Short sha256 of a model file, computed once per file version (path, mtime, size):
+    provenance() runs on every request because the cache key depends on it."""
+    if not p or not p.is_file():
+        return None
+    st = p.stat()
+    return _sha_cached(str(p), st.st_mtime_ns, st.st_size)
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="OCRS_", env_file=".env", extra="ignore")
 
     # --- recognition ------------------------------------------------------------
     tesseract_cmd: str | None = None       # None -> UB-Mannheim install, then PATH
     tessdata_dir: str | None = None        # None -> nearest <repo>/tessdata holding fas.traineddata
-    lang_fa: str = "fas_custom"
-    lang_ar: str = "ara"                   # re-read a page that looks Arabic; "" disables it            # the E30 fine-tune; "fas" is the stock model (E30)
+    lang_fa: str = "fas_custom"            # the E30 fine-tune; "fas" is the stock model
+    lang_ar: str = "ara"                   # re-read a page that looks Arabic; "" disables it
     digit_model: str | None = None         # None -> nearest <repo>/models/digit_cnn.npz
     layout_psms: str = "3,4,6"             # Tesseract layout passes whose lines compete (E19)
+    text_psms: str = "11"                  # passes whose lines compete only where they hold no digit (E38)
     crop_page: bool = True                 # cut the sheet out of the photo before reading (E26)
     ink_separate: bool = True              # erase coloured stamps, invert white-on-colour bands (E26)
     deskew_min_deg: float = 1.0            # rotate only pages tilted at least this much (E19)
     min_line_conf: float = 30.0            # a line below this mean confidence is dropped as noise
     number_min_prob: float = 0.6           # digit reader must be this sure to replace Tesseract's digits
     workers: int = 8                       # parallel Tesseract processes per page
+    max_concurrent_pages: int = 2          # pages read at once per API process (sync mode)
     letter_fields: bool = True             # also cut letter fields out of the transcript (rules only)
     spellfix: bool = True                  # repair dot confusions against the Persian word list
     max_upload_mb: float = 25.0
@@ -56,6 +77,7 @@ class Settings(BaseSettings):
     # --- service ------------------------------------------------------------------
     redis_url: str = "redis://127.0.0.1:6379/0"
     async_mode: bool = False               # POST /ocr returns a job_id instead of a result
+    spool_dir: str | None = None           # uploads handed to workers as files, not through Redis
     job_ttl_s: int = 86400
     request_timeout_s: float = 600.0
     log_level: str = "INFO"
@@ -89,19 +111,17 @@ class Settings(BaseSettings):
     def psms(self) -> tuple[str, ...]:
         return tuple(p.strip() for p in self.layout_psms.split(",") if p.strip())
 
+    def text_only_psms(self) -> tuple[str, ...]:
+        return tuple(p.strip() for p in self.text_psms.split(",") if p.strip())
+
     def provenance(self) -> dict:
-        import hashlib
-        import platform
-
-        def sha(p: Path | None) -> str | None:
-            return hashlib.sha256(p.read_bytes()).hexdigest()[:16] if p and p.is_file() else None
-
+        sha = file_sha
         cmd, data = self.resolved_tesseract()
         dm = self.resolved_digit_model()
         # Accuracy depends on WHICH traineddata is loaded (E19 measured fas 99e42096...,
         # tessdata_best); a distro package ships a different, weaker file.
         return {
-            "service_version": __import__("ocr_service").__version__,
+            "service_version": __version__,
             "engine": "tesseract(fas,eng) + digit_cnn",
             "tesseract": {"cmd": cmd, "tessdata_dir": data,
                           "lang_fa": self.lang_fa,
@@ -112,7 +132,7 @@ class Settings(BaseSettings):
                           "fas_sha256": sha(Path(data) / "fas.traineddata") if data else None,
                           "eng_sha256": sha(Path(data) / "eng.traineddata") if data else None},
             "digit_model": {"path": str(dm) if dm else None, "sha256": sha(dm)},
-            "layout_psms": self.layout_psms, "deskew_min_deg": self.deskew_min_deg,
+            "layout_psms": self.layout_psms, "text_psms": self.text_psms, "deskew_min_deg": self.deskew_min_deg,
             "min_line_conf": self.min_line_conf, "number_min_prob": self.number_min_prob,
             "letter_fields": self.letter_fields,
             "python": platform.python_version(),

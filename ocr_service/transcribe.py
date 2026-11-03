@@ -37,21 +37,28 @@ Coordinates: `bbox` values are in the pixel space of the (deskewed) input image;
 """
 from __future__ import annotations
 
-import csv
-import io
 import logging
 import re
-import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 
-import cv2
 import numpy as np
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageOps
+
+# Image operations live in imaging.py; the names are re-exported here for callers that
+# have always imported them from this module.
+from .imaging import (_crop, _xov, _yov, clean_ink, flatten, glyph_height, is_line_crop,  # noqa: F401
+                      measure_glyph_height, squeeze_kashida, text_lines, text_skew, working_scale)
+from .tesseract import Tesseract
 
 log = logging.getLogger(__name__)
+
+# psm 7 (single line) is retried with psm 13 (raw line) below this mean confidence.
+RETRY_RAW_LINE_CONF = 70
+# Padding around a line crop before it is read; Tesseract misreads glyphs that touch the edge.
+LINE_FRAME_PX = 30
 
 _NUMTOK = re.compile(r"[0-9۰-۹٠-٩]")
 _PERSIAN_DIGITS = str.maketrans("0123456789٠١٢٣٤٥٦٧٨٩", "۰۱۲۳۴۵۶۷۸۹۰۱۲۳۴۵۶۷۸۹")
@@ -119,8 +126,9 @@ def _key(w: str) -> str:
 @dataclass
 class Word:
     text: str
-    conf: float                                   # 0..100 (Tesseract); 101 = set by the digit reader
+    conf: float                                   # 0..100, Tesseract's word confidence
     box: tuple[int, int, int, int]                # working-image coordinates
+    digit_prob: float | None = None               # set when the digit reader replaced the text
 
 
 @dataclass
@@ -171,262 +179,10 @@ class Transcript:
     timing: dict = field(default_factory=dict)
     prep: dict = field(default_factory=dict)      # what page_prep did (crop / warp)
     unread: list = field(default_factory=list)    # regions nobody read: handwriting, marks
-    prepared: object = None                       # the page as it was read (PIL image)
+    prepared: Image.Image | None = None           # the page as it was read
 
     def as_dict(self) -> dict:
         return asdict(self)
-
-
-# ------------------------------------------------------------------ image preparation
-def flatten(im: Image.Image, scale: float = 1.0, thr: int = 200, radius: int = 40) -> Image.Image:
-    """Grey -> divide by a blurred background (removes shading, shadows, coloured
-    paper) -> binary (text black on white). `radius` 40 is what was measured (E19);
-    working images are 2,000-4,200 px after `working_scale`."""
-    g = ImageOps.grayscale(im)
-    if scale != 1.0:
-        g = g.resize((max(1, int(g.width * scale)), max(1, int(g.height * scale))), Image.LANCZOS)
-    a = np.asarray(g, dtype=np.float32)
-    bg = np.asarray(g.filter(ImageFilter.GaussianBlur(radius)), dtype=np.float32)
-    return Image.fromarray(np.where(a / np.maximum(bg, 1) * 255 < thr, 0, 255).astype(np.uint8))
-
-
-# A crop that is one line of text rather than a page: far wider than it is tall, and short
-# in absolute terms. Both bounds are needed — a wide banner scan is not a line crop, and a
-# tall narrow column is not one either.
-LINE_CROP_RATIO = 6.0
-LINE_CROP_MAX_H = 200
-
-
-def is_line_crop(im: Image.Image) -> bool:
-    """Is this image one cropped text line rather than a page?"""
-    w, h = im.size
-    return h > 0 and h <= LINE_CROP_MAX_H and (w / h) >= LINE_CROP_RATIO
-
-
-def working_scale(im: Image.Image, glyph_h: float = 0.0) -> float:
-    """Tesseract reads best with glyphs ~30-40 px tall: upsample phone photos and small
-    screenshots (Lanczos, in `flatten`), cap huge scans. `glyph_h` is the text height
-    measured at 1x.
-
-    A Persian dot is 1-2 px at 12 px text height, so on a low-resolution photo the marks
-    that separate ب/ی/پ/ن and ح/خ/ج fall below the sampling grid and the page comes back
-    full of «صبخگاهی» for «صبحگاهی». Resampling cannot invent the missing ink, but it
-    gives Tesseract's line model room to resolve what ink there is: on the user's 12 px
-    page, resampling to 30 px leaves whole-page CER where it was (8.8% → 9.2%, one page)
-    and takes the marker words it reads correctly from 4 of 15 to 9 — «توسعه», «کوچه»,
-    «زندگی», «ارزشمند», «اصلاحی». So a page whose text is under 20 px **as supplied** is
-    taken to ~30, at most 4x (E21).
-
-    Only such a page. Applying the same target to everything under 30 px *working*
-    height upsampled the 24-29 px corpus scans too and cost dev coverage CER
-    14.7% → 15.1% and whole numbers 75.8% → 75.2%; a scan that already resolves its own
-    dots keeps the rule E19 was measured with. Resampling cannot invent the missing ink —
-    the page is still flagged `needs_review` for its resolution."""
-    scale = 2.0 if im.height < 2000 else 1.0
-    if max(im.size) > 4200:
-        scale = 3500 / max(im.size)
-    if glyph_h and glyph_h < 20:                     # a low-resolution capture
-        scale = min(4.0, 30.0 / glyph_h)
-    elif glyph_h and glyph_h * scale < 24:           # small image of small text (E19)
-        scale = min(4.0, 32.0 / glyph_h)
-    return scale
-
-
-def measure_glyph_height(im: Image.Image) -> float:
-    ink = np.asarray(flatten(im)) == 0
-    _, _, st, _ = cv2.connectedComponentsWithStats(ink.astype(np.uint8), connectivity=8)
-    return glyph_height(st, ink.shape[0])
-
-
-def glyph_height(st: np.ndarray, H: int) -> float:
-    """Median height of glyph-like components (connectedComponentsWithStats rows).
-    Whole words are single components in Persian, so this tracks the text size.
-    Bounds are loose on purpose: an image may hold a few lines of large text."""
-    h, area = st[1:, 3], st[1:, 4]
-    base = (area >= 20) & (h > 0.004 * H)
-    wide = base & (h <= 0.3 * H)
-    if wide.sum() < 3:
-        return 0.0
-    # Robust estimate: drop everything under half the 75th percentile (dots, marks),
-    # then the median. Needed when dots outnumber words (a few large clean lines).
-    q = float(np.percentile(h[wide], 75))
-    robust = float(np.median(h[wide & (h >= 0.5 * q)]))
-    # The scan-scale estimate E19 was measured with; kept unless dots dominate it.
-    page = base & (h < 0.05 * H)
-    if page.sum() >= 5:
-        m = float(np.median(h[page]))
-        if m >= 0.4 * robust:
-            return m
-    return robust
-
-
-def clean_ink(ink: np.ndarray) -> np.ndarray:
-    """Remove straight rules (pixel-wise) and isolated specks; keep glyphs and their dots.
-
-    Rule kernels are sized from the TEXT as well as the page: an alef is a straight
-    vertical stroke, and a kashida-stretched word a long horizontal one, so on an
-    image of a few large lines a page-relative kernel erased every «ا»."""
-    H, W = ink.shape
-    u8 = ink.astype(np.uint8)
-    _, _, st0, _ = cv2.connectedComponentsWithStats(u8, connectivity=8)
-    gh = glyph_height(st0, H)
-    hk = max(25, W // 4, int(15 * gh))
-    vk = max(25, H // 25, int(4 * gh))
-    hl = cv2.morphologyEx(u8, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (hk, 1)))
-    vl = cv2.morphologyEx(u8, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (1, vk)))
-    ink = ink & ~(hl > 0) & ~(vl > 0)
-    n, lab, st, _ = cv2.connectedComponentsWithStats(ink.astype(np.uint8), connectivity=8)
-    area = st[:, 4]
-    keep = np.ones(n, bool)
-    keep[0] = False
-    # A small component is a Persian dot next to a letter body, or a speck of scan /
-    # shadow noise when nothing big is near it.
-    small = area < 40
-    big_mask = (keep & ~small)[lab]
-    r = max(3, int(0.006 * H), int(0.5 * gh))
-    near = cv2.dilate(big_mask.astype(np.uint8), np.ones((2 * r + 1, 2 * r + 1), np.uint8)) > 0
-    hit = np.zeros(n, bool)
-    np.logical_or.at(hit, lab[near & (lab > 0)], True)
-    keep &= (~small | hit) & (area >= 3)
-    return keep[lab]
-
-
-def text_skew(im: Image.Image, max_deg: float = 10.0) -> float:
-    """Rotation (degrees, counter-clockwise positive) that levels the text rows:
-    maximises the sharpness of the row profile of glyph-sized components."""
-    small = im.copy()
-    small.thumbnail((1400, 1400))
-    ink = np.asarray(flatten(small)) == 0
-    n, lab, st, _ = cv2.connectedComponentsWithStats(ink.astype(np.uint8), connectivity=8)
-    h, w, area = st[:, 3], st[:, 2], st[:, 4]
-    H, W = ink.shape
-    gh = glyph_height(st, H)
-    ok = (area >= 8) & (h < max(0.05 * H, 2.5 * gh)) & (w < 0.3 * W)
-    ok[0] = False
-    m = ok[lab].astype(np.uint8) * 255
-
-    def sharpness(a: float) -> float:
-        M = cv2.getRotationMatrix2D((W / 2, H / 2), a, 1.0)
-        p = cv2.warpAffine(m, M, (W, H), flags=cv2.INTER_NEAREST).sum(1).astype(np.float64)
-        return float(np.sum(np.diff(p) ** 2))
-
-    best = max(np.arange(-max_deg, max_deg + 1e-6, 0.5), key=sharpness)
-    return float(max(np.arange(best - 0.5, best + 0.5 + 1e-6, 0.1), key=sharpness))
-
-
-# ------------------------------------------------------------------ line finding
-def _rows_to_lines(mask: np.ndarray) -> list[tuple[int, int, int, int]]:
-    """Row-profile runs, over-tall runs split at profile valleys."""
-    H, W = mask.shape
-    prof = np.convolve(mask.sum(1).astype(np.float32), np.ones(3) / 3, "same")
-    on = prof > max(2, 0.002 * W)
-    runs, y = [], 0
-    while y < H:
-        if on[y]:
-            s = y
-            while y < H and on[y]:
-                y += 1
-            runs.append([s, y])
-        else:
-            y += 1
-    runs = [r for r in runs if r[1] - r[0] >= max(6, int(H * 0.004))]
-    if not runs:
-        return []
-    med = sorted(r[1] - r[0] for r in runs)[len(runs) // 2]
-    spans = []
-    for s, e in runs:
-        if e - s > 1.7 * med:
-            k = max(2, round((e - s) / med))
-            cuts = []
-            for i in range(1, k):
-                c = s + int(i * (e - s) / k)
-                lo, hi = max(s + 3, c - med // 2), min(e - 3, c + med // 2)
-                if hi > lo:
-                    cuts.append(lo + int(np.argmin(prof[lo:hi])))
-            b = [s] + cuts + [e]
-            spans += [(b[i], b[i + 1]) for i in range(len(b) - 1)]
-        else:
-            spans.append((s, e))
-    out = []
-    for s, e in spans:
-        cols = np.where(mask[s:e].sum(0) > 0)[0]
-        if len(cols):
-            out.append((int(cols[0]), s, int(cols[-1]) + 1, e))
-    return out
-
-
-def text_lines(ink: np.ndarray) -> tuple[list[tuple[int, int, int, int]], float]:
-    """Lines defined by glyph-sized components only: signatures, logos, stamps and
-    binder rings do not define (or merge) lines."""
-    H, W = ink.shape
-    n, lab, st, _ = cv2.connectedComponentsWithStats(ink.astype(np.uint8), connectivity=8)
-    h, w, area = st[:, 3], st[:, 2], st[:, 4]
-    med_h = glyph_height(st, H)
-    if not med_h:
-        return [], 0.0
-    textlike = (h <= 2.2 * med_h) & (w <= 0.6 * W)
-    textlike[0] = False
-    return _rows_to_lines(textlike[lab]), med_h
-
-
-def squeeze_kashida(im: Image.Image) -> tuple[Image.Image, np.ndarray | None]:
-    """Shorten the elongations justified Persian is stretched with.
-
-    A kashida is a flat horizontal connector — a run of columns with the same top and
-    bottom edge, joined to a glyph at both ends. A dash is just as flat but stands
-    alone, so it is left alone. Stretched to 45 px a connector grows teeth under
-    Tesseract: «بلــوار» came back as «بلسوار» on 21 of the 51 dev pages, «مشهـــد» as
-    «مشهصد». Cut back to an ordinary connector's width, the word reads (D74).
-
-    Returns the narrowed image and the map from its columns back to the original x —
-    word boxes must still be reported in page coordinates.
-    """
-    ink = np.asarray(im.convert("L")) < 128
-    H, W = ink.shape
-    cols = ink.any(0)
-    if cols.sum() < 8:
-        return im, None
-    top = np.argmax(ink, 0)
-    bot = H - 1 - np.argmax(ink[::-1], 0)
-    h = np.where(cols, bot - top + 1, 0)
-    runs = (np.diff(ink.astype(np.int8), axis=0) == 1).sum(0) + ink[0].astype(int)
-    xh = float(np.percentile(h[cols], 90))
-    body = cols & (h >= 0.5 * xh)
-    if not body.any():
-        return im, None
-    base = float(np.median(bot[body]))                   # where the letters stand
-    # a full stroke, thinner than a letter, level along its whole length
-    flat = cols & (runs == 1) & (h >= 0.22 * xh) & (h <= 0.5 * xh)
-    flat[:-1] &= (np.abs(np.diff(top)) <= 1) & (np.abs(np.diff(bot)) <= 1)
-    idx = np.flatnonzero(flat)
-    if not len(idx):
-        return im, None
-    keep, least = max(2, int(0.30 * xh)), max(5, int(0.38 * xh))
-    drop = np.zeros(W, bool)
-    for r in np.split(idx, np.flatnonzero(np.diff(idx) != 1) + 1):
-        a, b = int(r[0]), int(r[-1]) + 1
-        if b - a < least or b - a <= keep or a == 0 or b >= W - 1:
-            continue
-        # a kashida runs along the baseline and joins a letter at each end; a dash floats
-        # above it, and an underline or a rule remnant sits below — leave those alone
-        if cols[a - 1] and cols[b + 1] and abs(bot[a] - base) <= 0.15 * xh:
-            drop[a + keep:b] = True
-    if not drop.any():
-        return im, None
-    return Image.fromarray(np.where(ink[:, ~drop], 0, 255).astype(np.uint8)), np.flatnonzero(~drop)
-
-
-def _crop(im: Image.Image, box, pad: int = 2) -> Image.Image:
-    x0, y0, x1, y1 = box
-    return im.crop((max(0, x0 - pad), max(0, y0 - pad), min(im.width, x1 + pad), min(im.height, y1 + pad)))
-
-
-def _yov(a, b) -> float:
-    return max(0, min(a[3], b[3]) - max(a[1], b[1])) / max(1, min(a[3] - a[1], b[3] - b[1]))
-
-
-def _xov(a, b) -> float:
-    return max(0, min(a[2], b[2]) - max(a[0], b[0])) / max(1, min(a[2] - a[0], b[2] - b[0]))
 
 
 # ------------------------------------------------------------------ transcriber
@@ -435,9 +191,11 @@ class Transcriber:
                  layout_psms: tuple[str, ...] = ("3", "4", "6"), deskew_min_deg: float = 1.0,
                  min_line_conf: float = 30.0, workers: int = 8, number_min_prob: float = 0.6,
                  spellfix: bool = True, crop_page: bool = True, ink_separate: bool = True,
-                 lang_fa: str = "fas_custom"):
+                 lang_fa: str = "fas_custom", text_psms: tuple[str, ...] = ("11",)):
         self.cmd, self.tessdata = tesseract_cmd, tessdata_dir
+        self.tess = Tesseract(tesseract_cmd, tessdata_dir)
         self.layout_psms = tuple(layout_psms)
+        self.text_psms = tuple(text_psms)
         self.crop_page = crop_page
         self.ink_separate = ink_separate
         # Which Persian model reads the page. `fas` is the stock one; a fine-tune
@@ -480,17 +238,8 @@ class Transcriber:
         return self._glyph
 
     def health(self) -> dict:
-        ok, version, langs = False, None, []
-        if self.cmd:
-            try:
-                p = subprocess.run([self.cmd, "--version"], capture_output=True, text=True, timeout=20)
-                version = (p.stdout or p.stderr).splitlines()[0].strip()
-                args = [self.cmd, "--list-langs"] + (["--tessdata-dir", self.tessdata] if self.tessdata else [])
-                q = subprocess.run(args, capture_output=True, text=True, timeout=20)
-                langs = [l.strip() for l in q.stdout.splitlines()[1:] if l.strip()]
-                ok = self.lang_fa in langs
-            except Exception as exc:
-                version = f"error: {exc}"
+        version, langs = self.tess.probe()
+        ok = self.lang_fa in langs
         self.version = version
         g = self.glyph_reader()
         sp = self.spellfix_stage() if self.spellfix else None
@@ -504,31 +253,9 @@ class Transcriber:
                              "words": len(sp.words) if sp else 0}}
 
     # -- tesseract ---------------------------------------------------------------
-    def _run(self, img: Image.Image, psm: str, lang: str) -> list[dict]:
-        buf = io.BytesIO()
-        img.save(buf, "PNG")
-        args = [self.cmd, "stdin", "stdout", "-l", lang, "--psm", psm, "-c", "tessedit_create_tsv=1"]
-        if self.tessdata:
-            args[5:5] = ["--tessdata-dir", self.tessdata]
-        p = subprocess.run(args, input=buf.getvalue(), capture_output=True, timeout=120)
-        rows = csv.DictReader(io.StringIO(p.stdout.decode("utf-8", "replace")), delimiter="\t",
-                              quoting=csv.QUOTE_NONE)
-        out = []
-        for r in rows:
-            t = (r.get("text") or "").strip()
-            try:
-                c = float(r.get("conf") or -1)
-            except ValueError:
-                c = -1.0
-            if r.get("level") == "5" and t and c >= 0:
-                x, y, w, h = (int(r[k]) for k in ("left", "top", "width", "height"))
-                out.append({"text": t, "conf": c, "box": (x, y, x + w, y + h),
-                            "key": (r["block_num"], r["par_num"], r["line_num"])})
-        return out
-
     def _layout(self, page: Image.Image, psm: str) -> list[Line]:
         groups: dict[tuple, list[Word]] = {}
-        for r in self._run(page, psm, self.lang_fa):
+        for r in self.tess.read(page, psm, self.lang_fa):
             groups.setdefault(r["key"], []).append(Word(r["text"], r["conf"], r["box"]))
         lines = []
         for ws in groups.values():
@@ -537,25 +264,60 @@ class Transcriber:
             lines.append(Line(ws, bbox, "psm" + psm))
         return lines
 
-    def _read_line(self, img: Image.Image, lang: str) -> list[Word]:
-        """psm 7 (single line), with psm 13 (raw line) when 7 is empty or unsure:
-        psm 7 returns nothing for some clean lines that 13 reads perfectly."""
-        img, xmap = squeeze_kashida(img)
-        framed = ImageOps.expand(img, border=30, fill=255)
+    def _read_batches(self, ex: ThreadPoolExecutor, jobs: list[tuple[list[Image.Image], str, str]]):
+        """Read several (images, psm, lang) jobs, each split into one batch per worker.
+        Returns futures that resolve to the per-image rows of each job, in order."""
+        def chunks(n: int) -> list[range]:
+            k = max(1, min(self.workers, n))
+            return [range(i * n // k, (i + 1) * n // k) for i in range(k)]
 
-        def read(psm):
-            ws = [Word(r["text"], r["conf"], tuple(v - 30 for v in r["box"])) for r in self._run(framed, psm, lang)]
+        pending = []
+        for imgs, psm, lang in jobs:
+            parts = [(r, ex.submit(self.tess.read_many, [imgs[i] for i in r], psm, lang))
+                     for r in chunks(len(imgs)) if len(r)]
+            pending.append((len(imgs), parts))
+
+        def collect(n, parts):
+            out: list[list[dict]] = [[] for _ in range(n)]
+            for r, f in parts:
+                for i, rows in zip(r, f.result()):
+                    out[i] = rows
+            return out
+        return [collect(n, parts) for n, parts in pending]
+
+    def _read_lines(self, ex: ThreadPoolExecutor, crops: list[Image.Image],
+                    langs: tuple[str, ...]) -> dict[str, list[list[Word]]]:
+        """Each crop read as one line in each language: psm 7 (single line), and psm 13
+        (raw line) where 7 came back empty or unsure. psm 7 returns nothing for some clean
+        lines that 13 reads perfectly. Word boxes are in crop coordinates."""
+        squeezed = [squeeze_kashida(c) for c in crops]
+        framed = [ImageOps.expand(img, border=LINE_FRAME_PX, fill=255) for img, _ in squeezed]
+
+        def words(rows):
+            ws = [Word(r["text"], r["conf"], tuple(v - LINE_FRAME_PX for v in r["box"])) for r in rows]
             return ws, (sum(w.conf for w in ws) / len(ws) if ws else -1.0)
 
-        a, ma = read("7")
-        if ma < 70:
-            b, mb = read("13")
-            a = b if mb > ma else a
-        if xmap is None:
-            return a
-        last = len(xmap) - 1
-        return [Word(w.text, w.conf, (int(xmap[min(max(w.box[0], 0), last)]), w.box[1],
-                                      int(xmap[min(max(w.box[2] - 1, 0), last)]) + 1, w.box[3])) for w in a]
+        first = dict(zip(langs, self._read_batches(ex, [(framed, "7", lang) for lang in langs])))
+        best = {lang: [words(rows) for rows in first[lang]] for lang in langs}
+        retry = {lang: [i for i, (_, m) in enumerate(best[lang]) if m < RETRY_RAW_LINE_CONF] for lang in langs}
+        second = self._read_batches(ex, [([framed[i] for i in retry[lang]], "13", lang) for lang in langs])
+        for lang, rows13 in zip(langs, second):
+            for i, rows in zip(retry[lang], rows13):
+                b = words(rows)
+                if b[1] > best[lang][i][1]:
+                    best[lang][i] = b
+
+        out: dict[str, list[list[Word]]] = {}
+        for lang in langs:
+            out[lang] = []
+            for (ws, _), (_, xmap) in zip(best[lang], squeezed):
+                if xmap is not None:                    # back from squeezed to crop columns
+                    last = len(xmap) - 1
+                    ws = [Word(w.text, w.conf, (int(xmap[min(max(w.box[0], 0), last)]), w.box[1],
+                                                int(xmap[min(max(w.box[2] - 1, 0), last)]) + 1, w.box[3]))
+                          for w in ws]
+                out[lang].append(ws)
+        return out
 
     # -- selection -----------------------------------------------------------------
     @staticmethod
@@ -621,16 +383,18 @@ class Transcriber:
                     ws.pop(end)
 
     def _candidates(self, page: Image.Image, ink: np.ndarray) -> list[Line]:
-        with ThreadPoolExecutor(max(1, len(self.layout_psms))) as ex:
-            layouts = list(ex.map(lambda p: self._layout(page, p), self.layout_psms))
-        cands = [L for ls in layouts for L in ls]
         boxes, _ = text_lines(ink)
         crops = [_crop(page, b) for b in boxes]
         offs = [(max(0, b[0] - 2), max(0, b[1] - 2)) for b in boxes]
-        with ThreadPoolExecutor(self.workers) as ex:
-            fas = list(ex.map(lambda c: self._read_line(c, self.lang_fa), crops))
-            eng = list(ex.map(lambda c: self._read_line(c, "eng"), crops))
-        for b, (ox, oy), wf, we in zip(boxes, offs, fas, eng):
+        # The whole-page layout passes are the slowest single calls, so they start first and
+        # run alongside the line batches in the same pool of `workers` processes.
+        with ThreadPoolExecutor(max(self.workers, len(self.layout_psms) + len(self.text_psms))) as ex:
+            layouts = [ex.submit(self._layout, page, p) for p in self.layout_psms]
+            text_only = [ex.submit(self._layout, page, p) for p in self.text_psms]
+            read = self._read_lines(ex, crops, (self.lang_fa, "eng"))
+            cands = [L for f in layouts for L in f.result()]
+            sparse = [L for f in text_only for L in f.result()]
+        for b, (ox, oy), wf, we in zip(boxes, offs, read[self.lang_fa], read["eng"]):
             for ws, lang in ((wf, "fas"), (we, "eng")):   # tags, not model names
                 if not ws:
                     continue
@@ -638,7 +402,14 @@ class Transcriber:
                     continue                            # an English read only competes on a Latin line
                 moved = [Word(w.text, w.conf, (w.box[0] + ox, w.box[1] + oy, w.box[2] + ox, w.box[3] + oy)) for w in ws]
                 cands.append(Line(moved, b, "line-" + lang))
-        return cands
+        # psm 11 (sparse text) recovers words the other passes merge or drop, but splits number
+        # groups apart. Its lines compete only in regions where no reading holds a digit, so
+        # the numbers are decided exactly as without it (E38).
+        def has_digit(L: Line) -> bool:
+            return any(_NUMTOK.search(w.text) for w in L.words)
+        numeric = [c for c in cands if has_digit(c)]
+        return cands + [L for L in sparse
+                        if not has_digit(L) and not any(self._conflict(L, c) for c in numeric)]
 
     @staticmethod
     def _conflict(a: Line, b: Line) -> bool:
@@ -806,36 +577,28 @@ class Transcriber:
                     continue
                 m = re.match(r"^(\D*)(.*?)(\D*)$", w.text)      # keep the token's own punctuation
                 pre, suf = (m.group(1), m.group(3)) if m else ("", "")
-                L.words[i] = Word(pre + core.replace(",", "،") + suf, 101.0 + min(r.mean_prob for r in rs), w.box)
+                L.words[i] = Word(pre + core.replace(",", "،") + suf, 100.0, w.box,
+                                  digit_prob=min(r.mean_prob for r in rs))
 
     # -- main ---------------------------------------------------------------------------
     def transcribe_line_crop(self, im: Image.Image) -> Transcript:
         """One cropped line, read as one line at the size it arrived.
 
-        A deliberate bypass of the page pipeline, not a variant of it. Everything that path
-        does is for a page — cut the sheet out of the frame, straighten it, find the lines,
-        read each layout mode and pick between them — and a 640x48 strip has no frame, no
-        skew worth measuring and exactly one line. Running it anyway cost measurable
-        accuracy (D82): `working_scale` upsampled these 2.5x and 3.3x on glyph heights of 12
-        and 9 px, and Tesseract fed the upsampled image at psm 7 returns **nothing at all**.
-        The fine-tune was trained on degraded lines at native scale.
-
-        So: native size, no crop, no deskew, one `_read_line`. That is the same call the
-        page path uses on a line it has already found, and it is what reads these correctly.
+        The page path (crop, deskew, line finding, layout passes) is skipped: a 640x48
+        strip has no frame, no measurable skew and one line. Sent through it, `working_scale`
+        upsampled such strips 2.5-3.3x and psm 7 then returned nothing at all (D82). The
+        fine-tune was trained on lines at native scale.
         """
         t0 = time.perf_counter()
         im = ImageOps.exif_transpose(im).convert("RGB")
-        # Read bare, **not** through `_read_line`. That helper pads a line with a 30 px white
-        # border, which is right for a tight crop cut out of a page and wrong here: this
-        # image is already a strip with its own margin, and on a line whose text is 9 px tall
-        # inside 48 the extra border leaves the text too small a fraction of the frame for
-        # psm 7 to find. Measured — bare reads it correctly, framed returns nothing at all.
+        # Read without the white frame the page path adds around a line: this strip already
+        # has its own margin, and on 9 px text inside 48 px the extra border made psm 7
+        # find nothing.
         words = [Word(r["text"], r["conf"], r["box"])
-                 for r in self._run(im, "7", self.lang_fa) if r["text"].strip()]
+                 for r in self.tess.read(im, "7", self.lang_fa) if r["text"].strip()]
         if not words:
-            # psm 7 returns nothing for some clean lines that the raw-line mode reads.
             words = [Word(r["text"], r["conf"], r["box"])
-                     for r in self._run(im, "13", self.lang_fa) if r["text"].strip()]
+                     for r in self.tess.read(im, "13", self.lang_fa) if r["text"].strip()]
         # `_assemble` does the cleaning and the spell-fix, keyed off the line's source, so
         # the words go in raw exactly as they do on the page path.
         line = Line(words, (0, 0, im.width, im.height), "psm7")
@@ -937,7 +700,7 @@ class Transcriber:
             # the mark standing alone, between two Persian words
             if (0 < i < len(out) - 1 and t in _COMMA_LOOKALIKE and not (t in "«»" and quoted)
                     and _PERSIAN_WORD.match(out[i - 1].text) and _PERSIAN_WORD.match(out[i + 1].text)):
-                out[i] = Word("،", w.conf, w.box)
+                out[i] = replace(w, text="،")
                 continue
             # the mark glued to a word, with a Persian letter on its left
             if not any(c in _COMMA_IN_WORD for c in t):
@@ -960,10 +723,9 @@ class Transcriber:
                 if _PERSIAN_CHAR.match(after) or (after == "" and c in "»,"):
                     ch[j] = "،"
             if "".join(ch) != t:
-                out[i] = Word("".join(ch), w.conf, w.box)
+                out[i] = replace(w, text="".join(ch))
         return out
 
-    @staticmethod
     @staticmethod
     def _cut_positions(words: list[Word], line_h: float) -> list[int]:
         """Indices where the line has a gap wide enough to be a column boundary."""
@@ -994,7 +756,7 @@ class Transcriber:
 
         * **A handwritten form value.** «شماره:» and «تاریخ:» are printed; what follows
           them is written by hand, and the recogniser answers with whichever letters each
-          stroke resembled — «شماره: ۱7 یک», «تاریخ: امه ۱/2». The brief is explicit that a
+          stroke resembled — «شماره: ۱7 یک», «تاریخ: امه ۱/2». The requirement is that a
           handwritten region must never reach the body text, so the printed label is kept
           and the value is reported as a region to look at.
         * **A mark that is not text at all.** A speck or a binder ring that survived as
@@ -1101,10 +863,10 @@ class Transcriber:
         cleaned: list[list[Word]] = []
         for L in lines:
             latin = L.source == "line-eng"
-            words = [Word(self._clean_word(w.text, latin), w.conf, w.box) for w in L.words]
+            words = [replace(w, text=self._clean_word(w.text, latin)) for w in L.words]
             if self.spellfix and not latin:
                 sp = self.spellfix_stage()
-                words = [Word(sp.fix(w.text, w.conf), w.conf, w.box) for w in words]
+                words = [replace(w, text=sp.fix(w.text, w.conf)) for w in words]
             cleaned.append([w for w in words if w.text])
 
         # Remove what was never read — a handwritten form value, a mark that is not text —
@@ -1137,12 +899,12 @@ class Transcriber:
                                cells))
             for w in words:
                 if _NUMTOK.search(w.text) and len(_NUMTOK.findall(w.text)) >= 2:
-                    glyph = w.conf > 100.0
+                    glyph = w.digit_prob is not None
                     numbers.append(NumberOut(
                         value=w.text, value_ascii=w.text.translate(_ASCII_DIGITS),
                         bbox=[int(round(v / scale)) for v in w.box],
                         source="glyph" if glyph else "tesseract",
-                        confidence=round((w.conf - 101.0) if glyph else w.conf / 100.0, 3),
+                        confidence=round(w.digit_prob if glyph else w.conf / 100.0, 3),
                         grouping=amount_grouping(w.text)))
         for r in unread:
             r["bbox"] = [int(round(v / scale)) for v in r["bbox"]]

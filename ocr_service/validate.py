@@ -4,7 +4,7 @@ r"""Check the shape of the values a letter carries: e-mail addresses, telephone 
 This **never repairs anything**. A malformed value is reported as malformed and left exactly
 as it was read, because the only way to turn «info@sabzgostar-govareshk ۱۲” ;» into an address
 is to invent the missing part, and an invented e-mail address is worse than a visibly broken
-one — it looks correct. The brief's rule governs here as everywhere: «درست و ناقص» بهتر از
+one — it looks correct. The project's rule governs here as everywhere: «درست و ناقص» بهتر از
 «کامل و غلط».
 
 What a verdict is for: the reader of a transcript cannot tell a correctly-read address from a
@@ -117,7 +117,7 @@ def check_phone(raw: str) -> Finding:
     # 8 is a bare subscriber number, 10 and 11 carry an area or mobile prefix. **9 is not a
     # length an Iranian number has**, and saying so is the point: a subscriber number that
     # has picked up one extra digit is the commonest way a misread number still looks like a
-    # number. On the brief's letter the recogniser produced «۳۸۳۸۸۲۶۱۰» — «۳۸۳۸۸۲۶۱» with a
+    # number. On the reference letter the recogniser produced «۳۸۳۸۸۲۶۱۰» — «۳۸۳۸۸۲۶۱» with a
     # spurious trailing zero — and nothing else in the service would have questioned it.
     if n in (8, 10, 11):
         return Finding("phone", raw, True, normalized=digits)
