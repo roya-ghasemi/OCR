@@ -23,8 +23,8 @@ WORK_DIR = TRAIN / "work"          # checkpoints
 OUT_DIR = TRAIN / "out"            # fas_custom.traineddata
 FONTCONFIG = TRAIN / "fontconfig"
 
-FONTS_DIR = ROOT / "ocr_service" / "fonts"
-BENCHMARK = ROOT / "ocr_service" / "Persian-OCR-Double-Benchmark" / "data"
+FONTS_DIR = ROOT / "ocr_train" / "fonts"
+BENCHMARK = ROOT / "Persian-OCR-Double-Benchmark" / "data"
 
 BASE_TRAINEDDATA = BASE_DIR / "fas_best.traineddata"
 BASE_LSTM = BASE_DIR / "fas.lstm"

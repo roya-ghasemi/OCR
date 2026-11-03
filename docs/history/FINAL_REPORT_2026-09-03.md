@@ -98,7 +98,7 @@ worse than no check.
 | 1 — measurement harness | **complete** |
 | 2 — reliability | **complete**, exit met (97.22% test) — but read D41 before quoting it |
 | 2b — dataset integration §2.1 / GT validation §2.2 | §2.1 **passes**; §2.2 **blocked** on real, complete on synthetic |
-| 3 — field assignment | **complete GT-free**; the brief's premise is disproved — misassignment is 14.46% of bilingual CER, 1.43% Persian-only |
+| 3 — field assignment | **complete GT-free**; the requirements' premise is disproved — misassignment is 14.46% of bilingual CER, 1.43% Persian-only |
 | 4 — accuracy | **blocked (D35)**; partial GT-free evidence via checksums (D42) |
 | 5 — preprocessing / model fitness | **blocked (D35)** — exit criteria are accuracy-based |
 | 6 — decoding strategy | **complete GT-free**; full-corpus A/B run, cutover declined on D45 |

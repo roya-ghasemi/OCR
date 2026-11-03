@@ -1,75 +1,56 @@
 # Virtual environments
 venv/
 venv312/
-
-# Model files & cache
-hf_cache/
-*.whl
-*.gguf
-
-# Model weights. The digit reader's CNN is 621 KB, is required at runtime, and cannot be
-# rebuilt from a checkout — training it needs torch (not a service dependency) and
-# models/digit_glyphs.npz, which is 14 MB of training data that stays out. The v1 SVM is
-# 120 MB and nothing loads it: digit_reader_v2 superseded it and only `_fonts` is still
-# imported from the v1 module.
-models/*
-!models/digit_cnn.npz
-!models/digit_cnn.json
-
-# Tesseract models. The stock ones (fas, eng, ara, osd) are redistributable downloads and
-# stay out. `fas_custom` does not exist anywhere else — it is the E30 fine-tune built by
-# `ocr_train/`, and it is what `OCRS_LANG_FA` defaults to, so a checkout without it would
-# default to a model it does not have.
-# A file inside an ignored *directory* can never be un-ignored, because git does not look
-# inside one. The directory has to stay visible and its contents excluded instead.
-tessdata/*
-!tessdata/fas_custom.traineddata
-
-# Graft index (regenerable)
-graft/
+.venv/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.egg-info/
+.pytest_cache/
+.ruff_cache/
 dist/
 build/
 
-# Logs
+# Model weights. Only the two runtime models are tracked:
+#   models/digit_cnn.npz             digit reader (621 KB), cannot be rebuilt without torch
+#   tessdata/fas_custom.traineddata  the fine-tuned Persian model, exists nowhere else
+# Stock tessdata (fas, eng, ara, osd) is downloaded by deploy/install_tesseract.ps1 or the
+# Dockerfile. A file inside an ignored directory cannot be re-included, so the directory
+# contents are ignored instead of the directory.
+models/*
+!models/digit_cnn.npz
+!models/digit_cnn.json
+tessdata/*
+!tessdata/fas_custom.traineddata
+*.whl
+*.gguf
+hf_cache/
+
+# Data: inputs read from disk, not source
+Persian-OCR-Double-Benchmark/
+Dehkhoda-SQL-master/
+ocr_train/fonts/
+*.db
+
+# Generated
+train/
+.cache/
+.celery_fs/
+control/
+debug_raw/
+fonts.conf
+*.bak
 *.log
 *.pid
 
-# IDE
+# Editors and OS
 .vscode/
 .idea/
-
-# Database files
-*.db
-
-# Debug output
-debug_raw/
-
-# Local-only Claude config
-.claude/settings.local.json
-
-# OS
+.claude/
+.mcp.json
 Thumbs.db
 Desktop.ini
 .DS_Store
-
-# Fine-tuning (E29): artifacts are large and regenerable from ocr_train/
-train/
-# The benchmark corpus and the font files are inputs, not source: 2.2 GB and 820 KB of
-# third-party binaries that the training scripts read from disk.
-ocr_service/Persian-OCR-Double-Benchmark/
-ocr_service/fonts/
-
-# text2image drops this in the working directory
-fonts.conf
-
-# The 2.2 GB benchmark dataset, in either location. Data, not source.
-Persian-OCR-Double-Benchmark/
-
-# Cached transcripts. Derived, bounded, and keyed on the engine that produced them.
-.cache/
+~$*

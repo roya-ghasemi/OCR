@@ -212,7 +212,7 @@ Not part of this task (from the earlier "run the app without LM Studio" work): `
 
 ---
 
-## Phase 0 (revised brief) — contaminant removal and audit
+## Phase 0 (revised plan) — contaminant removal and audit
 
 | Status | File | What changed |
 |---|---|---|
