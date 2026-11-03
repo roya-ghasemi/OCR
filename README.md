@@ -9,6 +9,8 @@ CPU only. Runtime models total about 24 MB (see [Models](#models)).
 
 ## راه‌اندازی سریع
 
+راهنمای کامل اجرا به فارسی (نصب، تنظیمات، API، حالت صف، Docker، رفع مشکل): [README.fa.md](README.fa.md)
+
 ```powershell
 cd <project folder>
 .\venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127.0.0.1 --port 8000
