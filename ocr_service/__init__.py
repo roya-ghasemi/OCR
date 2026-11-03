@@ -3,4 +3,4 @@
 Entry points: `api.py` (FastAPI app), `tasks.py` (Celery worker), `pipeline.OcrPipeline`
 (in-process use). Module map in ARCHITECTURE.md.
 """
-__version__ = "1.1.0"
+__version__ = "1.2.0"

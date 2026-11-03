@@ -24,6 +24,7 @@ from .cache import ResultCache
 from .cache import key as cache_key
 from .config import Settings
 from .config import settings as default_settings
+from .imaging import is_screen_image
 from .letter_fields import extract as extract_fields
 from .schemas import LetterFields, LineOut, NumberOut, OcrResponse, UnreadRegion, Validation
 from .transcribe import Transcriber, Transcript
@@ -54,6 +55,11 @@ def _data_url(im) -> tuple[str | None, float | None]:
     out.convert("RGB").save(buf, "JPEG", quality=82, optimize=True)
     return ("data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode(),
             round(scale, 6))
+
+
+def _text_mass(tr) -> float:
+    """Confidence-weighted amount of text: how much the recogniser read, and how surely."""
+    return sum(L.confidence * len(L.text) for L in tr.lines)
 
 
 def _mean_conf(tr) -> float:
@@ -171,8 +177,17 @@ class OcrPipeline:
     def _read(self, image_bytes: bytes) -> Transcript:
         im = Image.open(io.BytesIO(image_bytes))
         # A single cropped line skips the page machinery (D82).
-        tr = (self.transcriber.transcribe_line_crop(im) if _is_line_crop(im)
-              else self.transcriber.transcribe(im))
+        if _is_line_crop(im):
+            tr = self.transcriber.transcribe_line_crop(im)
+        else:
+            tr = self.transcriber.transcribe(im)
+            # A screenshot or rendered page is also read the screen way, and the reading
+            # with more confident text is kept: the paper route loses coloured text and
+            # white text on buttons, the screen route loses some anti-aliased small text (E39).
+            if is_screen_image(im):
+                alt = self.transcriber.transcribe(im, screen=True)
+                if _text_mass(alt) > _text_mass(tr):
+                    tr = alt
         # The Persian model damages Arabic (ي/ك folded, harakat stripped). When the
         # transcript looks Arabic the page is read again with the Arabic model and the
         # reading the recogniser was surer of is kept.
@@ -191,9 +206,10 @@ class OcrPipeline:
         elif not tr.lines:
             reasons.append("no text found")
         if tr.glyph_px and tr.glyph_px < REVIEW_MIN_GLYPH_PX:
+            fix = ("capture the screen zoomed in" if tr.prep.get("screen")
+                   else "rescan at 300 DPI for accurate text")
             reasons.append(f"image resolution too low: text is {tr.glyph_px:.0f} px tall, "
-                           f"under the {REVIEW_MIN_GLYPH_PX:.0f} px needed to resolve Persian dots — "
-                           f"rescan at 300 DPI for accurate text")
+                           f"under the {REVIEW_MIN_GLYPH_PX:.0f} px needed to resolve Persian dots — {fix}")
         weak_lines = sum(1 for L in tr.lines if L.confidence < REVIEW_LINE_CONF)
         if weak_lines:
             reasons.append(f"{weak_lines} low-confidence line(s)")

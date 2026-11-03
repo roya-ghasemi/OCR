@@ -257,3 +257,36 @@ def _yov(a, b) -> float:
 
 def _xov(a, b) -> float:
     return max(0, min(a[2], b[2]) - max(a[0], b[0])) / max(1, min(a[2] - a[0], b[2] - b[0]))
+
+
+# A screenshot or a rendered page is mostly runs of identical pixels; a scan or a photo never
+# is, because sensor noise and JPEG make neighbours differ. Over the corpus every scan and
+# photo is at most 0.80 and every digital render at least 0.92 (E39).
+SCREEN_FLAT_FRAC = 0.90
+# How far a pixel's colour must be from its neighbourhood's to count as ink on a screen image.
+SCREEN_INK_CONTRAST = 64
+
+
+def is_screen_image(im: Image.Image) -> bool:
+    """Is this a digital image (screenshot, rendered page) rather than a scan or photo?"""
+    small = im.convert("RGB")
+    small.thumbnail((1600, 1600), Image.NEAREST)
+    a = np.asarray(small, dtype=np.int16)
+    if a.shape[1] < 2:
+        return False
+    return float((np.abs(np.diff(a, axis=1)).sum(2) == 0).mean()) >= SCREEN_FLAT_FRAC
+
+
+def screen_ink(im: Image.Image) -> Image.Image:
+    """Black text on white from a screen image, whatever its colours.
+
+    A pixel is ink when its colour stands out from the median colour around it, in either
+    direction: dark labels on white, white text on a blue or green button and purple text on
+    white all come out the same. The window is wide enough that text strokes never make up
+    half of it, so the median is the background.
+    """
+    a = np.asarray(im.convert("RGB"))
+    k = max(21, min(a.shape[:2]) // 20) | 1
+    bg = cv2.medianBlur(a, k)
+    d = np.abs(a.astype(np.int16) - bg.astype(np.int16)).max(axis=2)
+    return Image.fromarray(np.where(d >= SCREEN_INK_CONTRAST, 0, 255).astype(np.uint8)).convert("RGB")

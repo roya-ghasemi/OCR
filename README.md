@@ -75,6 +75,14 @@ image → crop the sheet, remove blue stamps → deskew (≥1°) → binarise, r
 Details and module map: [ARCHITECTURE.md](ARCHITECTURE.md). Every design decision and the
 measurement behind it: `ocr_eval/experiments.md`.
 
+## Screenshots and rendered pages
+
+A screenshot is not paper: text can be any colour on any colour, and the steps built for
+scans (cutting the sheet out of a photo, erasing blue stamps) destroy it. A digital image is
+recognised by its flat pixels and is also read through a screen route that keeps text of
+every colour, and the more confident of the two readings is returned (E39). `prep.screen`
+in the response says which one won.
+
 ## Measured accuracy
 
 Real scanned letters with hand-checked ground truth (`ocr_eval/ground_truth_real_fixed_v2.jsonl`),

@@ -1946,3 +1946,39 @@ Numbers are decided exactly as before.
 
 Per document: dev 20 better / 7 worse (largest loss 2 characters), test 12 better / 4 worse
 (largest loss 9 characters).
+
+## E39 — screenshots and rendered pages: a second, screen route
+
+**Date:** 2026-11-03 · **Trigger:** a screenshot of a web form came back as «خبلر، تو / اف»
+
+**Diagnosis.** Raw Tesseract read the screenshot almost whole; the service lost it in its own
+paper steps. `ink.separate` (blue stamp removal) erased the purple password and the blue
+button, and also the coloured sub-pixel fringes of the anti-aliased labels, which left those
+labels broken. The binarisation keeps only dark-on-light, so white text on the buttons was
+dropped.
+
+**Telling screens from paper.** Share of pixels identical to their right neighbour: every
+scan and photo in the corpus ≤ 0.80 (101 images), every clean digital render ≥ 0.92, the
+screenshot 0.97. Threshold 0.90 (`imaging.SCREEN_FLAT_FRAC`). No real scan enters the route,
+so the letter benchmark is unchanged by construction.
+
+**Screen route.** No page crop, no stamp removal; ink is any pixel whose colour differs from
+the median colour around it by ≥ 64 in some channel, so text of any colour on any colour
+comes out black on white (`imaging.screen_ink`). Deskew is kept: the rendered test pages are
+slightly rotated, and dropping it cost 2.4 pp.
+
+**Choosing.** On the 25 clean rendered pages with ground truth (`ocr_eval/images`), the screen
+route alone was 12.71% vs 12.73% CER but per page 9 better / 12 worse: a hard threshold
+loses the anti-aliasing that 7-13 px screen text depends on. Soft-contrast variants were no
+better. So a digital image is read both ways and the transcript with more confident text
+(Σ confidence × length) is kept, the same rule as the Arabic re-read:
+
+| | CER | better | worse |
+|---|--:|--:|--:|
+| paper route only (before) | 12.73% | — | — |
+| screen route only | 12.71% | 9 | 12 |
+| **both, keep the surer** | **12.57%** | 3 | 2 |
+
+The screenshot: confidence mass 5.3 (paper) vs 77.3 (screen); every element of the form is
+returned, including the password and the button labels. Remaining errors there are short
+Latin runs inside a Persian line («a-z», «A-Z», «1-9»), read by the Persian model.

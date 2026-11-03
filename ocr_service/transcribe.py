@@ -50,7 +50,8 @@ from PIL import Image, ImageOps
 # Image operations live in imaging.py; the names are re-exported here for callers that
 # have always imported them from this module.
 from .imaging import (_crop, _xov, _yov, clean_ink, flatten, glyph_height, is_line_crop,  # noqa: F401
-                      measure_glyph_height, squeeze_kashida, text_lines, text_skew, working_scale)
+                      is_screen_image, measure_glyph_height, screen_ink, squeeze_kashida, text_lines,
+                      text_skew, working_scale)
 from .tesseract import Tesseract
 
 log = logging.getLogger(__name__)
@@ -611,26 +612,31 @@ class Transcriber:
                                   "route": "line_crop"},
                           unread=unread, prepared=im, prep={"line_crop": True})
 
-    def transcribe(self, im: Image.Image) -> Transcript:
+    def transcribe(self, im: Image.Image, screen: bool = False) -> Transcript:
+        """Read a page. `screen=True` reads a digital image (screenshot, rendered page) the
+        way a screen draws text: any colour on any colour, no sheet to cut out, no stamp."""
         t0 = time.perf_counter()
         timing: dict[str, float] = {}
         im = ImageOps.exif_transpose(im).convert("RGB")
-
-        # Cut the page out of the frame first. Everything that is not paper — desk,
-        # shadow, the edge of the next sheet — becomes ink under `flatten`, and by the
-        # time it reaches the line finder it is indistinguishable from faint text.
-        prep = None
-        if self.crop_page:
-            from .page_prep import crop_page
-            im, prep = crop_page(im)
-
-        # Then split the ink layers: erase the blue stamp that sits on the signature
-        # block, and turn a white-on-coloured letterhead the right way up. Both are
-        # invisible to a threshold on brightness alone (ink.py).
-        ink_info = None
-        if self.ink_separate:
-            from .ink import separate
-            im, ink_info = separate(im)
+        prep, ink_info, shown = None, None, None
+        if screen:
+            # The paper steps below erase blue text and drop white text on buttons, so the
+            # page is read from a black-on-white rendering of its contrast instead (E39).
+            # Boxes are the same in both, so the original is what the viewer shows.
+            shown, im = im, screen_ink(im)
+        else:
+            # Cut the page out of the frame first. Everything that is not paper — desk,
+            # shadow, the edge of the next sheet — becomes ink under `flatten`, and by the
+            # time it reaches the line finder it is indistinguishable from faint text.
+            if self.crop_page:
+                from .page_prep import crop_page
+                im, prep = crop_page(im)
+            # Then split the ink layers: erase the blue stamp that sits on the signature
+            # block, and turn a white-on-coloured letterhead the right way up. Both are
+            # invisible to a threshold on brightness alone (ink.py).
+            if self.ink_separate:
+                from .ink import separate
+                im, ink_info = separate(im)
         timing["prep_s"] = round(time.perf_counter() - t0, 3)
 
         skew = text_skew(im)
@@ -664,8 +670,8 @@ class Transcriber:
         timing["total_s"] = round(time.perf_counter() - t0, 3)
         return Transcript(text=text, lines=out_lines, numbers=numbers, skew_deg=round(skew, 2),
                           image_size=im.size, glyph_px=round(glyph_px, 1), timing=timing, unread=unread,
-                          prepared=im,
-                          prep={**(prep.as_dict() if prep else {}),
+                          prepared=shown or im,
+                          prep={"screen": screen, **(prep.as_dict() if prep else {}),
                                 **(ink_info.as_dict() if ink_info else {})})
 
     def _clean_word(self, w: str, latin: bool) -> str:
