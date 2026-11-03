@@ -37,6 +37,10 @@ PREPARED_MAX_SIDE = 1600
 REVIEW_LINE_CONF = 0.6      # a line below this mean confidence is worth a human look
 REVIEW_NUMBER_CONF = 0.7    # a number below this (or not confirmed by the digit reader) likewise
 REVIEW_MIN_GLYPH_PX = 20.0  # below this the dots of ب/ی/پ/ن and ح/خ/ج are not in the image at all
+# Confident text the paper route must find before its reading is trusted on its own. Every
+# letter in the corpus reads far above this; a screenshot whose text the stamp eraser took
+# for blue ink reads 0 (E41).
+WEAK_TEXT_MASS = 50.0
 
 
 def _data_url(im) -> tuple[str | None, float | None]:
@@ -184,7 +188,9 @@ class OcrPipeline:
             # A screenshot or rendered page is also read the screen way, and the reading
             # with more confident text is kept: the paper route loses coloured text and
             # white text on buttons, the screen route loses some anti-aliased small text (E39).
-            if is_screen_image(im):
+            # So is any image the paper route found almost nothing on: a compressed screenshot
+            # is not flat enough to be recognised as one, and its text is not paper ink (E41).
+            if is_screen_image(im) or _text_mass(tr) < WEAK_TEXT_MASS:
                 alt = self.transcriber.transcribe(im, screen=True)
                 if _text_mass(alt) > _text_mass(tr):
                     tr = alt

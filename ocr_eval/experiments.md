@@ -2007,3 +2007,41 @@ usable (< 30) and contained no Persian digit.
 | rendered Persian pages: CER | 1.37% | 1.37% |
 
 Rendered pages: 17 better, 1 worse by one character.
+
+## E41 — desktop screenshots: the stamp eraser ate the text, and mixed lines
+
+**Date:** 2026-11-03 · **Trigger:** two desktop screenshots (a chat transcript, English and
+English+Persian, 10 px ClearType text) came back empty or with the Persian words as gibberish
+
+**1. The paper route returned nothing.** `ink.separate` flagged 34–67 thousand pixels as blue
+ink: screen fonts draw each stroke with coloured sub-pixel fringes, and at 10 px every stroke
+has a blue edge, so the stamp eraser erased all the text (glyph height 0). The mixed
+screenshot was rescued by the screen route (E39); the English one scored 0.88 flatness, under
+the 0.90 threshold, went to the paper route only, and came back **empty**. Fix: when the
+paper route reads almost nothing (confident-text mass < 50; every corpus letter is far above),
+the screen route is tried as well. Scans are unaffected by construction.
+
+**2. A Persian line with a Latin token.** «اوکی پس به OCRS_TESSERACT دست نزن» was won whole by
+the English read: «"3H Guana OCRS_TESSERACT a yap oS». Each line crop now also offers a mixed
+reading — the Persian read with the confident Latin tokens put in place (E40 rules) — on lines
+that are mostly confident Persian (≥ 50% of characters in Persian words at ≥ 80). Changes made
+on the way, each for a measured failure: the English box often runs over neighbouring Persian
+words, so only the non-Persian guess inside the span is replaced; the digit reader now runs
+before candidate building so the Persian-number guard works there; a run of Latin words keeps
+left-to-right order inside a right-to-left line («Roya Ghasemi», not «Ghasemi Roya»); the
+mixed reading is not offered on mostly-Latin lines (it reversed «Email: x@y.com» on 4 letters).
+
+| | before | after |
+|---|--:|--:|
+| real letters dev 51 / test 33 | — | byte-identical |
+| rendered Persian pages, CER | 1.37% | 1.37% |
+| rendered bilingual pages, words of the GT found (order-free) | 80.1% | 83.4% |
+| … Persian words found | 615 / 728 | 661 / 728 |
+| … CER (order-sensitive) | 19.92% | 20.08% |
+
+The CER rises although more words are found: a mixed line is emitted in right-to-left logical
+order («رویا قاسمی فر - Roya Ghasemi») where the GT stores it left-to-right; both display the
+same. One real regression: on `synthetic_bilingual_025` the line «شماره قرارداد: INV-2026-0093»
+is lost and the economic code is cut to «۶1» — a selection interaction, open.
+
+The UI's low-resolution notice no longer tells a screenshot to be rescanned at 300 DPI.

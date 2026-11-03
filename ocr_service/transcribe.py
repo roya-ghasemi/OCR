@@ -92,8 +92,11 @@ _MIXED_DIGITS = re.compile(r"(?=.*[۰-۹])(?=.*[0-9])")
 _LATIN_TOKEN = re.compile(r"[A-Za-z0-9@._\-+:/#%&$()\[\]=*'\"!?,]+")
 # How sure the English model must be of a Latin token to put it in a Persian line, and how
 # unsure the Persian model must have been of what it read in the same place (E40).
-LATIN_KEEP_CONF = 80.0
+LATIN_KEEP_CONF = 75.0
 DIGITS_KEEP_CONF = 90.0
+# A line gets a mixed Persian/Latin reading only when at least half its characters are in
+# Persian words the Persian model read at this confidence (E41).
+MIX_PERSIAN_CONF = 80.0
 DIGITS_UNSURE_CONF = 30.0
 # Latin letters the English model reports for Persian digits of the same shape: ۷ as «V»,
 # ۸ as «A», ۲ as «Y» or «r», ۱ as «I» or «l», ۵ as «O». A token made only of these is a
@@ -397,7 +400,8 @@ class Transcriber:
                 if len(_key(w.text)) <= 1 and gap(w, nb) >= h:
                     ws.pop(end)
 
-    def _candidates(self, page: Image.Image, ink: np.ndarray) -> tuple[list[Line], list[Word]]:
+    def _candidates(self, page: Image.Image, ink: np.ndarray,
+                    persian_numbers: list = ()) -> tuple[list[Line], list[Word]]:
         """Readings that compete per line, and every Latin token the English model was sure of
         (page coordinates), for `_keep_latin`."""
         boxes, _ = text_lines(ink)
@@ -411,17 +415,30 @@ class Transcriber:
             read = self._read_lines(ex, crops, (self.lang_fa, "eng"))
             cands = [L for f in layouts for L in f.result()]
             sparse = [L for f in text_only for L in f.result()]
+        def to_page(ws: list[Word], ox: int, oy: int) -> list[Word]:
+            return [Word(w.text, w.conf, (w.box[0] + ox, w.box[1] + oy, w.box[2] + ox, w.box[3] + oy))
+                    for w in ws]
+
         latin: list[Word] = []
         for b, (ox, oy), wf, we in zip(boxes, offs, read[self.lang_fa], read["eng"]):
-            latin += [Word(w.text, w.conf, (w.box[0] + ox, w.box[1] + oy, w.box[2] + ox, w.box[3] + oy))
-                      for w in we if w.conf >= LATIN_KEEP_CONF and _LATIN_TOKEN.fullmatch(w.text)]
+            sure = [w for w in to_page(we, ox, oy) if w.conf >= LATIN_KEEP_CONF and _LATIN_TOKEN.fullmatch(w.text)]
+            latin += sure
+            # Only on a line that is mostly Persian the model is sure of: on a Latin line with a
+            # stray Persian guess the English read is the right one, in left-to-right order.
+            persian = sum(len(_key(w.text)) for w in wf if _PERSIAN_CHAR.search(w.text) and w.conf >= MIX_PERSIAN_CONF)
+            mostly_persian = persian >= 0.5 * max(1, sum(len(_key(w.text)) for w in wf))
+            mixed = (self._latin_into(to_page(wf, ox, oy), sure, list(persian_numbers))
+                     if sure and mostly_persian else None)
+            if mixed is not None:
+                # A Persian line with Latin in it: neither model reads it whole, and the whole-
+                # line English read otherwise wins it with the Persian words as gibberish (E41).
+                cands.append(Line(mixed, b, "line-mix"))
             for ws, lang in ((wf, "fas"), (we, "eng")):   # tags, not model names
                 if not ws:
                     continue
                 if lang == "eng" and not any(_LATIN_WORD.search(w.text) and w.conf >= 70 for w in ws):
                     continue                            # an English read only competes on a Latin line
-                moved = [Word(w.text, w.conf, (w.box[0] + ox, w.box[1] + oy, w.box[2] + ox, w.box[3] + oy)) for w in ws]
-                cands.append(Line(moved, b, "line-" + lang))
+                cands.append(Line(to_page(ws, ox, oy), b, "line-" + lang))
         # psm 11 (sparse text) recovers words the other passes merge or drop, but splits number
         # groups apart. Its lines compete only in regions where no reading holds a digit, so
         # the numbers are decided exactly as without it (E38).
@@ -432,46 +449,70 @@ class Transcriber:
                         if not has_digit(L) and not any(self._conflict(L, c) for c in numeric)], latin
 
     @staticmethod
-    def _keep_latin(rows: list[list[Line]], latin: list[Word], digit_boxes: list = ()) -> None:
-        """Put Latin text inside a Persian line back as it is printed.
+    def _latin_into(words: list[Word], latin: list[Word], digit_boxes=None) -> list[Word] | None:
+        """`words` with each Latin token of `latin` put in place of the Persian model's guess at
+        the same spot, or None when nothing qualifies.
 
-        A line is won as a whole by one reading, so on a Persian line with «a-z», «A-Z» or an
-        e-mail address in it the Persian model's guess at the Latin part survives: «2-» for
-        «a-z», «۸-2» for «A-Z». The English model reads those exactly, and is sure of them
-        where the Persian model was not. Such a token replaces the Persian model's reading
-        at the same place. A word in Persian letters is never replaced; Persian digits only by
-        a token with real Latin letters (not «V», «A», «Y», which are ۷, ۸, ۲ to the English
-        model) and only where the digit reader saw no Persian number (`digit_boxes`, working-image
-        coordinates); and a run of digits only where the Persian model read nothing usable (E40).
+        The English model reads «a-z», «A-Z» or an e-mail address exactly, and is sure of them
+        where the Persian model was not («2-», «۸-2»). A word in Persian letters is never
+        replaced; Persian digits only by a token with real Latin letters (not «V», «A», «Y»,
+        which are ۷, ۸, ۲ to the English model) and only where the digit reader saw no Persian
+        number (`digit_boxes`; None means it has not run, and Persian digits are left alone);
+        a run of digits only where the Persian model read nothing usable (E40).
         """
-        if not latin:
-            return
+        out, changed = list(words), False
+        for e in latin:
+            span = [i for i, w in enumerate(out) if _xov(w.box, e.box) > 0.5 and _yov(w.box, e.box) > 0.3]
+            if any(out[i].text == e.text for i in span):
+                continue
+            # The English model's box often runs on over the Persian words beside the token; those
+            # words stay, and only the guess between them is a candidate for replacement.
+            hit = [i for i in span if not _PERSIAN_CHAR.search(out[i].text)]
+            if not hit or hit != list(range(hit[0], hit[-1] + 1)):
+                continue
+            ws = [out[i] for i in hit]
+            if any(w.conf >= e.conf for w in ws):
+                continue
+            persian_digits = any(_PERSIAN_DIGIT.search(w.text) for w in ws)
+            letters = re.findall(r"[A-Za-z]", e.text)
+            if letters:
+                if len(letters) < 2 or set(letters) <= _DIGIT_LOOKALIKES:
+                    continue
+                if persian_digits and (digit_boxes is None or any(
+                        _yov(d, e.box) > 0.5 and _xov(d, e.box) > 0.3 for d in digit_boxes)):
+                    continue                    # Persian digits the English model read as letters
+            elif (e.conf < DIGITS_KEEP_CONF or persian_digits
+                  or any(w.conf >= DIGITS_UNSURE_CONF for w in ws)):
+                continue
+            out[hit[0]:hit[-1] + 1] = [e]
+            changed = True
+        if not changed:
+            return None
+        # In a right-to-left line the words run right to left, but a run of Latin words reads
+        # left to right inside it: «Roya Ghasemi», not «Ghasemi Roya».
+        placed = {id(e) for e in latin}
+        i = 0
+        while i < len(out):
+            j = i
+            while j < len(out) and (id(out[j]) in placed or (j > i and _LATIN_TOKEN.fullmatch(out[j].text)
+                                                             and not _PERSIAN_CHAR.search(out[j].text))):
+                j += 1
+            if j - i >= 2:
+                out[i:j] = sorted(out[i:j], key=lambda w: w.box[0])
+            i = max(j, i + 1)
+        return out
+
+    @classmethod
+    def _keep_latin(cls, rows: list[list[Line]], latin: list[Word], digit_boxes: list = ()) -> None:
+        """Latin text inside the chosen Persian lines put back as printed (see `_latin_into`)."""
         for row in rows:
             for line in row:
                 if line.source == "line-eng":
                     continue
-                for e in latin:
-                    if _yov(e.box, line.bbox) < 0.5 or _xov(e.box, line.bbox) < 0.8:
-                        continue
-                    hit = [i for i, w in enumerate(line.words) if _xov(w.box, e.box) > 0.5]
-                    if not hit:
-                        continue
-                    ws = [line.words[i] for i in hit]
-                    if any(w.text == e.text for w in ws):
-                        continue
-                    if any(_PERSIAN_CHAR.search(w.text) or w.conf >= e.conf for w in ws):
-                        continue
-                    letters = re.findall(r"[A-Za-z]", e.text)
-                    if letters:
-                        if len(letters) < 2 or set(letters) <= _DIGIT_LOOKALIKES:
-                            continue
-                        if (any(_PERSIAN_DIGIT.search(w.text) for w in ws)
-                                and any(_yov(d, e.box) > 0.5 and _xov(d, e.box) > 0.3 for d in digit_boxes)):
-                            continue                    # Persian digits the English model read as letters
-                    elif (e.conf < DIGITS_KEEP_CONF or any(w.conf >= DIGITS_UNSURE_CONF for w in ws)
-                          or any(_PERSIAN_DIGIT.search(w.text) for w in ws)):
-                        continue
-                    line.words[hit[0]:hit[-1] + 1] = [e]
+                near = [e for e in latin if _yov(e.box, line.bbox) >= 0.5 and _xov(e.box, line.bbox) >= 0.8]
+                merged = cls._latin_into(line.words, near, list(digit_boxes)) if near else None
+                if merged is not None:
+                    line.words = merged
 
     @staticmethod
     def _conflict(a: Line, b: Line) -> bool:
@@ -714,17 +755,20 @@ class Transcriber:
         page = Image.fromarray(np.where(ink, 0, 255).astype(np.uint8))
         timing["binarise_s"] = round(time.perf_counter() - t, 3)
 
-        t = time.perf_counter()
-        cands, latin = self._candidates(page, ink)
-        rows = self._select(cands)
-        timing["tesseract_s"] = round(time.perf_counter() - t, 3)
-
+        # The digit reader first: where it sees a Persian number, a Latin token the English
+        # model read there is a misreading of that number, not Latin text (E40, E41).
         t = time.perf_counter()
         reader = self.glyph_reader()
         reads = reader.read_page(im) if reader is not None else []
+        persian_numbers = [tuple(v * scale for v in r.box) for r in reads
+                           if r.n_digits >= 2 and r.script != "latin"]
         timing["digits_s"] = round(time.perf_counter() - t, 3)
-        self._keep_latin(rows, latin, [tuple(v * scale for v in r.box) for r in reads
-                                       if r.n_digits >= 2 and r.script != "latin"])
+
+        t = time.perf_counter()
+        cands, latin = self._candidates(page, ink, persian_numbers)
+        rows = self._select(cands)
+        timing["tesseract_s"] = round(time.perf_counter() - t, 3)
+        self._keep_latin(rows, latin, persian_numbers)
         pieces = [p for r in rows for p in r]
         if reader is not None:
             self._fix_numbers(pieces, reads, scale)

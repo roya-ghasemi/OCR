@@ -95,3 +95,17 @@ def test_persian_digits_read_as_letters_stay_persian():
     rows = _row(("۰/.۲۳", 20.0, 100, 160))
     Transcriber._keep_latin(rows, [Word("INY", 90.0, (100, 0, 160, 20))], [(100, 0, 160, 20)])
     assert rows[0][0].words[0].text == "۰/.۲۳"                                  # the digit reader saw a number
+
+
+def test_a_latin_token_beside_persian_words_replaces_only_the_guess_between_them():
+    words = [Word("اوکی", 92.0, (689, 0, 781, 20)), Word("به", 90.0, (560, 0, 595, 20)),
+             Word("۸_", 0.0, (191, 0, 550, 20)), Word("دست", 87.0, (80, 0, 178, 20))]
+    out = Transcriber._latin_into(words, [Word("OCRS_TESSERACT", 79.0, (191, 0, 781, 20))], [])
+    assert [w.text for w in out] == ["اوکی", "به", "OCRS_TESSERACT", "دست"]
+
+
+def test_a_run_of_latin_words_keeps_left_to_right_order_in_a_persian_line():
+    words = [Word("رویا", 90.0, (600, 0, 660, 20)), Word("x", 0.0, (300, 0, 360, 20)),
+             Word("y", 0.0, (200, 0, 290, 20))]
+    latin = [Word("Ghasemi", 90.0, (300, 0, 360, 20)), Word("Roya", 90.0, (200, 0, 290, 20))]
+    assert [w.text for w in Transcriber._latin_into(words, latin, [])] == ["رویا", "Roya", "Ghasemi"]
