@@ -11,6 +11,7 @@ def test_the_filesystem_queue_lives_in_the_project_whatever_the_working_folder()
     try:
         assert broker == "filesystem://"
         assert opts["data_folder_in"].startswith(str(REPO_DIR))
+        assert opts["control_folder"].startswith(str(REPO_DIR))
         # a drive letter right after file:// is parsed as host:port and stops the worker
         assert backend.startswith("file://localhost/")
     finally:

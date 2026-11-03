@@ -36,10 +36,11 @@ def _broker_and_backend(url: str) -> tuple[str, str, dict]:
         # Relative to the project, not to the folder a process was started from: an API and
         # a worker started from different folders would otherwise use different queues.
         base = str(REPO_DIR / (url[len("filesystem://"):] or ".celery_fs"))
-        for d in ("in", "out", "processed", "results"):
+        for d in ("in", "out", "processed", "results", "control"):
             os.makedirs(os.path.join(base, d), exist_ok=True)
         opts = {"data_folder_in": os.path.join(base, "in"), "data_folder_out": os.path.join(base, "in"),
-                "processed_folder": os.path.join(base, "processed"), "store_processed": False}
+                "processed_folder": os.path.join(base, "processed"), "store_processed": False,
+                "control_folder": os.path.join(base, "control")}
         # file://localhost/<path>: a bare drive letter after file:// is read as host:port
         return "filesystem://", "file://localhost/" + Path(base, "results").as_posix(), opts
     return url, url, {}
