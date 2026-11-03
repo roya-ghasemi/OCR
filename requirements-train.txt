@@ -1,0 +1,7 @@
+# Model training: Tesseract fine-tune (ocr_train/) and the digit CNN (ocr_research/digits/).
+# Needs the Tesseract training tools (lstmtraining, text2image) on PATH as well.
+-r requirements-dev.txt
+pyarrow==25.0.1              # benchmark parquet
+scikit-learn==1.7.2          # v1 HOG+SVM digit reader (superseded, kept for comparison)
+joblib==1.6.0
+torch                        # digit CNN trainer; CPU wheel is enough

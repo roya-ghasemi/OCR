@@ -23,12 +23,14 @@ if (-not $exe) {
 }
 Write-Host "tesseract: $exe"
 
-# Persian language data. tessdata_best is the most accurate LSTM set; ~14 MB.
+# Language data: the same files the Docker image pins (deploy/Dockerfile) — Persian and
+# Arabic from tessdata_best, English from tessdata_fast.
 $tessdata = Join-Path (Split-Path $exe) "tessdata"
-foreach ($lang in @("fas", "eng")) {
+$sources = @{ "fas" = "tessdata_best"; "ara" = "tessdata_best"; "eng" = "tessdata_fast" }
+foreach ($lang in $sources.Keys) {
     $f = Join-Path $tessdata "$lang.traineddata"
     if (-not (Test-Path $f)) {
-        $url = "https://github.com/tesseract-ocr/tessdata_best/raw/main/$lang.traineddata"
+        $url = "https://github.com/tesseract-ocr/$($sources[$lang])/raw/main/$lang.traineddata"
         Write-Host "downloading $lang.traineddata ..."
         Invoke-WebRequest -Uri $url -OutFile $f -UseBasicParsing
     }
@@ -40,4 +42,4 @@ foreach ($lang in @("fas", "eng")) {
 $env:OCRS_TESSERACT_CMD = $exe
 & $exe --version | Select-Object -First 1
 & $exe --list-langs
-Write-Host "`nDone. Verify with:  venv312\Scripts\python.exe -c ""from ocr_service.numeric_validator import TesseractReader as T; r=T(); print(r.available(), r.version)"""
+Write-Host "`nDone. Start the service and check GET /health — tesseract.available must be true."

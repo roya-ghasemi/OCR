@@ -1,0 +1,10 @@
+# Allow-list: the image needs the service package, its two model files and the
+# requirements. Everything else (datasets, venvs, training output, caches) stays out
+# of the build context.
+**
+!ocr_service/
+!models/digit_cnn.npz
+!tessdata/fas_custom.traineddata
+!requirements-service.txt
+**/__pycache__
+**/*.pyc

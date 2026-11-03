@@ -30,10 +30,11 @@ Environment=OCRS_TESSERACT_CMD=/usr/bin/tesseract
 Environment=OCRS_CACHE_DIR=/var/cache/ocr
 Environment=PYTHONUNBUFFERED=1
 
-# One worker per 2-3 cores. A page costs ~3 s of CPU and each request already fans out to
-# OCRS_WORKERS parallel Tesseract processes (default 8), so uvicorn workers multiply that:
-# 4 uvicorn workers x 8 is 32 processes competing for the same cores, which is slower than
-# 2 x 8 on most hosts. Measure before raising it.
+# Each page fans out to OCRS_WORKERS Tesseract processes, and each uvicorn worker reads at
+# most OCRS_MAX_CONCURRENT_PAGES pages at once (further requests wait). Keep
+# workers x pages x OCRS_WORKERS near the core count: 2 x 2 x 4 on a 16-core host.
+Environment=OCRS_WORKERS=4
+Environment=OCRS_MAX_CONCURRENT_PAGES=2
 ExecStart=/srv/ocr/venv/bin/uvicorn ocr_service.api:app \
     --host 127.0.0.1 --port 8000 \
     --workers 2 \

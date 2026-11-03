@@ -1,0 +1,8 @@
+# Tests, linting and the evaluation tools in ocr_eval/.
+-r requirements-service.txt
+pytest==9.1.1
+httpx==0.28.1                # fastapi TestClient
+Levenshtein==0.27.5          # CER/WER scoring
+arabic-reshaper==3.0.1       # synthetic Persian pages in tests and ocr_eval
+python-bidi==0.6.11
+ruff
