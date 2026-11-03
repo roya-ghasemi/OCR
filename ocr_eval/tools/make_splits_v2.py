@@ -8,7 +8,9 @@ Groups, not images, are dealt to dev/test, so a template never straddles the spl
 Written ONCE and hash-locked. Regenerating it invalidates every comparison made
 against it; the guard test asserts the hash has not moved.
 """
-import hashlib, json, random
+import hashlib
+import json
+import random
 from collections import defaultdict
 from pathlib import Path
 

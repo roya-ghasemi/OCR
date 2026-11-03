@@ -48,7 +48,7 @@ changing a string.
 | source | lines | what it teaches |
 |---|---|---|
 | `Persian-OCR-Double-Benchmark`, printed split | 5,224 train / 1,372 held out | real Persian print: varied faces, weights, background tints, noise |
-| synthetic, from `ocr_service/fonts` | 6,000 | kashida, and the administrative register — letter numbers, Jalali dates, 8-digit landlines, amounts, e-mail, the fixed formulas |
+| synthetic, from `ocr_train/fonts` | 6,000 | kashida, and the administrative register — letter numbers, Jalali dates, 8-digit landlines, amounts, e-mail, the fixed formulas |
 
 The synthetic half exists because the benchmark teaches nothing about the two things this
 service actually fails on. Administrative Persian is justified by **stretching letters**, not

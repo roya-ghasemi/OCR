@@ -59,14 +59,14 @@ def test_a_field_must_come_from_one_confident_line():
 def test_the_gate_withholds_a_shaky_reading():
     """Measured on 14 sample pages: the band is found on all 14 and the gate emits a sender
     on none of them, because the company name is a stylised logotype the recogniser reads at
-    0.00-0.44 confidence. Emitting it would be the invented text the brief forbids."""
+    0.00-0.44 confidence. Emitting it would be the invented text the requirements forbid."""
     from ocr_service.letterhead import MIN_FIELD_CONF
     assert MIN_FIELD_CONF >= 0.75
 
 
 def test_the_letterhead_region_is_reported_as_a_place_to_look():
     """When nothing is read confidently the band becomes an `unread` region, which is what
-    the brief asks for: show the crop rather than guess at it."""
+    the requirements ask for: show the crop rather than guess at it."""
     from ocr_service.schemas import UnreadRegion
     r = UnreadRegion(kind="letterhead", bbox=[0, 0, 100, 50], read_as="", confidence=0.3)
     assert r.kind == "letterhead"

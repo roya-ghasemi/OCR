@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from ocr_service.ink import blue_mask, drop_blue_ink, invert_bands  # noqa: E402
-from ocr_service.page_prep import FULL_FRAME_FRAC, crop_page, find_quad  # noqa: E402
+from ocr_service.page_prep import FULL_FRAME_FRAC, crop_page  # noqa: E402
 
 PAGES = ROOT / "ocr_eval" / "pages"
 

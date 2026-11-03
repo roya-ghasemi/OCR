@@ -28,7 +28,7 @@ KASHIDA = "ـ"
 
 # Letters that do not join to what follows them. A kashida after one of these would be a
 # free-floating dash, not an elongation, so it is never inserted there. This is the rule the
-# brief states and it is also simply how the script works.
+# requirements state and it is also simply how the script works.
 NON_CONNECTING = set("اآأإدذرزژوؤةء")
 PERSIAN_LETTER = re.compile(r"[ء-غف-يٰ-ۓ]")
 

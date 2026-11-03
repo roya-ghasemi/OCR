@@ -3,7 +3,7 @@ r"""Render the synthetic corpus to line images with text2image.
 
 text2image, not Pillow. Pillow on this machine reports `features.check('raqm') == False`,
 which means no HarfBuzz: it would draw Persian as a row of isolated letterforms, and a model
-trained on that is worse than no training at all. The brief flags this exact trap. text2image
+trained on that is worse than no training at all. This is a known trap. text2image
 drives Pango, which shapes correctly — verified by eye on a rendered sample before any of
 this was built.
 

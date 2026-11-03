@@ -1,5 +1,6 @@
 """Characterize the real-scan corpus: dimensions, DPI, colour, EXIF, quality proxies."""
-import hashlib, json
+import hashlib
+import json
 from pathlib import Path
 from PIL import Image
 import numpy as np

@@ -15,9 +15,9 @@ The code in this directory is kept as the **experimental record** that justifies
 removal, not as runtime code. `ocr_eval/test_phase0_guards.py` fails the build if any
 lexicon stage is wired back into the service.
 
-## Why — and why it is not the reason the brief assumed
+## Why — and why it is not the reason the plan assumed
 
-The remediation brief's hypothesis D1 was that the Dehkhoda stage was net-harmful and had
+The remediation plan's hypothesis D1 was that the Dehkhoda stage was net-harmful and had
 corrupted the published baseline, producing the semantic substitutions in `REPORT.md`
 (`احتراماً → احتمالا`, `اعلام → اعلان`, `فرمایید → فرمانیه`, the `پیشاپیش` variants).
 
@@ -92,13 +92,13 @@ The stage as shipped is not harmful. It is **worthless, and structurally unsafe 
   a 154,396-word classical lexicon. The −0.03 pt CER delta is far inside the noise of a
   36-image / 18-distinct-text set.
 - Every configuration that does more than that **damages the output**, and the damage is
-  exactly the failure mode the brief predicted — a literary lexicon snapping *correctly
+  exactly the failure mode the plan predicted — a literary lexicon snapping *correctly
   read* modern administrative vocabulary onto classical neighbours (`پروژه → پروره`,
   `دیجیتال → دیژیتال`) and editing proper nouns (`رضاى → رضاب`).
 - It sits one boolean flag away from the harmful arms. `allow_substitution=True` is a
   one-character change, and nothing in the codebase prevented it.
 
-So the brief's *conclusion* is right and its *reasoning* is wrong, and the distinction
+So the requirements' *conclusion* is right and its *reasoning* is wrong, and the distinction
 matters: removing this stage does not fix the semantic substitutions. Those are model
 reading errors and remain Phase 4 work.
 
@@ -119,7 +119,7 @@ Enforced by `ocr_eval/test_phase0_guards.py::test_no_lexicon_stage_in_runtime`.
 ## Not deleted — needs your decision
 
 **This project is not a git repository** (`git rev-parse` fails; there is no `.git`). The
-brief's instruction to "keep it only in git history" cannot be carried out — deleting these
+plan's instruction to "keep it only in git history" cannot be carried out — deleting these
 files would destroy the only copy of the evidence above.
 
 Left in place, pending your call:

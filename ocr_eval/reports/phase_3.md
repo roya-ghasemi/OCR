@@ -6,7 +6,7 @@ Usable outputs: **89 / 90**
 
 ## Why this report is GT-free
 
-Phase 3 asks how much of the error is misassignment. That question needs CER, CER needs ground truth, and the real corpus has none (**D35**). On synthetic GT it was already measured and largely disproved: misassignment is 14.46% of bilingual CER and 1.43% of Persian-only CER — real, but not the dominant term the brief assumed.
+Phase 3 asks how much of the error is misassignment. That question needs CER, CER needs ground truth, and the real corpus has none (**D35**). On synthetic GT it was already measured and largely disproved: misassignment is 14.46% of bilingual CER and 1.43% of Persian-only CER — real, but not the dominant term the plan assumed.
 
 What follows measures the *structural signatures* of misassignment, which need no reference, plus identifier checksums — which are ground truth the documents carry themselves.
 

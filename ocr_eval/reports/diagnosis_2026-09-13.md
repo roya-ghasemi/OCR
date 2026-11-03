@@ -3,12 +3,12 @@
 Date 2026-09-13. Scope `E:\ghasemi\ocr`. Every number below was measured in this
 session against the live engine; scripts and raw outputs are in
 `ocr_eval/experiments/diagnostics_0913/`. Nothing here is inferred from the model's
-name or from the brief.
+name or from the requirements.
 
-Three premises in the brief are contradicted by the repository and are corrected
+Three premises in the requirements are contradicted by the repository and are corrected
 first, because the diagnosis depends on them.
 
-| premise in the brief | what the repo shows |
+| premise in the requirements | what the repo shows |
 |---|---|
 | "the fine-tuning dataset", "training samples", "thousands of samples repeating a handful of templates" | **This project has never fine-tuned anything.** There is no training code, no training data and no adapter in the tree. The weights are a third-party checkpoint (`prithivMLmods/coreOCR-7B-050325-preview`, quantised by `mradermacher`). The 90 letters and 36 synthetic pages are *evaluation* data the model has never seen. |
 | "the model has memorised the header words because they appear frequently in the training samples" | Impossible on the above; and refuted by measurement (§3). |
@@ -176,7 +176,7 @@ second Q4 model. Quantisation is not where the 71% comes from.
 
 ## 3. Problem 3 — "memorisation instead of reading"
 
-### Diagnostic (E13b), as designed in the brief
+### Diagnostic (E13b), as designed in the requirements
 
 Six letters in the corpus layout with company names, receivers, person names and
 numbers **that appear nowhere in the corpus**, plus two control letters carrying
@@ -199,7 +199,7 @@ they are clean. The corpus `sender` reads better than novel senders (0.05 vs 0.4
 letterheads *in the prompt history*, not from training; and two of the six novel
 senders were simply not extracted, which is D41/D45 field omission, not misreading.
 
-The real Problem 3 is the mirror image of the brief's: the model reads words and
+The real Problem 3 is the mirror image of the requirements': the model reads words and
 cannot read digits — on seen and unseen content alike.
 
 ### 3.2 / 3.3

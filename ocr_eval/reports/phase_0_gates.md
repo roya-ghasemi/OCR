@@ -46,7 +46,7 @@ collection, a downstream service, an integration not in this repo) was calling
 
 ## GATE 2 — There is no ground truth for the 90 real documents. PLAN-CHANGING.
 
-The task brief states: "all 90 have hand-verified ground truth". **They do not.**
+The task description states: "all 90 have hand-verified ground truth". **They do not.**
 
 - `ocr_eval/dataset_ex/` contains exactly 90 files, **all `.JPG`, nothing else.**
   No subdirectories, no sidecar files, no manifest.

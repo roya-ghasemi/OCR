@@ -45,7 +45,7 @@ OUT_TSV = HERE / "phase0_changes.tsv"
 AUDIT_SEED = 20260901
 AUDIT_N = 30
 
-# D1's named semantic substitutions. Key = the wrong form the brief attributes to
+# D1's named semantic substitutions. Key = the wrong form the requirements attribute to
 # Dehkhoda; value = the correct form it claims was overwritten.
 WATCHLIST = {
     "احتمالا": "احتراماً",

@@ -60,7 +60,8 @@ def card(text: str, px: int, w: int = 2000, h: int = 500) -> Image.Image:
 
 
 def ask(im: Image.Image, prompt: str = PROMPT, grammar: str | None = None) -> tuple[str, float]:
-    buf = io.BytesIO(); im.save(buf, "PNG")
+    buf = io.BytesIO()
+    im.save(buf, "PNG")
     url = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
     body = {"messages": [{"role": "user", "content": [
                 {"type": "image_url", "image_url": {"url": url}},
@@ -81,7 +82,8 @@ def digits_only(s: str) -> str:
 
 def main() -> int:
     random.seed(13)
-    out_dir = HERE / "cards"; out_dir.mkdir(exist_ok=True)
+    out_dir = HERE / "cards"
+    out_dir.mkdir(exist_ok=True)
     results = []
 
     # --- control: blank page -----------------------------------------------
@@ -108,7 +110,8 @@ def main() -> int:
     for label, s, exp in (("mixed_line", "شماره: 1403/4/۵۲۴", "14034524"),
                           ("amount_fa", "مبلغ: ۳۲۱/۰۰۰/۰۰۰ ریال", "321000000"),
                           ("amount_en", "Amount: 321,000,000 Rials", "321000000")):
-        im = card(s, 80); im.save(out_dir / f"{label}.png")
+        im = card(s, 80)
+        im.save(out_dir / f"{label}.png")
         txt, secs = ask(im)
         got = digits_only(txt)
         results.append({"case": label, "expected": exp, "raw": txt, "got_digits": got,
@@ -132,7 +135,9 @@ def main() -> int:
     for r in results:
         if "exact" in r:
             k = r["case"].split("_")[0]
-            summary.setdefault(k, [0, 0]); summary[k][1] += 1; summary[k][0] += int(r["exact"])
+            summary.setdefault(k, [0, 0])
+            summary[k][1] += 1
+            summary[k][0] += int(r["exact"])
     (HERE / "results_E13a_digits.json").write_text(json.dumps({
         "generated_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "engine": ENGINE, "prompt": PROMPT, "decoding": "temperature=0, top_k=1, cache_prompt=false",

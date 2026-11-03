@@ -27,7 +27,7 @@ easy to lose:
 
 * **The handwriting split is not used.** It is page-level — one image, a label with
   newlines in it — so it cannot drive line training without a segmentation step, and a
-  printed-text recogniser trained on handwriting gets worse at print. The brief's targets
+  printed-text recogniser trained on handwriting gets worse at print. The targets
   are printed administrative letters.
 * **Persian-OCR-Double-Benchmark is a published benchmark**, frozen and leakage-controlled,
   with its own leaderboard. Training on it makes our score on it incomparable with that

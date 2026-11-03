@@ -218,7 +218,7 @@ def write_report(r: dict) -> None:
     A(f"- **{rel['n_usable']} of {rel['n']} documents produced usable output — "
       f"{fmt_ci(rel['usable_output_rate_all'])}**")
     A(f"- Dev split only: {fmt_ci(rel['usable_output_rate_dev'])}")
-    A(f"- Phase 2 exit criterion is **≥99%**.\n")
+    A("- Phase 2 exit criterion is **≥99%**.\n")
     A("### Failure taxonomy\n")
     A("| failure kind | count |")
     A("|---|---|")
@@ -307,7 +307,7 @@ def write_report(r: dict) -> None:
     if dev:
         A(f"| + `MAX_RETRIES=1` | **{dev['usable_rate']*100:.2f}%** | "
           f"{dev['latency_p50']}s |")
-    A("\n**The fix was not the one predicted.** The brief's leading hypothesis was "
+    A("\n**The fix was not the one predicted.** The leading hypothesis was "
       "token-budget exhaustion; it was falsified twice. The 422s were decoding "
       "degeneracy — the model looping on Persian-Indic digits (D23) or collapsing "
       "the whole letter into `sender` (D31). A repetition penalty of 1.2 removes it; "

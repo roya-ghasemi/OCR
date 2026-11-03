@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import hashlib
 import io
-import re
 
 import numpy as np
 from PIL import Image

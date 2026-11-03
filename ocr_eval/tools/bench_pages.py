@@ -2,7 +2,7 @@
 r"""Whole-page CER / WER against a hand-typed transcript (`ocr_eval/pages`).
 
 `bench_fulltext.py` scores letters against five-field GT. It cannot see three things
-this brief is about: word error, a general (non-letter) page, and text the service
+this benchmark is about: word error, a general (non-letter) page, and text the service
 printed that is **not on the page at all** — the junk lines are short, so a page-wide
 CER barely moves when one is added. This tool measures all three.
 

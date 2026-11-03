@@ -140,7 +140,7 @@ def main() -> int:
     print(f"wrote {OUT.relative_to(ROOT)}  rows={len(back)}")
     print(f"  text verified verbatim on {len(back)}/{len(back)} rows")
     print(f"  sha256 re-verified against dataset_ex on {len(back)}/{len(back)} images")
-    print(f"  splits: " + ", ".join(
+    print("  splits: " + ", ".join(
         f"{s}={sum(1 for r in back if r['split'] == s)}"
         for s in sorted({r["split"] for r in back})))
     print(f"  fields: all null on {sum(1 for r in back if all(v is None for v in r['fields'].values()))}/{len(back)} rows "

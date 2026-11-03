@@ -54,8 +54,10 @@ def test_arabic_letterforms_survive_an_arabic_read():
     """ي and ك are the correct letters in Arabic, not misspellings of ی and ک. Folding them
     produced «الولمه» for «الْعِلْمِ»."""
     from ocr_service.transcribe import Transcriber
-    fa = Transcriber.__new__(Transcriber); fa.arabic_script = False
-    ar = Transcriber.__new__(Transcriber); ar.arabic_script = True
+    fa = Transcriber.__new__(Transcriber)
+    fa.arabic_script = False
+    ar = Transcriber.__new__(Transcriber)
+    ar.arabic_script = True
     assert fa._clean_word("يك", latin=False) == "یک"
     assert ar._clean_word("يك", latin=False) == "يك"
     # and harakat are stripped for Persian, kept for Arabic

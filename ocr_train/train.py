@@ -111,7 +111,7 @@ def run(max_iterations: int | None = None, target_error: float | None = None,
     return rc
 
 
-_CKPT = re.compile(rf"_(\d+\.?\d*)_(\d+)_(\d+)\.checkpoint$")
+_CKPT = re.compile(r"_(\d+\.?\d*)_(\d+)_(\d+)\.checkpoint$")
 
 
 def best_checkpoint() -> Path | None:

@@ -17,14 +17,13 @@ Usage:
   python dehkhoda/eval_correction.py        # requires ocr_eval/predictions.jsonl
 """
 import json
-import re
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ocr_eval"))
 from run_eval import (            # noqa: E402
     load_jsonl, normalize, norm_digit, corpus_cer, corpus_wer,
-    extract_fa, extract_en, GT_PATH, PRED_PATH,
+    extract_fa, GT_PATH, PRED_PATH,
 )
 from corrector_v2 import CorrectorV2 as Corrector, _PERSIAN_CORE, _HAS_PERSIAN  # noqa: E402
 
@@ -107,8 +106,11 @@ def main():
         })
         for k in ("persian", "oov", "changed"):
             tot[k] += st[k]
-        tot["helpful"] += h; tot["harmful"] += hm; tot["neutral"] += nu
-        ex_help_all += eh; ex_harm_all += ehm
+        tot["helpful"] += h
+        tot["harmful"] += hm
+        tot["neutral"] += nu
+        ex_help_all += eh
+        ex_harm_all += ehm
 
     def agg(subset):
         rb = [norm_digit(x["ref_text"]) for x in subset]

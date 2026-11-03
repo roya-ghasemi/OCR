@@ -40,8 +40,8 @@ def main():
     L = []
     L.append("# OCR Accuracy Report\n")
     L.append(f"Endpoint tested: `{res['endpoint']}` (the real `/ocr` product endpoint).  ")
-    L.append(f"Model output (5 JSON fields) is flattened into one text blob and scored "
-             f"against ground truth.\n")
+    L.append("Model output (5 JSON fields) is flattened into one text blob and scored "
+             "against ground truth.\n")
 
     # ── Headline ──
     a = by["ALL"]
@@ -112,7 +112,7 @@ def main():
     L.append(f"- Other misreads (wrong characters, not a clean reversal): **{o['other']}** "
              f"({pct(o['other_rate'])})  ")
     if o["reversed_examples"]:
-        L.append(f"- Reversal examples: " + ", ".join(f"`{e}`" for e in o["reversed_examples"]))
+        L.append("- Reversal examples: " + ", ".join(f"`{e}`" for e in o["reversed_examples"]))
     L.append("")
     L.append("> Clean full-reversals are rare here, but ~1 in 3 Latin/digit runs is misread in "
              "some way — the dominant bilingual failure is character-level misreading of "
@@ -164,7 +164,7 @@ def main():
         if f"{a1} -> {b1}" in seen_pairs or f"{b1} -> {a1}" in seen_pairs:
             hits.append(wp)
     if hits:
-        L.append(f"Commonly-confused Persian pairs actually observed: "
+        L.append("Commonly-confused Persian pairs actually observed: "
                  + ", ".join(f"`{h}`" for h in hits) + ".\n")
     else:
         L.append("None of the classic dot-only Persian confusions (ب/پ, ج/چ, …) dominated; "

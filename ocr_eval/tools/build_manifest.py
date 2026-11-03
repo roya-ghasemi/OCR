@@ -4,7 +4,8 @@ Synthetic (ocr_eval/images) and real (ocr_eval/dataset_ex) are enumerated from
 separate roots and tagged with `source`. Nothing globs a single mixed directory,
 so the 36-image legacy baseline stays independently re-scoreable.
 """
-import hashlib, json
+import hashlib
+import json
 from pathlib import Path
 from PIL import Image
 

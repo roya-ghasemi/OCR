@@ -239,7 +239,7 @@ def test_a_table_row_is_split_into_cells_and_prose_is_not():
 def test_a_wide_gap_is_a_column_only_when_the_next_row_breaks_in_the_same_place():
     """Justified Persian is stretched by widening its spaces, so one line of prose has gaps
     as wide as any table's. A column is distinguished by being in the same place on the row
-    below — without that test the brief's one-paragraph page reported two tables."""
+    below — without that test the one-paragraph sample page reported two tables."""
     def line(words):
         return Line(words, (min(w.box[0] for w in words), 10,
                             max(w.box[2] for w in words), 50), "psm4")
@@ -362,7 +362,7 @@ def test_a_line_crop_is_told_from_a_page():
     from ocr_service.transcribe import is_line_crop
     assert is_line_crop(Image.new("RGB", (640, 48)))        # the benchmark line shape
     assert is_line_crop(Image.new("RGB", (1200, 90)))
-    assert not is_line_crop(Image.new("RGB", (2192, 2996)))  # the brief's letter
+    assert not is_line_crop(Image.new("RGB", (2192, 2996)))  # the reference letter
     assert not is_line_crop(Image.new("RGB", (1600, 900)))   # a wide page is still a page
     assert not is_line_crop(Image.new("RGB", (3000, 300)))   # wide, but far too tall
     assert not is_line_crop(Image.new("RGB", (100, 48)))     # not wide enough

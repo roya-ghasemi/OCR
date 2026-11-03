@@ -341,7 +341,7 @@ def write_report(res: dict) -> None:
       "misassigned content lands.\n")
 
     A("\n## The finding that changes the Phase 3 plan\n")
-    A("The brief motivates Phase 3 with: *\"Persian-only CER 4.49% vs bilingual "
+    A("The requirements motivate Phase 3 with: *\"Persian-only CER 4.49% vs bilingual "
       "25.59% on the same script is evidence that reading is not the bottleneck — "
       "assignment is.\"* Measured directly, that does not hold.\n")
     A(f"- Bilingual as-assigned CER **{av['as_assigned_cer']['point']*100:.2f}%** "
@@ -356,7 +356,7 @@ def write_report(res: dict) -> None:
       f"{fav['share_of_cer_from_misassignment_pct']}% of CER.\n")
     A("**Implication.** Decoupling transcription from field assignment (Phase 3) has "
       "a hard ceiling of roughly 7–8 pp on this corpus. It remains worth building for "
-      "the stage-level diagnosis the brief asks for, but it cannot be the main "
+      "the stage-level diagnosis the requirements ask for, but it cannot be the main "
       "accuracy lever. The gap between 4.49% Persian-only and 25.59% bilingual is "
       "mostly the model reading Latin/digit runs badly (D6, 32.85% CER on those "
       "spans), not mis-routing Persian it read correctly.\n")

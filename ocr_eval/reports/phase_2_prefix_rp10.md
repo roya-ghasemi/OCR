@@ -97,7 +97,7 @@ Everything above is the **baseline**. Below is the same corpus after the Phase 2
 | + `JSON_REPAIR=1` | 98.15% | 4.42s |
 | + `MAX_RETRIES=1` | **100.00%** | 4.422s |
 
-**The fix was not the one predicted.** The brief's leading hypothesis was token-budget exhaustion; it was falsified twice. The 422s were decoding degeneracy — the model looping on Persian-Indic digits (D23) or collapsing the whole letter into `sender` (D31). A repetition penalty of 1.2 removes it; 1.1 does nothing, so the effect is a threshold rather than a gradient.
+**The fix was not the one predicted.** The requirements' leading hypothesis was token-budget exhaustion; it was falsified twice. The 422s were decoding degeneracy — the model looping on Persian-Indic digits (D23) or collapsing the whole letter into `sender` (D31). A repetition penalty of 1.2 removes it; 1.1 does nothing, so the effect is a threshold rather than a gradient.
 
 **Reliability and latency were the same fix.** A looping request ran to the token cap every time, so removing the loop cut p50 latency 5×.
 

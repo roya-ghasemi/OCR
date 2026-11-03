@@ -120,6 +120,6 @@ under the current configuration.
 ## Hard gate
 
 Reached: **ground truth materially absent — 100% of the real corpus, not the 10%
-threshold in the brief.** Phases 4, 5 and 6 have accuracy-based exit criteria and
+threshold in the requirements.** Phases 4, 5 and 6 have accuracy-based exit criteria and
 cannot be evaluated. Work that does not require GT continued; see
 `phase_7_ci_gate.md`.

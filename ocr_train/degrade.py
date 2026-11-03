@@ -16,7 +16,7 @@ transforms were a single soft-scan pipeline, which put the corpus here:
 
     corpus                     line height   >240    <40   60-200
     E29 degraded synthetic          53 px   0.539  0.115   0.086
-    the brief's letter              73 px   0.817  0.068   0.056
+    the reference letter              73 px   0.817  0.068   0.056
     tech_prose (phone photo)        26 px   0.000  0.000   0.639
     spring_prose (phone photo)      31 px   0.000  0.001   0.842
 
@@ -50,7 +50,7 @@ from PIL import Image, ImageFilter
 # The service upsamples anything under 20 px to about 30 px (E21), so the model should see
 # the whole range it will be handed — including the bad end, which is where the dots of
 # ب/ی/پ/ن stop being resolvable at all, and the top end, which is where a 300 DPI scan sits.
-# The brief's letter reads at 73 px per line; a cap of 58 could not even reach it.
+# the reference letter reads at 73 px per line; a cap of 58 could not even reach it.
 MIN_TEXT_PX, MAX_TEXT_PX = 14, 86
 
 # The lightest the darkest pixel of a line may be. Above this the text is not in the picture
@@ -137,7 +137,7 @@ def faint(im: Image.Image, rng: random.Random) -> Image.Image:
 def bright_scan(im: Image.Image, rng: random.Random) -> Image.Image:
     """The look of a phone scanner app: paper blown to white, ink thinned to grey.
 
-    Measured on the brief's letter, per text line, in the page the recogniser is actually
+    Measured on the reference letter, per text line, in the page the recogniser is actually
     handed: **82% of pixels above 240, only 6.8% below 40, 5.6% in the midtones.** A
     CamScanner export is not a soft noisy scan. It has had its white point pulled down hard
     until the paper saturates, and what that does to the text is make it *thinner and
@@ -238,7 +238,7 @@ PIPELINE = [
 # between the two real domains and matched neither.
 #
 #   name      share  line height   because
-#   scan       0.50    55-86 px    the brief's letter reads at 73 px per line
+#   scan       0.50    55-86 px    the reference letter reads at 73 px per line
 #   photo      0.35    18-42 px    the two photo pages read at 26 and 31 px
 #   plain      0.15    24-80 px    clean print exists too, at any size
 #

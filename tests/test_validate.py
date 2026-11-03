@@ -2,7 +2,7 @@
 """Guards for field validation (E31).
 
 A verdict that is wrong in the lenient direction is worse than no verdict: it tells a
-reviewer a damaged value is fine. These pin the cases that actually came off the brief's
+reviewer a damaged value is fine. These pin the cases that actually came off the reference
 letter.
 """
 from __future__ import annotations
@@ -63,7 +63,7 @@ def test_a_list_of_telephone_numbers_is_not_one_long_number():
 
 def test_a_subscriber_number_with_one_extra_digit_is_rejected():
     """The commonest way a misread number still looks like a number. The recogniser produced
-    «۳۸۳۸۸۲۶۱۰» on the brief's letter — «۳۸۳۸۸۲۶۱» with a spurious trailing zero — and
+    «۳۸۳۸۸۲۶۱۰» on the reference letter — «۳۸۳۸۸۲۶۱» with a spurious trailing zero — and
     nothing else in the service would have questioned it."""
     from ocr_service.validate import check_phone
     assert check_phone("۳۸۳۸۸۲۶۱").valid

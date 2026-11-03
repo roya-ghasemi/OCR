@@ -154,7 +154,7 @@ def test_most_synthetic_lines_are_degraded():
 
 
 def test_the_corpus_covers_the_scale_the_letter_is_actually_read_at():
-    """E29's corpus topped out at 58 px and the brief's letter reads at 73 px per line.
+    """E29's corpus topped out at 58 px and the reference letter reads at 73 px per line.
 
     A model that has never seen type at the size it will be handed is being asked to
     generalise across scale, which is exactly the generalisation CTC is worst at.

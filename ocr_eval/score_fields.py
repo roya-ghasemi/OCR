@@ -39,9 +39,8 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import jiwer
 
-from run_eval import norm_digit, safe_cer, corpus_cer, load_jsonl  # shared normalization
+from run_eval import norm_digit, corpus_cer, load_jsonl  # shared normalization
 
 HERE = Path(__file__).resolve().parent
 GT_FIELDS = HERE / "ground_truth_fields.jsonl"
@@ -315,7 +314,7 @@ def main():
     print(f"Usable output : {u['ok']}/{n} = {u['usable_rate']*100:.1f}%   "
           f"(empty-200 {u['empty_200_null']}, error-422 {u['error_422']})")
     rd = r["reading"]
-    print(f"\nReading CER (over images that produced output):")
+    print("\nReading CER (over images that produced output):")
     print(f"  named-field   (placement-SENSITIVE) : {rd['named_field_cer']*100:6.2f}%   "
           f"95% CI [{ci['named_cer']['lo']*100:.1f}, {ci['named_cer']['hi']*100:.1f}]")
     print(f"  content-match (placement-FREE)      : {rd['content_matched_cer']*100:6.2f}%   "
