@@ -22,9 +22,9 @@ WorkingDirectory=/srv/ocr
 # means the unit file says what is running rather than deferring to a code default that can
 # change under it. Roll back by editing this one line to `fas`.
 Environment=OCRS_LANG_FA=fas_custom
-# Left unset, the service finds <repo>/tessdata itself. Set it only when the models live
+# Left unset, the service finds <repo>/models/tesseract itself. Set it only when the models live
 # outside the checkout — and if you set it, it must be the directory, not its parent.
-# Environment=OCRS_TESSDATA_DIR=/srv/ocr/tessdata
+# Environment=OCRS_TESSDATA_DIR=/srv/ocr/models/tesseract
 Environment=OCRS_TESSERACT_CMD=/usr/bin/tesseract
 # Outside the checkout, so a redeploy does not throw the cache away.
 Environment=OCRS_CACHE_DIR=/var/cache/ocr

@@ -3,18 +3,16 @@
 from __future__ import annotations
 
 import io
-import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from ocr_research.numeric_validator import (  # noqa: E402
+from ocr_research.numeric_validator import (
     NumericValidator, TesseractReader, Word, classify, digits_only, find_numeric_spans, summarize, to_ascii_digits)
-from ocr_research.preprocess import compress, estimate_skew, prepare, rotate, _to_cv  # noqa: E402
-from ocr_service.schemas import OcrResponse  # noqa: E402
+from ocr_research.preprocess import compress, estimate_skew, prepare, rotate, _to_cv
+from ocr_service.schemas import OcrResponse
 
 
 # --- span finding / classification -------------------------------------------
@@ -218,7 +216,7 @@ def test_the_persian_model_the_service_defaults_to():
 def test_the_default_model_is_findable_in_a_checkout():
     """The default must be a model the checkout actually has.
 
-    Two ways this broke in one day. `tessdata/` was ignored wholesale, so a fresh clone
+    Two ways this broke in one day. the model directory was ignored wholesale, so a fresh clone
     defaulted to a fine-tune it did not carry; and `resolved_tesseract` located the directory
     by searching for `fas.traineddata`, which stopped being the default — a checkout with the
     fine-tune and not the stock model resolved to no directory at all and failed in the

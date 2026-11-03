@@ -7,11 +7,9 @@ letter.
 """
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
 
 
 def test_a_jalali_month_has_the_right_number_of_days():

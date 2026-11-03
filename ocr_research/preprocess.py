@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-r"""Edge / server pre-processing: auto-crop the page, deskew, compress under a byte cap.
+r"""Client-side pre-processing: auto-crop the page, deskew, compress under a byte cap.
 
-Used in two places with one code path:
-  * server side — `prepare(image_bytes)` runs on every incoming image when
-    `OCRS_PREPROCESS_INCOMING=1` (raw phone photos arrive un-cropped and skewed);
-  * client spec — `python -m ocr_research.preprocess in.jpg out.jpg` is the reference
-    behaviour for the mobile team, and prints the same stats the server logs.
+Not used by the service. The service crops and deskews in `ocr_service/page_prep.py` and
+`ocr_service/transcribe.py`. This module is the reference a mobile client can follow to
+shrink an upload before sending it: `python -m ocr_research.preprocess in.jpg out.jpg`.
 
 Order matters: crop first (so the deskew angle is estimated from the page, not the
 desk), deskew second, resize + compress last.
@@ -15,8 +13,7 @@ Assumptions, each marked in code:
     if none, the frame is kept whole (a CamScanner export is already cropped);
   * skew = dominant angle of long Hough lines within ±15°; text-line projection is
     used as a tie-break. Angles below 0.3° are not corrected;
-  * output JPEG (not WebP) by default because the llama.cpp image loader has no
-    WebP decoder; the mobile client may send WebP to the gateway, which transcodes.
+  * output JPEG by default; WebP is available with `--format WEBP`.
 """
 from __future__ import annotations
 

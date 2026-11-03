@@ -19,11 +19,8 @@ jobs:
       - name: Tesseract and the pinned models
         run: |
           sudo apt-get update && sudo apt-get install -y --no-install-recommends tesseract-ocr fonts-noto-core
-          mkdir -p tessdata-ci
-          curl -fsSL -o tessdata-ci/fas.traineddata https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/fas.traineddata
-          curl -fsSL -o tessdata-ci/eng.traineddata https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/eng.traineddata
-          cp tessdata/fas_custom.traineddata tessdata-ci/
-          echo "OCRS_TESSDATA_DIR=$PWD/tessdata-ci" >> "$GITHUB_ENV"
+          curl -fsSL -o models/tesseract/fas.traineddata https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/e12c65a915945e4c28e237a9b52bc4a8f39a0cec/fas.traineddata
+          curl -fsSL -o models/tesseract/eng.traineddata https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/eng.traineddata
 
       - run: pip install -r requirements-dev.txt
 

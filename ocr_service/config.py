@@ -20,11 +20,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from . import __version__
 
 PACKAGE_DIR = Path(__file__).resolve().parent
+REPO_DIR = PACKAGE_DIR.parent
+# Every model the service loads lives under models/: the Tesseract traineddata in
+# models/tesseract/, the digit reader in models/digit_cnn.npz.
+TESSERACT_MODELS = "models/tesseract"
 
 
 def _find_up(rel: str) -> Path | None:
     """First `<ancestor>/<rel>` that exists, starting at the repo root. A git
-    worktree lives inside the main checkout, so git-ignored data (tessdata, the
+    worktree lives inside the main checkout, so git-ignored data (Tesseract models, the
     digit model) is found in the main checkout without being copied."""
     for d in [PACKAGE_DIR.parent, *PACKAGE_DIR.parent.parents]:
         p = d / rel
@@ -48,11 +52,12 @@ def file_sha(p: Path | None) -> str | None:
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="OCRS_", env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_prefix="OCRS_", env_file=(REPO_DIR / ".env", ".env"),
+                                      env_file_encoding="utf-8", extra="ignore")
 
     # --- recognition ------------------------------------------------------------
     tesseract_cmd: str | None = None       # None -> UB-Mannheim install, then PATH
-    tessdata_dir: str | None = None        # None -> nearest <repo>/tessdata holding fas.traineddata
+    tessdata_dir: str | None = None        # None -> <repo>/models/tesseract
     lang_fa: str = "fas_custom"            # the E30 fine-tune; "fas" is the stock model
     lang_ar: str = "ara"                   # re-read a page that looks Arabic; "" disables it
     digit_model: str | None = None         # None -> nearest <repo>/models/digit_cnn.npz
@@ -75,6 +80,7 @@ class Settings(BaseSettings):
     cache_max_entries: int = 2000
 
     # --- service ------------------------------------------------------------------
+    api_key: str | None = None             # when set, /ocr and /jobs require header X-API-Key
     redis_url: str = "redis://127.0.0.1:6379/0"
     async_mode: bool = False               # POST /ocr returns a job_id instead of a result
     spool_dir: str | None = None           # uploads handed to workers as files, not through Redis
@@ -99,7 +105,8 @@ class Settings(BaseSettings):
             # model found no tessdata directory at all, fell back to the Tesseract install's,
             # and failed there because the fine-tune is not in it — a default that cannot
             # load, reported as a missing language rather than a missing directory.
-            p = _find_up(f"tessdata/{self.lang_fa}.traineddata") or _find_up("tessdata/fas.traineddata")
+            p = (_find_up(f"{TESSERACT_MODELS}/{self.lang_fa}.traineddata")
+                 or _find_up(f"{TESSERACT_MODELS}/fas.traineddata"))
             data = str(p.parent) if p else None
         return cmd, data
 

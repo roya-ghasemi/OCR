@@ -141,7 +141,7 @@ def page_score(model: Path) -> dict | None:
     the iteration-4,000 model, which is worse on every page, and the patience guard stopped
     a run that was still improving.
     """
-    tessdata = config.ROOT / "tessdata"
+    tessdata = config.ROOT / "models" / "tesseract"
     if not tessdata.is_dir():
         return None
 

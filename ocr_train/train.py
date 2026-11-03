@@ -172,7 +172,7 @@ def install() -> Path:
     setting (`OCRS_LANG_FA=fas_custom`), an A/B needs no file juggling, and rolling back is
     changing a string rather than restoring a binary.
     """
-    tessdata = config.ROOT / "tessdata"
+    tessdata = config.ROOT / "models" / "tesseract"
     if not tessdata.is_dir():
         raise FileNotFoundError(f"{tessdata} does not exist")
     if not OUT_TRAINEDDATA.is_file():

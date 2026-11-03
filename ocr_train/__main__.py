@@ -8,7 +8,7 @@ r"""One entry point for the fine-tune.
     python -m ocr_train lstmf                 convert pairs to Tesseract's training format
     python -m ocr_train train    [--iters N]  fine-tune
     python -m ocr_train pack                  checkpoint -> fas_custom.traineddata
-    python -m ocr_train install               copy it into tessdata/ beside fas
+    python -m ocr_train install               copy it into models/tesseract/ beside fas
     python -m ocr_train eval                  character error on the held-out fifth
     python -m ocr_train all                   every step, in order
 

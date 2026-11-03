@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 """Tesseract runner: TSV parsing, batched reads, and the digit-reader confidence path."""
-import sys
 from pathlib import Path
 
 import pytest
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from ocr_service.config import Settings  # noqa: E402
-from ocr_service.tesseract import Tesseract, parse_tsv  # noqa: E402
-from ocr_service.transcribe import Line, Transcriber, Word  # noqa: E402
+from ocr_service.config import Settings
+from ocr_service.tesseract import Tesseract, parse_tsv
+from ocr_service.transcribe import Line, Transcriber, Word
 
 HEADER = "level\tpage_num\tblock_num\tpar_num\tline_num\tword_num\tleft\ttop\twidth\theight\tconf\ttext"
 

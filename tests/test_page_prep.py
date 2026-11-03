@@ -7,7 +7,6 @@ loses a line of the letter.
 """
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import cv2
@@ -16,10 +15,9 @@ import pytest
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
 
-from ocr_service.ink import blue_mask, drop_blue_ink, invert_bands  # noqa: E402
-from ocr_service.page_prep import FULL_FRAME_FRAC, crop_page  # noqa: E402
+from ocr_service.ink import blue_mask, drop_blue_ink, invert_bands
+from ocr_service.page_prep import FULL_FRAME_FRAC, crop_page
 
 PAGES = ROOT / "ocr_eval" / "pages"
 

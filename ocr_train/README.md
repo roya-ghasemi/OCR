@@ -31,7 +31,7 @@ very different times:
 | `lstmf` | convert pairs to Tesseract's training format | ~15 min |
 | `train` | fine-tune | tens of minutes |
 | `pack` | best checkpoint → `fas_custom.traineddata` | seconds |
-| `install` | copy it into `tessdata/` beside `fas` | instant |
+| `install` | copy it into `models/tesseract/` beside `fas` | instant |
 | `eval` | character error on the held-out fifth | ~1 min |
 
 Then switch the service over with one setting:

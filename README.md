@@ -114,9 +114,11 @@ and flags them, but a 300 DPI scan is the real fix.
 
 ## Models
 
+All of them are in `models/` (Tesseract files in `models/tesseract/`).
+
 | file | size | what it does |
 |---|---:|---|
-| `tessdata/fas_custom.traineddata` | 3.3 MB | Persian recogniser, fine-tuned here (`ocr_train/`), default |
+| `models/tesseract/fas_custom.traineddata` | 3.3 MB | Persian recogniser, fine-tuned here (`ocr_train/`), default |
 | `fas.traineddata` (tessdata_best) | 3.3 MB | stock Persian model, rollback with `OCRS_LANG_FA=fas` |
 | `eng.traineddata` (tessdata_fast) | 4.1 MB | Latin runs inside Persian text |
 | `ara.traineddata` (tessdata_best) | 12.6 MB | optional re-read of Arabic pages |
@@ -139,12 +141,14 @@ powershell -ExecutionPolicy Bypass -File deploy\install_tesseract.ps1
 
 ## Configuration
 
-Every setting is an environment variable `OCRS_<NAME>` (`ocr_service/config.py`):
+All settings are in `.env` at the repository root (copy `.env.example`, which lists every
+setting with its default); an environment variable `OCRS_<NAME>` overrides the file.
+`API_KEY` makes `/ocr` and `/jobs` require the header `X-API-Key`. Settings:
 `LANG_FA` (`fas_custom`), `LANG_AR` (`ara`, empty disables), `TESSERACT_CMD`, `TESSDATA_DIR`,
 `DIGIT_MODEL`, `LAYOUT_PSMS` (`3,4,6`), `TEXT_PSMS` (`11`), `WORKERS` (8 Tesseract processes per page),
 `MAX_CONCURRENT_PAGES` (2), `DESKEW_MIN_DEG` (1.0), `MIN_LINE_CONF` (30),
 `NUMBER_MIN_PROB` (0.6), `LETTER_FIELDS` (1), `SPELLFIX` (1), `MAX_UPLOAD_MB` (25),
-`CACHE` (1), `CACHE_DIR`, `ASYNC_MODE` (0), `REDIS_URL`, `SPOOL_DIR`.
+`CACHE` (1), `CACHE_DIR`, `API_KEY`, `ASYNC_MODE` (0), `REDIS_URL`, `SPOOL_DIR`.
 
 ## Deployment
 

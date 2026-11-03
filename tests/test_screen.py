@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """Screen images: telling them from scans, and reading coloured text on them (E39)."""
-import sys
 from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from ocr_service.imaging import is_screen_image, screen_ink  # noqa: E402
+from ocr_service.imaging import is_screen_image, screen_ink
 
 
 def _ui() -> Image.Image:

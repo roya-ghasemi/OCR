@@ -168,6 +168,24 @@ function status(html, cls) {
   if (cls) s.firstElementChild && s.firstElementChild.classList.add(cls);
 }
 
+// With OCRS_API_KEY set on the server, the key is asked for once and kept in this browser.
+function keyHeaders() {
+  let k = null;
+  try { k = localStorage.getItem('ocr_api_key'); } catch (e) {}
+  return k ? { 'X-API-Key': k } : {};
+}
+
+async function authed(url, opts = {}) {
+  let r = await fetch(url, { ...opts, headers: { ...(opts.headers || {}), ...keyHeaders() } });
+  if (r.status === 401) {
+    const k = prompt('کلید دسترسی (API key) را وارد کنید:');
+    if (!k) return r;
+    try { localStorage.setItem('ocr_api_key', k); } catch (e) {}
+    r = await fetch(url, { ...opts, headers: { ...(opts.headers || {}), 'X-API-Key': k } });
+  }
+  return r;
+}
+
 async function send(file) {
   if (!file.type.startsWith('image/')) return status('<span class="pill bad">فقط فایل تصویری</span>');
   status('<span><span class="spin"></span> در حال خواندن ' + esc(file.name) + ' …</span>');
@@ -176,7 +194,7 @@ async function send(file) {
   URL_ = URL.createObjectURL(file);
   const fd = new FormData(); fd.append('file', file);
   try {
-    let r = await fetch('ocr?prepared=true', { method: 'POST', body: fd });
+    let r = await authed('ocr?prepared=true', { method: 'POST', body: fd });
     let d = await r.json().catch(() => ({}));
     if (r.status === 202 && d.job_id) d = await poll(d.job_id);
     else if (!r.ok) throw new Error(d.detail || ('خطای ' + r.status));
@@ -191,9 +209,10 @@ async function send(file) {
 async function poll(id) {
   for (;;) {
     await new Promise(r => setTimeout(r, 900));
-    const r = await fetch('jobs/' + id), j = await r.json();
+    const r = await authed('jobs/' + id), j = await r.json();
+    if (!r.ok) throw new Error(j.detail || ('خطای ' + r.status));
     if (j.status === 'done') return j.result;
-    if (j.status === 'error') throw new Error(j.error || 'پردازش ناموفق بود');
+    if (j.status === 'failed') throw new Error(j.error || 'پردازش ناموفق بود');
   }
 }
 

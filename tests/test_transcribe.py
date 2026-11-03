@@ -4,7 +4,6 @@
 test needs Tesseract with Persian data and skips without it."""
 from __future__ import annotations
 
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -13,10 +12,9 @@ import pytest
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT), str(ROOT / "ocr_eval")]
 
-from ocr_service.letter_fields import FIELDS, extract  # noqa: E402
-from ocr_service.transcribe import Line, Transcriber, Word, clean_ink  # noqa: E402
+from ocr_service.letter_fields import FIELDS, extract
+from ocr_service.transcribe import Line, Transcriber, Word, clean_ink
 
 
 @dataclass

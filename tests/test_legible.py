@@ -6,11 +6,9 @@ of handwriting answered with «ee aa ay», printed as though it were a transcrip
 """
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
 
 
 def test_the_readings_that_came_off_the_real_pages_are_rejected():

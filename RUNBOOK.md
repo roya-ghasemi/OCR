@@ -32,7 +32,7 @@ Ready in ~1 s (nothing to load). `GET http://127.0.0.1:8000/health` must say
 `tesseract.tessdata_dir` in `/health`. `OCRS_TESSDATA_DIR` is a *persistent user*
 environment variable on this machine and still named the old path, so the service was
 looking for `fas.traineddata` in a directory that no longer exists. Left unset the service
-finds `<repo>/tessdata` itself, which is what every published number was measured with:
+finds `<repo>/models/tesseract` itself, which is what every published number was measured with:
 
 ```powershell
 [Environment]::SetEnvironmentVariable('OCRS_TESSDATA_DIR', $null, 'User')   # remove it for good
@@ -74,7 +74,7 @@ back:
 $env:OCRS_LANG_FA = "fas"           # roll back to the stock model
 ```
 
-Both files live in `tessdata/`, so switching is a setting and rolling back is changing a
+Both files live in `models/tesseract/`, so switching is a setting and rolling back is changing a
 string. `/health` reports `tesseract.lang_fa`, and `provenance()` stamps `lang_fa_sha256` —
 the hash of the model that actually did the reading, which is not `fas_sha256`. A results
 file that stamped only the stock hash would describe a run that never happened.
@@ -202,7 +202,7 @@ ocr_service/                 the package (~190 KB of .py)
 models/digit_cnn.npz         the CNN digit reader           621 KB
 models/digit_cnn.json        its architecture — a provenance record, not loaded at
                              runtime; the reader builds from the .npz alone   3 KB
-tessdata/fas_custom.traineddata   the E30 fine-tune, the default model   3.2 MB
+models/tesseract/fas_custom.traineddata   the E30 fine-tune, the default model   3.2 MB
 requirements-service.txt     pinned runtime dependencies (requirements-dev.txt and
                              requirements-train.txt add tests/eval and training)
 deploy/                      Dockerfile, docker-compose.yml, nginx.conf, ocr-service.service

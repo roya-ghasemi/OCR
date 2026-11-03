@@ -6,13 +6,11 @@ the white paper below it, and a field that is a plausible-looking stitch of frag
 """
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
 
 
 def _page(band_colour=(60, 160, 60)) -> np.ndarray:

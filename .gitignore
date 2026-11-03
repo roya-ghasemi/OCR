@@ -52,3 +52,7 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 ~$*
+
+# Local secrets and overrides
+.env
+docs/*.docx

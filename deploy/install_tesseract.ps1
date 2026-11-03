@@ -23,9 +23,11 @@ if (-not $exe) {
 }
 Write-Host "tesseract: $exe"
 
-# Language data: the same files the Docker image pins (deploy/Dockerfile) — Persian and
-# Arabic from tessdata_best, English from tessdata_fast.
-$tessdata = Join-Path (Split-Path $exe) "tessdata"
+# Language data, into the repository's models/tesseract/ beside the fine-tuned model: the
+# same files the Docker image pins (deploy/Dockerfile) — Persian and Arabic from
+# tessdata_best, English from tessdata_fast.
+$tessdata = Join-Path (Split-Path $PSScriptRoot) "models\tesseract"
+New-Item -ItemType Directory -Force $tessdata | Out-Null
 $sources = @{ "fas" = "tessdata_best"; "ara" = "tessdata_best"; "eng" = "tessdata_fast" }
 foreach ($lang in $sources.Keys) {
     $f = Join-Path $tessdata "$lang.traineddata"
@@ -37,9 +39,7 @@ foreach ($lang in $sources.Keys) {
     Write-Host "  $lang.traineddata OK ($([math]::Round((Get-Item $f).Length/1MB,1)) MB)"
 }
 
-# Point the service at it (user-scope env var; picked up by ocr_service.config).
-[Environment]::SetEnvironmentVariable("OCRS_TESSERACT_CMD", $exe, "User")
-$env:OCRS_TESSERACT_CMD = $exe
 & $exe --version | Select-Object -First 1
-& $exe --list-langs
+& $exe --list-langs --tessdata-dir $tessdata
+Write-Host "If tesseract.exe is not in Program Files, set OCRS_TESSERACT_CMD=$exe in .env"
 Write-Host "`nDone. Start the service and check GET /health — tesseract.available must be true."

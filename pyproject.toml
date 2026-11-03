@@ -1,12 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "persian-ocr"
 version = "1.2.0"
 description = "Persian OCR service: full-page transcription of letters and documents, CPU only"
 requires-python = ">=3.12"
 
+[tool.setuptools]
+packages = ["ocr_service", "ocr_research", "ocr_train"]
+
+[tool.setuptools.package-data]
+ocr_service = ["data/*.txt", "static/*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests", "ocr_eval/test_phase0_guards.py", "ocr_eval/test_normalize.py"]
 addopts = "-q"
+# The repository root (and ocr_eval/, whose scoring modules the tests use) on sys.path,
+# so test files need no path manipulation.
+pythonpath = [".", "ocr_eval"]
 
 [tool.ruff]
 line-length = 120

@@ -13,6 +13,7 @@ Run (dev):  venv312\Scripts\python.exe -m uvicorn ocr_service.api:app --host 127
 from __future__ import annotations
 
 import asyncio
+import hmac
 import io
 import re
 import logging
@@ -21,7 +22,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal, Optional
 
-from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi import Depends, FastAPI, File, Header, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, UnidentifiedImageError
@@ -61,6 +62,12 @@ def index() -> FileResponse:
     return FileResponse(STATIC / "index.html", media_type="text/html; charset=utf-8")
 
 
+def require_key(x_api_key: Optional[str] = Header(None)) -> None:
+    """With OCRS_API_KEY set, reading and job lookup need the key in X-API-Key."""
+    if settings.api_key and not hmac.compare_digest(x_api_key or "", settings.api_key):
+        raise HTTPException(401, "missing or wrong X-API-Key")
+
+
 def _check_image(data: bytes) -> None:
     if not data:
         raise HTTPException(400, "empty upload")
@@ -76,7 +83,7 @@ def _check_image(data: bytes) -> None:
         raise HTTPException(400, f"unsupported image format {fmt}")
 
 
-@app.post("/ocr", response_model=None)
+@app.post("/ocr", response_model=None, dependencies=[Depends(require_key)])
 async def ocr(file: Optional[UploadFile] = File(None), image: Optional[UploadFile] = File(None),
               mode: Literal["sync", "async", "auto"] = Query("auto"),
               doc_id: Optional[str] = Query(None),
@@ -103,7 +110,7 @@ async def ocr(file: Optional[UploadFile] = File(None), image: Optional[UploadFil
     return res
 
 
-@app.get("/jobs/{job_id}", response_model=JobStatus)
+@app.get("/jobs/{job_id}", response_model=JobStatus, dependencies=[Depends(require_key)])
 async def job(job_id: str):
     from celery.result import AsyncResult
 

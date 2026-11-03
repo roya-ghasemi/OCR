@@ -1,11 +1,11 @@
 # Persian OCR service — API and worker image (CPU only).
 #
-# Runtime models, about 24 MB in total:
-#   fas_custom  fine-tuned Persian model (default)        3.3 MB  from the repository
-#   fas         stock Persian model, rollback option      3.3 MB  tessdata_best
-#   eng         Latin runs inside Persian text            4.1 MB  tessdata_fast
-#   ara         re-read of pages that look Arabic        12.6 MB  tessdata_best
-#   digit_cnn   Persian/Latin digit reader                0.6 MB  from the repository
+# Runtime models, about 24 MB in total, all under /app/models as in the repository:
+#   tesseract/fas_custom  fine-tuned Persian model (default)        3.3 MB  from the repository
+#   tesseract/fas         stock Persian model, rollback option      3.3 MB  tessdata_best
+#   tesseract/eng         Latin runs inside Persian text            4.1 MB  tessdata_fast
+#   tesseract/ara         re-read of pages that look Arabic        12.6 MB  tessdata_best
+#   digit_cnn.npz         Persian/Latin digit reader                0.6 MB  from the repository
 # These are the exact files the accuracy figures were measured with; every download
 # is pinned to an upstream commit and checked against its sha256.
 FROM python:3.12-slim
@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         tesseract-ocr libgl1 libglib2.0-0 curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-RUN set -eux; mkdir -p /opt/tessdata; cd /opt/tessdata; \
+WORKDIR /app
+RUN set -eux; mkdir -p models/tesseract; cd models/tesseract; \
     curl -fsSL -o fas.traineddata "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/${TESSDATA_BEST}/fas.traineddata"; \
     curl -fsSL -o ara.traineddata "https://raw.githubusercontent.com/tesseract-ocr/tessdata_best/${TESSDATA_BEST}/ara.traineddata"; \
     curl -fsSL -o eng.traineddata "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/${TESSDATA_FAST}/eng.traineddata"; \
@@ -28,19 +29,17 @@ RUN set -eux; mkdir -p /opt/tessdata; cd /opt/tessdata; \
       | sha256sum -c -
 
 RUN useradd --system --uid 10001 --home /app ocr
-WORKDIR /app
 COPY requirements-service.txt .
 RUN pip install --no-cache-dir -r requirements-service.txt
 
-COPY tessdata/fas_custom.traineddata /opt/tessdata/fas_custom.traineddata
+COPY models/tesseract/fas_custom.traineddata ./models/tesseract/fas_custom.traineddata
 COPY models/digit_cnn.npz ./models/digit_cnn.npz
 COPY ocr_service ./ocr_service
-RUN echo "d0e5099d3ea227ba83fe71dba28acb5a774644bd9583c524c435f5bdc8bd9adb  /opt/tessdata/fas_custom.traineddata" | sha256sum -c - \
+RUN echo "d0e5099d3ea227ba83fe71dba28acb5a774644bd9583c524c435f5bdc8bd9adb  models/tesseract/fas_custom.traineddata" | sha256sum -c - \
     && mkdir -p /var/cache/ocr /var/spool/ocr && chown ocr:ocr /var/cache/ocr /var/spool/ocr
 
 ENV PYTHONUNBUFFERED=1 \
     OCRS_TESSERACT_CMD=/usr/bin/tesseract \
-    OCRS_TESSDATA_DIR=/opt/tessdata \
     OCRS_CACHE_DIR=/var/cache/ocr \
     OCRS_SPOOL_DIR=/var/spool/ocr \
     OMP_THREAD_LIMIT=1

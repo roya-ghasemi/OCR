@@ -13,20 +13,18 @@ No engine, no GPU: the CNN runs in numpy on `models/digit_cnn.npz`.
 from __future__ import annotations
 
 import random
-import sys
 from pathlib import Path
 
 import pytest
 from PIL import Image, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
 
-from ocr_research import digit_cnn_data as D  # noqa: E402
-from ocr_research.numeric_reconcile import Policy, reconcile, summarize  # noqa: E402
-from ocr_research.numeric_validator import to_ascii_digits  # noqa: E402
+from ocr_research import digit_cnn_data as D
+from ocr_research.numeric_reconcile import Policy, reconcile, summarize
+from ocr_research.numeric_validator import to_ascii_digits
 
-from ocr_service.config import settings as _settings  # noqa: E402
+from ocr_service.config import settings as _settings
 MODEL = _settings.resolved_digit_model() or ROOT / "models" / "digit_cnn.npz"   # a worktree finds the main checkout's
 needs_model = pytest.mark.skipif(not MODEL.is_file(), reason="models/digit_cnn.npz not built")
 

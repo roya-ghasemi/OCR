@@ -35,7 +35,7 @@ introduced into the runtime files.
 
 | file | size | source | checked by |
 |---|---:|---|---|
-| `tessdata/fas_custom.traineddata` | 3.3 MB | fine-tune, this repository (`ocr_train/`) | sha256 in `/health`, Dockerfile |
+| `models/tesseract/fas_custom.traineddata` | 3.3 MB | fine-tune, this repository (`ocr_train/`) | sha256 in `/health`, Dockerfile |
 | `fas.traineddata` | 3.3 MB | tessdata_best (pinned commit) | sha256 in `/health`, Dockerfile, guard test |
 | `eng.traineddata` | 4.1 MB | tessdata_fast (pinned commit) | sha256 in `/health`, Dockerfile |
 | `ara.traineddata` | 12.6 MB | tessdata_best (pinned commit), optional | Dockerfile |

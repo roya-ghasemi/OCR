@@ -7,11 +7,9 @@ damaged Persian. These pin the measured separation.
 """
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT))
 
 ARABIC = ("الله وَالرَّاسِخُونَ فِي الْعِلْمِ آل عمران: ٧، ولم يقل تفسيره، لأنّه أراد مايؤول "
           "من المتشابه إلى المحكم. وهذا عزيز من وجهين أحدهما أن تجمع صفة غير الحيوان")
