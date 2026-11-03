@@ -41,7 +41,7 @@ ocr_train/fonts/
 # Generated
 train/
 .cache/
-.celery_fs/
+.celery_fs*/
 control/
 debug_raw/
 fonts.conf

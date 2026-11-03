@@ -3,9 +3,10 @@
 
 One `OcrPipeline` per worker process, created lazily on first task.
 
-Windows dev note: Celery's prefork pool does not work on Windows; run
-    celery -A ocr_service.tasks worker --pool=solo -l info
-Production (Linux, docker-compose): default prefork. Each page already runs up to
+On Windows the worker uses the solo pool whatever it is started with: Celery's default
+(prefork) pool crashes there — its child processes die with «PermissionError: [WinError 5]
+Access is denied» and queued jobs are never picked up. Start more worker processes for
+more throughput. Production (Linux, docker-compose): default prefork. Each page already runs up to
 `OCRS_WORKERS` Tesseract processes in parallel, so `--concurrency` x `OCRS_WORKERS`
 should not exceed the CPU cores.
 """
@@ -14,11 +15,12 @@ from __future__ import annotations
 import base64
 import logging
 import os
+import sys
 from pathlib import Path
 
 from celery import Celery
 
-from .config import settings
+from .config import REPO_DIR, settings
 
 log = logging.getLogger(__name__)
 
@@ -31,12 +33,15 @@ def _broker_and_backend(url: str) -> tuple[str, str, dict]:
     """Redis in production. `filesystem://<dir>` is a single-host fallback (kombu's
     filesystem transport) for development machines without Redis."""
     if url.startswith("filesystem://"):
-        base = url[len("filesystem://"):] or ".celery_fs"
+        # Relative to the project, not to the folder a process was started from: an API and
+        # a worker started from different folders would otherwise use different queues.
+        base = str(REPO_DIR / (url[len("filesystem://"):] or ".celery_fs"))
         for d in ("in", "out", "processed", "results"):
             os.makedirs(os.path.join(base, d), exist_ok=True)
         opts = {"data_folder_in": os.path.join(base, "in"), "data_folder_out": os.path.join(base, "in"),
                 "processed_folder": os.path.join(base, "processed"), "store_processed": False}
-        return "filesystem://", "file://" + os.path.join(base, "results"), opts
+        # file://localhost/<path>: a bare drive letter after file:// is read as host:port
+        return "filesystem://", "file://localhost/" + Path(base, "results").as_posix(), opts
     return url, url, {}
 
 
@@ -50,6 +55,8 @@ celery_app.conf.update(
     task_acks_late=True,
     task_time_limit=int(settings.request_timeout_s) + 60,
 )
+if sys.platform == "win32":
+    celery_app.conf.worker_pool = "solo"
 
 _pipeline = None
 
