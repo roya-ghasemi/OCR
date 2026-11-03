@@ -39,6 +39,7 @@ introduced into the runtime files.
 | `fas.traineddata` | 3.3 MB | tessdata_best (pinned commit) | sha256 in `/health`, Dockerfile, guard test |
 | `eng.traineddata` | 4.1 MB | tessdata_fast (pinned commit) | sha256 in `/health`, Dockerfile |
 | `ara.traineddata` | 12.6 MB | tessdata_best (pinned commit), optional | Dockerfile |
+| `tools/tesseract/` (program, Windows) | 239 MB | UB-Mannheim 5.4.0 build, copied by `deploy/install_tesseract.ps1` | version in `/health` |
 | `models/digit_cnn.npz` | 0.6 MB | trained by `ocr_research/digit_cnn_train.py` | sha256 in `/health`, guard test |
 
 ## Packages

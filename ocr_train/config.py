@@ -34,7 +34,10 @@ LANG = "fas_custom"
 
 # --- Tesseract binaries ---------------------------------------------------------------
 # The training tools ship with the UB-Mannheim build; a distro Tesseract often omits them.
-TESS_DIR = Path(os.environ.get("TESSERACT_DIR", r"C:\Program Files\Tesseract-OCR"))
+# The copy inside the project (tools/tesseract) is used when it is there.
+_BUNDLED = Path(__file__).resolve().parent.parent / "tools" / "tesseract"
+TESS_DIR = Path(os.environ.get("TESSERACT_DIR")
+                or (_BUNDLED if _BUNDLED.is_dir() else r"C:\Program Files\Tesseract-OCR"))
 
 
 def tool(name: str) -> str:

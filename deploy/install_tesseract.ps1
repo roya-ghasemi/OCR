@@ -39,7 +39,14 @@ foreach ($lang in $sources.Keys) {
     Write-Host "  $lang.traineddata OK ($([math]::Round((Get-Item $f).Length/1MB,1)) MB)"
 }
 
+# Copy the program into the project, so the project carries everything it runs with.
+$bundle = Join-Path (Split-Path $PSScriptRoot) "tools\tesseract"
+if (-not (Test-Path (Join-Path $bundle "tesseract.exe"))) {
+    New-Item -ItemType Directory -Force (Split-Path $bundle) | Out-Null
+    Copy-Item -Recurse (Split-Path $exe) $bundle
+}
+$exe = Join-Path $bundle "tesseract.exe"
 & $exe --version | Select-Object -First 1
 & $exe --list-langs --tessdata-dir $tessdata
-Write-Host "If tesseract.exe is not in Program Files, set OCRS_TESSERACT_CMD=$exe in .env"
+Write-Host "Tesseract is in $bundle; .env points at tools/tesseract/tesseract.exe"
 Write-Host "`nDone. Start the service and check GET /health — tesseract.available must be true."

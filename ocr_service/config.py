@@ -26,6 +26,8 @@ REPO_DIR = PACKAGE_DIR.parent
 # Every model the service loads lives under models/: the Tesseract traineddata in
 # models/tesseract/, the digit reader in models/digit_cnn.npz.
 TESSERACT_MODELS = "models/tesseract"
+# The Tesseract program itself, copied into the project (Windows); see deploy/install_tesseract.ps1.
+TESSERACT_EXE = REPO_DIR / "tools" / "tesseract" / "tesseract.exe"
 
 
 def _find_up(rel: str) -> Path | None:
@@ -69,7 +71,7 @@ class Settings(BaseSettings):
                                       env_file_encoding="utf-8", extra="ignore")
 
     # --- recognition ------------------------------------------------------------
-    tesseract_cmd: str | None = None       # None -> UB-Mannheim install, then PATH
+    tesseract_cmd: str | None = None       # None -> <repo>/tools/tesseract, then the install, then PATH
     tessdata_dir: str | None = None        # None -> <repo>/models/tesseract
     lang_fa: str = "fas_custom"            # the E30 fine-tune; "fas" is the stock model
     lang_ar: str = "ara"                   # re-read a page that looks Arabic; "" disables it
@@ -116,7 +118,8 @@ class Settings(BaseSettings):
     def resolved_tesseract(self) -> tuple[str | None, str | None]:
         cmd = self.tesseract_cmd
         if not cmd:
-            for c in (os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "Tesseract-OCR", "tesseract.exe"),
+            for c in (str(TESSERACT_EXE),
+                      os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "Tesseract-OCR", "tesseract.exe"),
                       os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "Tesseract-OCR", "tesseract.exe"),
                       shutil.which("tesseract")):
                 if c and os.path.isfile(c):
@@ -155,7 +158,7 @@ class Settings(BaseSettings):
         return {
             "service_version": __version__,
             "engine": "tesseract(fas,eng) + digit_cnn",
-            "tesseract": {"cmd": cmd, "tessdata_dir": repo_relative(data),
+            "tesseract": {"cmd": repo_relative(cmd), "tessdata_dir": repo_relative(data),
                           "lang_fa": self.lang_fa,
                           # The model actually doing the reading. With a fine-tune selected
                           # this is NOT fas.traineddata, and a results file that only stamped

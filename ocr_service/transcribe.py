@@ -258,7 +258,7 @@ class Transcriber:
         self.version = version
         g = self.glyph_reader()
         sp = self.spellfix_stage() if self.spellfix else None
-        return {"tesseract": {"available": ok, "version": version, "langs": langs, "cmd": self.cmd,
+        return {"tesseract": {"available": ok, "version": version, "langs": langs, "cmd": repo_relative(self.cmd),
                               "lang_fa": self.lang_fa,
                               "tessdata_dir": repo_relative(self.tessdata)},
                 "digit_reader": {"available": g is not None, "version": getattr(g, "version", None),

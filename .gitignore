@@ -28,6 +28,10 @@ tessdata/*
 *.gguf
 hf_cache/
 
+# The Tesseract program copied into the project (Windows binaries, 239 MB);
+# deploy/install_tesseract.ps1 puts it there.
+tools/
+
 # Data: inputs read from disk, not source
 Persian-OCR-Double-Benchmark/
 Dehkhoda-SQL-master/

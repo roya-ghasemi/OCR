@@ -122,7 +122,9 @@ and flags them, but a 300 DPI scan is the real fix.
 
 ## Models
 
-All of them are in `models/` (Tesseract files in `models/tesseract/`).
+All of them are in `models/` (Tesseract files in `models/tesseract/`). The Tesseract program
+itself (Windows build with its DLLs and training tools, 239 MB) is in `tools/tesseract/`,
+kept out of git; `deploy/install_tesseract.ps1` puts it there.
 
 | file | size | what it does |
 |---|---:|---|
