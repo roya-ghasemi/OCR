@@ -1,0 +1,96 @@
+{
+ "label": "E33-legible",
+ "generated_utc": "2026-10-06T13:40:45+00:00",
+ "provenance": {
+  "service_version": "1.0.0",
+  "engine": "tesseract(fas,eng) + digit_cnn",
+  "tesseract": {
+   "cmd": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+   "tessdata_dir": "tessdata",
+   "lang_fa": "fas_custom",
+   "lang_fa_sha256": "d0e5099d3ea227ba",
+   "fas_sha256": "99e420969b5ddd2c",
+   "eng_sha256": "7d4322bd2a774972"
+  },
+  "digit_model": {
+   "path": "models/digit_cnn.npz",
+   "sha256": "e0e286aaf5595898"
+  },
+  "layout_psms": "3,4,6",
+  "deskew_min_deg": 1.0,
+  "min_line_conf": 30.0,
+  "number_min_prob": 0.6,
+  "letter_fields": true,
+  "python": "3.12.10"
+ },
+ "pages": {
+  "arabic_lisan": {
+   "legible": true,
+   "fa_fraction": 0.942,
+   "chars": 700,
+   "unread": 0,
+   "text": "اول/۲۱۳\nل والوایخون ف الیلم» آل‌عمران: ۷، ولم یقل.  ولام، فیکون «فمل»، وقد قیل. من واوین ولام، فیکون\nنفیره،، لانه آراد مایوول من امتشابه الی احکم. «أفعل،، الاول آخفصح، لقلة وجودما فاده وعینه حرف\nواحد کددن.\nابن سیدة: قال ابن جی: «وألبان أجل،. وهذا فعلی الوّل یکون من آل یوول، وأصله «اول،\nعزیز من وجهین: فأدغمت الدَة لکفرة الکلمة، وهو ف الاصل صفا،\nآحدهما: آن تجمع صفة غیر المیوان علی «مل، وان لقوهم ن موتنه: أولی، محو آخری.\nکان قد جاء منه حو عیدان فیس، ولکنّه باده ذدالاوّل، هو الی یقرنّب علیه غیره، ویستعمل\nوالاخر. آیه یلزم ق جمه «دل، لانه من الواو علی أوجه:\nبدلیل: آل اوال، لگن الواو ژ قربّت من الطرف احتملت آحدها: اححقدم بالژمان: کقولک: عبد ملک اَولا م\nاللاعلال، کا قالوا: نی وسم. (ابن منظور ۱۱: ۳۴)",
+   "ok": true
+  },
+  "hand_note": {
+   "legible": true,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 0,
+   "text": "",
+   "ok": true
+  },
+  "nastaliq_poem": {
+   "legible": false,
+   "fa_fraction": 0.538,
+   "chars": 0,
+   "unread": 3,
+   "text": "",
+   "ok": true
+  },
+  "hand_poem": {
+   "legible": false,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 1,
+   "text": "",
+   "ok": true
+  },
+  "nastaliq_digital": {
+   "legible": false,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 1,
+   "text": "",
+   "ok": true
+  },
+  "bench_line_a": {
+   "legible": true,
+   "fa_fraction": 1.0,
+   "chars": 65,
+   "unread": 0,
+   "text": "مجلس شورای اصلامی قرار گرفت و بیرو این سئوال، نشست مشترکی با حضور",
+   "cer": 0.0308,
+   "wer": 0.1538,
+   "ok": true
+  },
+  "hand_blue": {
+   "legible": false,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 5,
+   "text": "",
+   "ok": true
+  },
+  "bench_line_b": {
+   "legible": true,
+   "fa_fraction": 1.0,
+   "chars": 62,
+   "unread": 0,
+   "text": "غربالگری و توجه ویژه به نوین قر خانه نماند، از مهمرس راهکارهای",
+   "cer": 0.1385,
+   "wer": 0.3333,
+   "ok": true
+  }
+ }
+}

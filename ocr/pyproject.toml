@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "persian-ocr"
+version = "1.3.0"
+description = "Persian OCR service: full-page transcription of letters and documents, CPU only"
+requires-python = ">=3.12"
+
+[tool.setuptools]
+packages = ["ocr_service", "ocr_research", "ocr_train"]
+
+[tool.setuptools.package-data]
+ocr_service = ["data/*.txt", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "ocr_eval/test_phase0_guards.py", "ocr_eval/test_normalize.py"]
+addopts = "-q"
+# The repository root (and ocr_eval/, whose scoring modules the tests use) on sys.path,
+# so test files need no path manipulation.
+pythonpath = [".", "ocr_eval"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["venv312", "train", "Persian-OCR-Double-Benchmark", "Dehkhoda-SQL-master"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+ignore = [
+    "E501",   # long lines: the comment blocks carry measurements
+    "E741",   # `l`/`L` are used for lines throughout
+    "E731",
+    "B008",   # FastAPI's File()/Query() defaults
+    "B905",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Research and evaluation scripts: only real errors are enforced.
+"ocr_eval/**" = ["E4", "E7", "B", "W", "F841"]
+"ocr_research/**" = ["E4", "E7", "B", "W"]
+"ocr_train/**" = ["B023", "F841"]
+"dehkhoda/**" = ["E4", "E7", "B", "W"]
+"tests/**" = ["E402", "B007"]

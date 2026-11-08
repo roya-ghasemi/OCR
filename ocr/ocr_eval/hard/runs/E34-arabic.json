@@ -1,0 +1,96 @@
+{
+ "label": "E34-arabic",
+ "generated_utc": "2026-10-06T13:45:26+00:00",
+ "provenance": {
+  "service_version": "1.0.0",
+  "engine": "tesseract(fas,eng) + digit_cnn",
+  "tesseract": {
+   "cmd": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
+   "tessdata_dir": "tessdata",
+   "lang_fa": "fas_custom",
+   "lang_fa_sha256": "d0e5099d3ea227ba",
+   "fas_sha256": "99e420969b5ddd2c",
+   "eng_sha256": "7d4322bd2a774972"
+  },
+  "digit_model": {
+   "path": "models/digit_cnn.npz",
+   "sha256": "e0e286aaf5595898"
+  },
+  "layout_psms": "3,4,6",
+  "deskew_min_deg": 1.0,
+  "min_line_conf": 30.0,
+  "number_min_prob": 0.6,
+  "letter_fields": true,
+  "python": "3.12.10"
+ },
+ "pages": {
+  "arabic_lisan": {
+   "legible": true,
+   "fa_fraction": 0.907,
+   "chars": 739,
+   "unread": 2,
+   "text": "أول / ١١٠ أ\nلله وَالوَاسِخُونَ في الْعِلم» آلعمران: ۷ ولم يقل. . ولام، فيكون «قّل», وقد قيل. من واوين ولام؛ فيكون\nنفسيره, لأنّه أراد مايئول من المتشابه إلى المحكُم. «أفعل», والأوّل أفصح, لقلّة وجودما فاه وعينه حرف\n)۴۳ واحد كددن.\nابن سِيدة: قال ابن جني «وألبان أُجّل». وهذا فعلى الأوّل يكون من آل يول. وأصله «أوّل»\nعزيز من وجهين: فأدغمت المدّة لكثرة الكلمة. وهو في الأصل صفة.\nأحدهماء أن تجمم صفة غير الحيوان على «فكل» وإن .. لقوظم فى مؤتته: أول. نحو أخرى.\nكان قد جاء منه نحو عيدان قَيّس. ولكنّه نادر «الأوّل» هو الذي يترتّب عليه غيره. ويستعمل\nوالآخر. أنه يلزم في جمعه «أّل» لأنّه من الواو على أوجه:\nبدليل: آل الواو لا قَرُبّت من الطَرف احتملت أحدها: المتقدّم بالرّمان: كقولك: عبد الملك\nالإعلال. كما قالوا: تي وصٌيٌ. (ابن منظور 8:11\" منصو ر.",
+   "ok": true
+  },
+  "hand_note": {
+   "legible": true,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 0,
+   "text": "",
+   "ok": true
+  },
+  "nastaliq_poem": {
+   "legible": false,
+   "fa_fraction": 0.538,
+   "chars": 0,
+   "unread": 3,
+   "text": "",
+   "ok": true
+  },
+  "hand_poem": {
+   "legible": false,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 1,
+   "text": "",
+   "ok": true
+  },
+  "nastaliq_digital": {
+   "legible": false,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 1,
+   "text": "",
+   "ok": true
+  },
+  "bench_line_a": {
+   "legible": true,
+   "fa_fraction": 1.0,
+   "chars": 65,
+   "unread": 0,
+   "text": "مجلس شورای اصلامی قرار گرفت و بیرو این سئوال، نشست مشترکی با حضور",
+   "cer": 0.0308,
+   "wer": 0.1538,
+   "ok": true
+  },
+  "hand_blue": {
+   "legible": false,
+   "fa_fraction": 0.0,
+   "chars": 0,
+   "unread": 5,
+   "text": "",
+   "ok": true
+  },
+  "bench_line_b": {
+   "legible": true,
+   "fa_fraction": 1.0,
+   "chars": 62,
+   "unread": 0,
+   "text": "غربالگری و توجه ویژه به نوین قر خانه نماند، از مهمرس راهکارهای",
+   "cer": 0.1385,
+   "wer": 0.3333,
+   "ok": true
+  }
+ }
+}

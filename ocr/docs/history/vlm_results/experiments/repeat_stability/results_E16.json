@@ -1,0 +1,50 @@
+{
+  "experiment": "E16 cache_prompt vs session stability (D52)",
+  "generated_utc": "2026-09-22T12:16:11+00:00",
+  "arms": {
+    "cache_prompt=True": {
+      "runs": [
+        "svc_cache_on_1.jsonl",
+        "svc_cache_on_2.jsonl"
+      ],
+      "n": 10,
+      "mean_similarity": {
+        "sender": 1.0,
+        "receiver": 1.0,
+        "subject": 1.0,
+        "body_text": 1.0,
+        "contact_info": 1.0
+      },
+      "documents_below_0.9": {},
+      "n_below_0.9": {
+        "sender": 0,
+        "receiver": 0,
+        "subject": 0,
+        "body_text": 0,
+        "contact_info": 0
+      }
+    },
+    "cache_prompt=False": {
+      "runs": [
+        "svc_cache_off_1.jsonl",
+        "svc_cache_off_2.jsonl"
+      ],
+      "n": 10,
+      "mean_similarity": {
+        "sender": 1.0,
+        "receiver": 1.0,
+        "subject": 1.0,
+        "body_text": 1.0,
+        "contact_info": 1.0
+      },
+      "documents_below_0.9": {},
+      "n_below_0.9": {
+        "sender": 0,
+        "receiver": 0,
+        "subject": 0,
+        "body_text": 0,
+        "contact_info": 0
+      }
+    }
+  }
+}

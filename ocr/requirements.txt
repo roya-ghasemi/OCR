@@ -1,0 +1,2 @@
+# Development setup. The service alone needs only requirements-service.txt.
+-r requirements-dev.txt

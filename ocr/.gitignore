@@ -1,0 +1,62 @@
+# Virtual environments
+venv/
+venv312/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+
+# Model weights. Only the two runtime models are tracked:
+#   models/digit_cnn.npz             digit reader (621 KB), cannot be rebuilt without torch
+#   tessdata/fas_custom.traineddata  the fine-tuned Persian model, exists nowhere else
+# Stock tessdata (fas, eng, ara, osd) is downloaded by deploy/install_tesseract.ps1 or the
+# Dockerfile. A file inside an ignored directory cannot be re-included, so the directory
+# contents are ignored instead of the directory.
+models/*
+!models/digit_cnn.npz
+!models/digit_cnn.json
+tessdata/*
+!tessdata/fas_custom.traineddata
+*.whl
+*.gguf
+hf_cache/
+
+# The Tesseract program copied into the project (Windows binaries, 239 MB);
+# deploy/install_tesseract.ps1 puts it there.
+tools/
+
+# Data: inputs read from disk, not source
+Persian-OCR-Double-Benchmark/
+Dehkhoda-SQL-master/
+ocr_train/fonts/
+*.db
+
+# Generated
+train/
+.cache/
+.celery_fs*/
+control/
+debug_raw/
+fonts.conf
+*.bak
+*.log
+*.pid
+
+# Editors and OS
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+~$*
+
+# Local secrets and overrides
+.env
+docs/*.docx

@@ -1,0 +1,14 @@
+# Runtime dependencies of the OCR service (what the Docker image installs).
+# Also needs the Tesseract 5 binary and the traineddata files (see deploy/).
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32
+pydantic==2.13.4
+pydantic-settings==2.10.1
+celery==5.5.3
+redis==6.4.0
+pytesseract==0.3.13
+pillow==12.3.0
+opencv-python-headless==5.0.0.93
+numpy==2.5.2
+pywin32==311; sys_platform == "win32"   # kombu filesystem transport (local queue without Redis)

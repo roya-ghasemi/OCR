@@ -1,0 +1,349 @@
+<title>OCR Accuracy Findings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#EEF0F2; --surface:#FFFFFF; --surface-2:#F6F7F9;
+    --ink:#171B21; --muted:#5C6672; --faint:#8B94A0;
+    --line:#DCE0E5; --line-strong:#C6CCD3;
+    --accent:#2B54C6; --accent-soft:#E7ECFB;
+    --good:#17945F; --good-soft:#E3F3EB;
+    --warn:#B5820F; --warn-soft:#F7EDD6;
+    --crit:#C8362C; --crit-soft:#F8E2DF;
+    --shadow:0 1px 2px rgba(20,30,45,.04),0 4px 16px rgba(20,30,45,.05);
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme:dark){
+      --bg:#0F1417; --surface:#171C21; --surface-2:#1C2228;
+      --ink:#E9ECEF; --muted:#98A2AD; --faint:#6C7681;
+      --line:#262D34; --line-strong:#333C45;
+      --accent:#7D9BFF; --accent-soft:#1B2740;
+      --good:#3FBE84; --good-soft:#123024;
+      --warn:#E0A93B; --warn-soft:#332912;
+      --crit:#EC6357; --crit-soft:#331A18;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1417; --surface:#171C21; --surface-2:#1C2228;
+    --ink:#E9ECEF; --muted:#98A2AD; --faint:#6C7681;
+    --line:#262D34; --line-strong:#333C45;
+    --accent:#7D9BFF; --accent-soft:#1B2740;
+    --good:#3FBE84; --good-soft:#123024;
+    --warn:#E0A93B; --warn-soft:#332912;
+    --crit:#EC6357; --crit-soft:#331A18;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:clamp(20px,4vw,56px) clamp(16px,4vw,32px) 80px}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  .fa{font-family:Tahoma,"IBM Plex Sans Arabic","Segoe UI",sans-serif; direction:rtl; unicode-bidi:plaintext}
+
+  /* Header */
+  header{border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:36px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); margin:0 0 12px}
+  h1{font-size:clamp(28px,5vw,44px); line-height:1.08; font-weight:700; margin:0 0 14px;
+    letter-spacing:-.02em; text-wrap:balance}
+  .sub{color:var(--muted); font-size:16px; max-width:64ch; margin:0}
+  .meta{display:flex; flex-wrap:wrap; gap:8px 20px; margin-top:20px; font-size:13px; color:var(--faint)}
+  .meta .mono{color:var(--muted)}
+
+  /* KPI tiles */
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:0 0 44px}
+  .tile{background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:18px 18px 16px; box-shadow:var(--shadow); position:relative; overflow:hidden}
+  .tile::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent)}
+  .tile.good::before{background:var(--good)} .tile.warn::before{background:var(--warn)} .tile.crit::before{background:var(--crit)}
+  .tile .k{font-family:"IBM Plex Mono",monospace; font-size:11.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+  .tile .v{font-size:34px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums;
+    font-family:"IBM Plex Mono",monospace; line-height:1}
+  .tile .d{font-size:12.5px; color:var(--faint); margin-top:8px}
+  .tile.good .v{color:var(--good)} .tile.warn .v{color:var(--warn)} .tile.crit .v{color:var(--crit)}
+
+  section{margin:0 0 46px}
+  h2{font-size:12px; font-family:"IBM Plex Mono",monospace; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted); margin:0 0 4px}
+  .h2big{font-size:22px; font-weight:600; letter-spacing:-.01em; color:var(--ink);
+    font-family:"IBM Plex Sans",sans-serif; text-transform:none; margin:0 0 18px}
+  p.lead{margin:0 0 18px; color:var(--muted); max-width:70ch}
+
+  /* Table */
+  .tablecard{background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    box-shadow:var(--shadow); overflow-x:auto}
+  table{width:100%; border-collapse:collapse; font-size:14px; min-width:520px}
+  th,td{text-align:right; padding:13px 16px; border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--faint); font-weight:500; background:var(--surface-2)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr.total td{font-weight:600; background:var(--surface-2)}
+  td.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+
+  /* Bar comparison */
+  .bars{display:flex; flex-direction:column; gap:14px; background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; padding:22px; box-shadow:var(--shadow)}
+  .bar{display:grid; grid-template-columns:190px 1fr 62px; align-items:center; gap:14px}
+  .bar .lab{font-size:13.5px; color:var(--ink)}
+  .bar .track{height:12px; background:var(--surface-2); border-radius:99px; overflow:hidden; border:1px solid var(--line)}
+  .bar .fill{height:100%; border-radius:99px}
+  .bar .val{font-family:"IBM Plex Mono",monospace; font-size:13px; text-align:right; font-variant-numeric:tabular-nums; color:var(--muted)}
+  @media(max-width:560px){.bar{grid-template-columns:120px 1fr 54px; gap:10px}}
+
+  .note{font-size:13.5px; color:var(--muted); margin:14px 2px 0; max-width:74ch}
+  .note strong{color:var(--ink); font-weight:600}
+
+  /* Worst-case cards */
+  .cases{display:flex; flex-direction:column; gap:14px}
+  .case{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:var(--shadow)}
+  .case .top{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px}
+  .case .fn{font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--muted)}
+  .badge{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; padding:3px 9px; border-radius:99px;
+    background:var(--crit-soft); color:var(--crit); font-variant-numeric:tabular-nums}
+  .badge.warn{background:var(--warn-soft); color:var(--warn)}
+  .rowpair{display:grid; grid-template-columns:44px 1fr; gap:10px 12px; align-items:start; font-size:14px}
+  .rowpair .tag{font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+    padding-top:3px; color:var(--faint)}
+  .rowpair .gt{color:var(--ink)} .rowpair .pr{color:var(--muted)}
+  mark{background:var(--crit-soft); color:var(--crit); padding:0 3px; border-radius:4px; font-weight:600}
+  mark.g{background:var(--good-soft); color:var(--good)}
+
+  /* Chips */
+  .chips{display:flex; flex-wrap:wrap; gap:8px}
+  .chip{font-family:"IBM Plex Mono",monospace; font-size:13px; border:1px solid var(--line); background:var(--surface);
+    border-radius:9px; padding:6px 11px; display:flex; align-items:center; gap:8px}
+  .chip .cnt{color:var(--faint); font-size:11.5px}
+  .chip .fa{font-size:15px}
+
+  /* Conclusion */
+  .concl{display:flex; flex-direction:column; gap:2px}
+  .find{display:grid; grid-template-columns:26px 1fr; gap:14px; padding:16px 0; border-bottom:1px solid var(--line)}
+  .find:last-child{border-bottom:none}
+  .find .dot{width:11px; height:11px; border-radius:99px; margin-top:7px}
+  .find h3{margin:0 0 4px; font-size:15.5px; font-weight:600}
+  .find p{margin:0; color:var(--muted); font-size:14px; max-width:68ch}
+
+  footer{margin-top:36px; padding-top:24px; border-top:1px solid var(--line); color:var(--faint); font-size:13px}
+  footer code{font-family:"IBM Plex Mono",monospace; background:var(--surface-2); padding:2px 6px; border-radius:5px; color:var(--muted)}
+  a{color:var(--accent)}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">OCR Evaluation · Persian + English</p>
+    <h1>How well does the letter OCR actually read?</h1>
+    <p class="sub">A synthetic-benchmark run against the real <span class="mono">/ocr</span> endpoint: 36 rendered Persian business letters, half of them bilingual, scored with CER / WER after Persian-aware normalization.</p>
+    <div class="meta">
+      <span>Endpoint <span class="mono">http://127.0.0.1:8000/ocr</span></span>
+      <span>Model <span class="mono">coreOCR-7B · Q4_K_S</span></span>
+      <span>36 images · <span class="mono">3.15 s</span>/image</span>
+    </div>
+  </header>
+
+  <div class="tiles">
+    <div class="tile good">
+      <p class="k">Persian-only CER</p>
+      <p class="v">4.5%</p>
+      <p class="d">clean printed Persian, where output was produced</p>
+    </div>
+    <div class="tile crit">
+      <p class="k">Latin / digit CER</p>
+      <p class="v">32.9%</p>
+      <p class="d">codes, dates, emails inside bilingual letters</p>
+    </div>
+    <div class="tile warn">
+      <p class="k">No output</p>
+      <p class="v">16.7%</p>
+      <p class="d">3 × HTTP 422 + 3 × all-null 200</p>
+    </div>
+    <div class="tile">
+      <p class="k">Overall CER · WER</p>
+      <p class="v">17.0<span style="font-size:20px;color:var(--muted)"> / 22.4%</span></p>
+      <p class="d">over the 30 images that returned text</p>
+    </div>
+  </div>
+
+  <section>
+    <h2>Reading accuracy</h2>
+    <p class="h2big">Two failure modes, kept apart from accuracy</p>
+    <p class="lead">CER and WER are measured only on images that actually returned text. The cases where the model returned nothing — a looped, unterminated JSON (422) or a valid-but-empty all-null response — are counted separately, so a robustness problem never disguises itself as a reading score, and vice-versa.</p>
+    <div class="tablecard">
+      <table>
+        <thead><tr><th>Source</th><th>Scored</th><th>Empty</th><th>422</th><th>CER</th><th>WER</th></tr></thead>
+        <tbody>
+          <tr class="total"><td>All letters</td><td class="num">30</td><td class="num">3</td><td class="num">3</td><td class="num">17.04%</td><td class="num">22.38%</td></tr>
+          <tr><td>Persian only</td><td class="num">15</td><td class="num">3</td><td class="num">0</td><td class="num">4.49%</td><td class="num">8.04%</td></tr>
+          <tr><td>Bilingual</td><td class="num">15</td><td class="num">0</td><td class="num">3</td><td class="num">25.59%</td><td class="num">32.44%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The gap tells the story: <strong>Persian-only letters read at 4.5% CER</strong>, but the same model on bilingual letters lands at 25.6% — and separately, every one of the 422 hard failures was a bilingual letter, while every empty response was Persian-only.</p>
+  </section>
+
+  <section>
+    <h2>Where bilingual breaks</h2>
+    <p class="h2big">Persian script vs. embedded Latin / digits</p>
+    <p class="lead">Splitting each bilingual letter into its Persian-script runs and its Latin/digit runs shows which side is weaker — a single blended number would hide it.</p>
+    <div class="bars">
+      <div class="bar">
+        <span class="lab">Persian-script runs</span>
+        <span class="track"><span class="fill" style="width:33%;background:var(--good)"></span></span>
+        <span class="val">16.17%</span>
+      </div>
+      <div class="bar">
+        <span class="lab">Latin / digit runs</span>
+        <span class="track"><span class="fill" style="width:66%;background:var(--crit)"></span></span>
+        <span class="val">32.85%</span>
+      </div>
+    </div>
+    <p class="note">Codes, dates, amounts and account numbers embedded in Persian text are read about <strong>twice as unreliably</strong> as the surrounding prose. Of 140 Latin/digit runs checked, <strong>32%</strong> were misread and one number was cleanly reversed — <span class="mono">0093 → 3900</span> — the classic RTL/LTR digit-flip.</p>
+  </section>
+
+  <section>
+    <h2>Normalization sensitivity</h2>
+    <p class="h2big">The scores aren't a normalization artifact</p>
+    <p class="lead">Persian CER is notoriously sensitive to normalization (ی vs ي, ك vs ک, ZWNJ, digit styles). The same predictions scored three ways barely move, so the headline number is real rather than manufactured by aggressive cleanup.</p>
+    <div class="bars">
+      <div class="bar"><span class="lab">Raw (whitespace only)</span><span class="track"><span class="fill" style="width:35.5%;background:var(--accent)"></span></span><span class="val">17.75%</span></div>
+      <div class="bar"><span class="lab">+ Persian (ی/ک, ZWNJ)</span><span class="track"><span class="fill" style="width:34.1%;background:var(--accent)"></span></span><span class="val">17.04%</span></div>
+      <div class="bar"><span class="lab">+ digit style (۰–۹→0–9)</span><span class="track"><span class="fill" style="width:34.1%;background:var(--accent)"></span></span><span class="val">17.04%</span></div>
+    </div>
+    <p class="note">Persian normalization shaves ~0.7 points (mostly ZWNJ and ی/ک). Digit-style normalization changes <strong>nothing here</strong> — this set's source numbers are Latin — but it would matter for documents that write numbers in Persian digits.</p>
+  </section>
+
+  <section>
+    <h2>Error analysis</h2>
+    <p class="h2big">Worst readings, side by side</p>
+    <p class="lead">The highest-CER images that still produced text. Persian prose survives; the damage clusters on Latin/digit fields and on words losing a dot or a tooth (فرمایید → فرمانیه, پیشاپیش → پیشایپیش).</p>
+    <div class="cases">
+      <div class="case">
+        <div class="top"><span class="fn">synthetic_bilingual_025.png</span><span class="badge">CER 28.1%</span></div>
+        <div class="rowpair">
+          <span class="tag">GT</span><span class="gt fa">… شماره قرارداد: <mark class="g">INV-2026-0093</mark> — دستور <mark class="g">فرمایید</mark> — <mark class="g">پیشاپیش</mark> از همکاری</span>
+          <span class="tag">PR</span><span class="pr fa">… شماره قرارداد: <mark>3090-2026</mark> — دستور <mark>فرمانیه</mark> — <mark>پیشایپیش</mark> از همکاری</span>
+        </div>
+      </div>
+      <div class="case">
+        <div class="top"><span class="fn">synthetic_bilingual_019.png</span><span class="badge">CER 26.7%</span></div>
+        <div class="rowpair">
+          <span class="tag">GT</span><span class="gt fa">… شماره قرارداد: <mark class="g">INV-2026-0093</mark> — <mark class="g">اعلام</mark> نتایج ارزیابی</span>
+          <span class="tag">PR</span><span class="pr fa">… شماره قرارداد: <mark>3900-2026</mark> — <mark>اعلان</mark> نتایج ارزیابی</span>
+        </div>
+      </div>
+      <div class="case">
+        <div class="top"><span class="fn">synthetic_bilingual_028.png</span><span class="badge">CER 29.3%</span></div>
+        <div class="rowpair">
+          <span class="tag">GT</span><span class="gt fa">… شماره پرسنلی: <mark class="g">EMP-4821</mark> … معاون فنی CTO — علی رضایی</span>
+          <span class="tag">PR</span><span class="pr fa">… شماره پرسنلی: <mark>4821</mark> … CTO — علي رضايی (<mark>EMP</mark> افتاد)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>No-output failures</h2>
+    <p class="h2big">6 letters returned nothing usable</p>
+    <div class="cases">
+      <div class="case">
+        <div class="top"><span class="fn">HTTP 422 · looped into unterminated JSON</span><span class="badge">3 letters</span></div>
+        <div class="rowpair"><span class="tag">Files</span><span class="pr mono">synthetic_bilingual_023 · _029 · _035 — all bilingual; the same repetition failure that IMAGE_MIN_TOKENS mitigated on the sample letter, still firing on denser bilingual content.</span></div>
+      </div>
+      <div class="case">
+        <div class="top"><span class="fn">Empty · 200 OK but every field null</span><span class="badge warn">3 letters</span></div>
+        <div class="rowpair"><span class="tag">Files</span><span class="pr mono">synthetic_fa_002 · _005 · _010 — Persian-only letters the model declined to extract at all.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Character confusion</h2>
+    <p class="h2big">Most frequent substitutions</p>
+    <p class="lead">Ground-truth → predicted, after normalization. Persian errors are dot/tooth swaps; the noisiest pairs are actually Latin letters being swallowed into Persian glyphs inside bilingual lines.</p>
+    <div class="chips">
+      <span class="chip"><span class="fa">ی → ه</span><span class="cnt">×4</span></span>
+      <span class="chip"><span class="fa">پ → ی</span><span class="cnt">×3</span></span>
+      <span class="chip"><span class="fa">م → ن</span><span class="cnt">×3</span></span>
+      <span class="chip"><span class="fa">ش → ی</span><span class="cnt">×2</span></span>
+      <span class="chip"><span class="fa">پ → ب</span><span class="cnt">×2</span></span>
+      <span class="chip">I → 3<span class="cnt">×3</span></span>
+      <span class="chip">0 → 6<span class="cnt">×3</span></span>
+      <span class="chip">o → <span class="fa">ض</span><span class="cnt">×2</span></span>
+      <span class="chip">i → <span class="fa">ی</span><span class="cnt">×2</span></span>
+      <span class="chip">n → <span class="fa">ت</span><span class="cnt">×2</span></span>
+    </div>
+    <p class="note">The one classic Persian dot-confusion that showed up materially is <span class="fa">ب/پ</span>. Everything else is spread thin — there's no single systematic Persian misread to fix.</p>
+  </section>
+
+  <section>
+    <h2>Dictionary correction · Dehkhoda</h2>
+    <p class="h2big">The first design made it worse. Here's why, and the fix.</p>
+    <p class="lead">All 33 Dehkhoda SQL dumps (312,507 headwords) were loaded into a local SQLite database and wired in as a post-corrector on out-of-vocabulary Persian words. The first version <em>lowered</em> accuracy by a full CER point — so it was treated as a bug and diagnosed rather than accepted.</p>
+
+    <div class="case" style="margin-bottom:18px">
+      <div class="top"><span class="fn">Root cause — the harmful edits weren't OCR errors at all</span><span class="badge">v1 bug</span></div>
+      <div class="rowpair">
+        <span class="tag">found</span>
+        <span class="gt">60 harmful substitutions <span class="fa">(س→ا ×14, ژ→ت ×11, د→م ×7, ح→ن ×7)</span> — no OCR confuses these; they're <em>typing</em> errors. Plus 10 harmful transpositions and <strong>zero</strong> helpful ones: transposition is a keyboard artifact OCR never produces.</span>
+      </div>
+    </div>
+    <p class="note" style="margin-top:0">v1 was built like a spell-checker for typos, allowing any edit across all 35 letters. Real OCR errors are <strong>visual</strong> — same skeleton, different dots <span class="fa">(ب پ ت ث ن ی)</span> or same shape family <span class="fa">(ج چ ح خ)</span>. v2 restricts the edit model to exactly that.</p>
+
+    <div class="tablecard" style="margin-top:18px">
+      <table>
+        <thead><tr><th>Correction rule</th><th>CER</th><th>Δ</th><th>helpful</th><th>harmful</th></tr></thead>
+        <tbody>
+          <tr class="total"><td>no correction (baseline)</td><td class="num">17.04%</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+          <tr><td>v1 · any single edit</td><td class="num">18.08%</td><td class="num" style="color:var(--crit)">+1.04%</td><td class="num">6</td><td class="num" style="color:var(--crit)">83</td></tr>
+          <tr><td>v2a · confusable-sub + doubled-del</td><td class="num">17.28%</td><td class="num" style="color:var(--crit)">+0.24%</td><td class="num">3</td><td class="num">23</td></tr>
+          <tr><td>v2b · … + unambiguous only</td><td class="num">17.13%</td><td class="num" style="color:var(--warn)">+0.09%</td><td class="num">3</td><td class="num">11</td></tr>
+          <tr><td>v2c · confusable-sub only</td><td class="num">17.15%</td><td class="num" style="color:var(--warn)">+0.11%</td><td class="num">1</td><td class="num">11</td></tr>
+          <tr class="total"><td>v2d · doubled-letter deletion only ✓</td><td class="num" style="color:var(--good)">17.01%</td><td class="num" style="color:var(--good)">−0.03%</td><td class="num">2</td><td class="num" style="color:var(--good)">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note"><strong>v2d is now the shipped default</strong> — the only rule that never damages a correct word. It fixes doubled-letter artifacts <span class="fa">(استحضاار → استحضار)</span> and refuses to guess at anything else. The ~1.07-point regression is fully recovered.</p>
+    <p class="note"><strong>The remaining ceiling is Dehkhoda itself.</strong> It's a <em>classical</em> lexicon, so ~22% of correctly-read modern words <span class="fa">(سامانه، اینترنت، دیجیتال، پروژه، فناوری)</span> aren't in it. Any rule aggressive enough to fix a real error also snaps those onto classical neighbours — <span class="fa">پروژه → پروره</span> is the clearest case and isn't solvable from the dictionary alone. Dropping the 32.8% of entries that are pure cross-references was tested too, and changed nothing.</p>
+  </section>
+
+  <section>
+    <h2>Conclusion</h2>
+    <p class="h2big">Where it's strong, where it isn't</p>
+    <div class="concl">
+      <div class="find">
+        <span class="dot" style="background:var(--good)"></span>
+        <div><h3>Printed Persian is the strong suit</h3><p>4.5% CER on Persian-only letters, 16.2% on Persian runs inside bilingual ones. As a Persian document reader, it's solid.</p></div>
+      </div>
+      <div class="find">
+        <span class="dot" style="background:var(--crit)"></span>
+        <div><h3>Embedded Latin & numbers are the weak spot</h3><p>32.9% CER on codes, dates, emails and account numbers, with a third of such runs misread and occasional digit reversal. Don't trust an IBAN or invoice number from this without a check digit.</p></div>
+      </div>
+      <div class="find">
+        <span class="dot" style="background:var(--warn)"></span>
+        <div><h3>One in six letters returns nothing</h3><p>16.7% produce no usable text — bilingual ones loop into invalid JSON, Persian ones sometimes come back empty. Catching the 422/empty and retrying with a higher token budget would recover most.</p></div>
+      </div>
+      <div class="find">
+        <span class="dot" style="background:var(--warn)"></span>
+        <div><h3>Dehkhoda correction: fixed, but its ceiling is low</h3><p>The first corrector raised CER by a point because it modelled typing errors instead of visual ones. Restricted to OCR-plausible edits it is now safe (17.04% → 17.01%, zero harmful changes) — but a classical lexicon can only do so much when a fifth of modern vocabulary is missing from it. Next: a modern frequency lexicon, confidence-gated correction, and a checksum validator for codes.</p></div>
+      </div>
+      <div class="find">
+        <span class="dot" style="background:var(--accent)"></span>
+        <div><h3>The numbers are honest</h3><p>Raw-to-normalized CER moves only 17.75% → 17.04%, so nothing here is an artifact of aggressive Persian normalization.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Synthetic benchmark, ground truth known exactly. Reproduce with
+    <code>run_eval.py</code> then <code>make_report.py</code>; full per-image tables live in <code>ocr_eval/REPORT.md</code>.
+    Scores reflect the <span class="mono">coreOCR-7B Q4_K_S</span> quantization — a larger quant would likely lift the Latin/digit numbers.
+    Dictionary layer: <code>dehkhoda/build_db.py</code> → <code>corrector.py</code> → <code>eval_correction.py</code>; full before/after in <code>dehkhoda/REPORT_correction.md</code>.
+  </footer>
+</div>

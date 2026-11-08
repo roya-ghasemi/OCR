@@ -1,0 +1,109 @@
+{
+ "note": "Pages the service could not read, kept as the regression set for refusal. For the handwriting and calligraphy the correct behaviour is NOT a transcript -- it is withholding one and reporting the regions. `expect.legible: false` means the page must come back with empty `text`; a transcript appearing here is the failure. NOTE (E37): `expect.legible: false` encodes what the service could do *before* handwriting training. If a run reports LEAKED A TRANSCRIPT for hand_poem, hand_blue or the nastaliq pages, read it before treating it as a regression — a real transcript there is the goal, and the expectation is what needs updating.",
+ "pages": [
+  {
+   "id": "arabic_lisan",
+   "image": "ocr_eval/hard/13.jpg",
+   "tags": [
+    "arabic",
+    "typeset",
+    "two-column",
+    "vocalised"
+   ],
+   "expect": {
+    "legible": true
+   },
+   "notes": "Arabic, not Persian. Read with the Persian model it loses ي/ك/ة."
+  },
+  {
+   "id": "hand_note",
+   "image": "ocr_eval/hard/14.jpg",
+   "tags": [
+    "handwriting",
+    "persian"
+   ],
+   "expect": {
+    "legible": true,
+    "text_empty": true
+   },
+   "notes": "Cursive congratulation note. Already returns nothing, which is honest."
+  },
+  {
+   "id": "nastaliq_poem",
+   "image": "ocr_eval/hard/15.jpg",
+   "tags": [
+    "calligraphy",
+    "nastaliq"
+   ],
+   "expect": {
+    "legible": false
+   },
+   "notes": "Answered «فو اف as SY fe میک» before the legibility gate."
+  },
+  {
+   "id": "hand_poem",
+   "image": "ocr_eval/hard/16.jpg",
+   "tags": [
+    "handwriting",
+    "persian",
+    "lined"
+   ],
+   "expect": {
+    "legible": false
+   },
+   "notes": "Answered «ff» for a whole page."
+  },
+  {
+   "id": "nastaliq_digital",
+   "image": "ocr_eval/hard/17.jpg",
+   "tags": [
+    "calligraphy",
+    "nastaliq",
+    "digital"
+   ],
+   "expect": {
+    "legible": false
+   },
+   "notes": "Answered «ee aa ay»."
+  },
+  {
+   "id": "bench_line_a",
+   "image": "ocr_eval/hard/18.jpg",
+   "tags": [
+    "printed",
+    "line",
+    "low-res"
+   ],
+   "expect": {
+    "legible": true
+   },
+   "gt": "مجلس شورای اسلامی قرار گرفت و پیرو این سئوال، نشست مشترکی با حضور"
+  },
+  {
+   "id": "hand_blue",
+   "image": "ocr_eval/hard/19.jpg",
+   "tags": [
+    "handwriting",
+    "persian",
+    "lined"
+   ],
+   "expect": {
+    "legible": false
+   },
+   "notes": "Answered Latin fragments."
+  },
+  {
+   "id": "bench_line_b",
+   "image": "ocr_eval/hard/20.jpg",
+   "tags": [
+    "printed",
+    "line",
+    "low-res"
+   ],
+   "expect": {
+    "legible": true
+   },
+   "gt": "غربالگری و توجه ویژه به پویش «هر خانه بماند» از مهمترین راهکارهای"
+  }
+ ]
+}
